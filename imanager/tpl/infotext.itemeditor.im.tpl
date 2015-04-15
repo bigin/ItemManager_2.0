@@ -1,0 +1,1 @@
+<p class="field-info"><i class="fa [[icon]]"></i> [[infotext]]</p>

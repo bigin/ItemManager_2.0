@@ -1,0 +1,1 @@
+<strong>Hallo das ist einfacher <span>[[ bla ]]</span> [[ lang/checkbox_field_value ]]</strong>
