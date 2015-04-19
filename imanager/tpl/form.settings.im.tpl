@@ -25,29 +25,6 @@
 					<label for="maxitemname">[[lang/item_max_length]]</label>
 					<p><input id="maxitemname" class="number-fields-left number" name="maxitemname" type="number" value="[[maxitemname]]"></p>
 				</div>
-
-				<div class="fieldarea">
-					<label for="catbackup">[[lang/create_cat_backups]]</label>
-					<p><input id="catbackup" class="checkbox-fields-left" name="catbackup" type="checkbox" value="1" [[catbackup]]></p>
-					<div class="im-toggle" id="category">
-						<div class="fieldarea intern">
-							<label for="catbackupdir">[[lang/cat_backups_dir]]</label>
-							<p><input id="fieldbackupdir" class="text-fields-left text" name="catbackupdir" type="text" value="[[catbackupdir]]"></p>
-						</div>
-					</div>
-				</div>
-
-
-				<div class="fieldarea">
-					<label for="fieldbackup">[[lang/create_field_backups]]</label>
-					<p><input id="fieldbackup" class="checkbox-fields-left" name="fieldbackup" type="checkbox" value="1" [[fieldbackup]]></p>
-					<div class="im-toggle" id="fields">
-						<div class="fieldarea intern">
-							<label for="fieldbackupdir">[[lang/field_backups_dir]]</label>
-							<p><input id="fieldbackupdir" class="text-fields-left text" name="fieldbackupdir" type="text" value="[[fieldbackupdir]]"></p>
-						</div>
-					</div>
-				</div>
 			</div>
 
 			<div id="tab2" class="tab">
@@ -92,6 +69,45 @@
 						<option value="50" [[fifty]]>50</option>
 					</select></p>
 				</div>
+				<div class="fieldarea">
+					<label for="catbackup">[[lang/create_cat_backups]]</label>
+					<p><input id="catbackup" class="checkbox-fields-left" name="catbackup" type="checkbox" value="1" [[catbackup]]></p>
+					<div class="im-toggle" id="category">
+						<div class="fieldarea intern">
+							<label for="catbackupdir">[[lang/cat_backups_dir]]</label>
+							<p class="field-info">[[lang/directory_musst_exist_info]]</p>
+							<p><input id="fieldbackupdir" class="text-fields-left text" name="catbackupdir" type="text" value="[[catbackupdir]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="min_catbackup_days">[[lang/catbackup_min_time]]</label>
+							<p class="field-info">[[lang/catbackup_min_time_info]]</p>
+							<p><input id="min_catbackup_days" class="number-fields-left number" name="min_catbackup_days" type="number" value="[[min_catbackup_days]]"></p>
+						</div>
+					</div>
+				</div>
+
+				<!-- FIELDS SETTINGS -->
+
+				<h2 class="menuglava">[[lang/field_settings_section]]</h2>
+				<div class="fieldarea">
+					<label for="fieldbackup">[[lang/create_field_backups]]</label>
+					<p><input id="fieldbackup" class="checkbox-fields-left" name="fieldbackup" type="checkbox" value="1" [[fieldbackup]]></p>
+					<div class="im-toggle" id="fields">
+						<div class="fieldarea intern">
+							<label for="fieldbackupdir">[[lang/field_backups_dir]]</label>
+							<p class="field-info">[[lang/directory_musst_exist_info]]</p>
+							<p><input id="fieldbackupdir" class="text-fields-left text" name="fieldbackupdir" type="text" value="[[fieldbackupdir]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="min_fieldbackup_days">[[lang/fieldbackup_min_time]]</label>
+							<p class="field-info">[[lang/fieldbackup_min_time_info]]</p>
+							<p><input id="min_fieldbackup_days" class="number-fields-left number" name="min_fieldbackup_days" type="number" value="[[min_fieldbackup_days]]"></p>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- ITEM SETTINGS -->
 
 				<h2 class="menuglava">[[lang/item_settings_section]]</h2>
 
@@ -152,6 +168,32 @@
 							<option value="50" [[i_fifty]]>50</option>
 						</select></p>
 				</div>
+				<div class="fieldarea">
+					<label for="itembackup">[[lang/create_item_backups]]</label>
+					<p><input id="itembackup" class="checkbox-fields-left" name="itembackup" type="checkbox" value="1" [[itembackup]]></p>
+					<div class="im-toggle" id="items">
+						<div class="fieldarea intern">
+							<label for="itembackupdir">[[lang/item_backups_dir]]</label>
+							<p class="field-info">[[lang/directory_musst_exist_info]]</p>
+							<p><input id="itemdbackupdir" class="text-fields-left text" name="itembackupdir" type="text" value="[[itembackupdir]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="min_itembackup_days">[[lang/itembackup_min_time]]</label>
+							<p class="field-info">[[lang/itembackup_min_time_info]]</p>
+							<p><input id="min_itembackup_days" class="number-fields-left number" name="min_itembackup_days" type="number" value="[[min_itembackup_days]]"></p>
+						</div>
+					</div>
+				</div>
+
+
+				<h2 class="menuglava">[[lang/imageupload_settings_section]]</h2>
+				<div class="fieldarea">
+					<label for="min_tmpimage_days">[[lang/tmp_itage_min_time]]</label>
+					<p class="field-info">[[lang/tmp_itage_min_time_info]]</p>
+					<p><input id="min_tmpimage_days" class="number-fields-left number" name="min_tmpimage_days" type="number" value="[[min_tmpimage_days]]"></p>
+				</div>
+
+
 			</div>
 
 			<div id="tab3" class="tab">
@@ -187,11 +229,18 @@
 		if($("#fieldbackup").attr('checked')) {
 			$("#fields").show();
 		}
+		if($("#itembackup").attr('checked')) {
+			$("#items").show();
+		}
+
 		$("#catbackup").change(function(){
 			$("#category").toggle();
 		});
 		$("#fieldbackup").change(function(){
 			$("#fields").toggle();
+		});
+		$("#itembackup").change(function(){
+			$("#items").toggle();
 		});
 
 

@@ -12,32 +12,5 @@
 	</select>
 	<p class="sm-label">[[lang/categories_per_page]]</p>
 	<div id="im-nswitch">[[nswitch]]</div>
-	<script>
-	$(document).ready(function() {
-		$('select').on('change', function() {
-			var num = $('.active').children().attr('id');
-			$.getList(num);
-			return false;
-		});
-
-		$('.switchNumber').click(function(){
-			var num = $(this).attr('id');
-			$('.active').removeClass('active');
-			$(this).parent().addClass('active');
-			$.getList(num);
-			return false;
-		});
-
-		$.getList = function(num) {
-			var ftr = $('#filterby').val();
-			var opt = $('#option').val();
-
-			$.post("/admin/load.php?id=imanager&category&getcatlist="+num+"&filterby="+ftr+"&option="+opt,
-			function(data, status){
-				if(status = 'success') $('#im-catlist-body').replaceWith('<tbody id="im-catlist-body">'+data+'</tbody>');
-			});
-		}
-	});
-
-	</script>
 </div>
+<!-- javascript in form.categorylist.im.tpl -->

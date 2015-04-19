@@ -431,6 +431,27 @@ class ImItem
 
 
 
+	/**
+	 * Deletes an Item
+	 *
+	 * @param Item $item
+	 * @param reinitialize flag $re
+	 * @return bool
+	 */
+	public function destroyItem(Item $item, $re = false)
+	{
+		if(file_exists(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX))
+		{
+			unlink(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX);
+			// reinitialize items
+			if($re) $this->init($item->get('categoryid'));
+			return true;
+		}
+		return false;
+	}
+
+
+
 	protected function separateItem(array $items, $stat)
 	{
 		if (false !== strpos($stat, '='))

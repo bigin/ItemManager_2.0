@@ -155,8 +155,7 @@ class ImFields
 
 	public function fieldNameExists($fieldname){return array_key_exists($fieldname, $this->fields);}
 
-	public function backupFields($id, $path) {return copy(IM_FIELDS_DIR . intval($id) . IM_FIELDS_FILE_SUFFIX,
-		$path.'backup_'.time().'_'.intval($id).IM_FIELDS_FILE_SUFFIX);}
+
 
 	/**
 	 * Returns the array of objects of the type Field, sorted by any node

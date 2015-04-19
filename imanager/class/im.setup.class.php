@@ -127,6 +127,27 @@ class ImSetup
 			);
 		}
 
+		// Create backup directory
+		if(!file_exists(IM_BACKUP_DIR) && !$this->createFolderProcedure(
+				IM_BACKUP_DIR, 'config.xml',
+				'<?xml version="1.0" encoding="UTF-8"?>
+				<backups><categories></categories><fields></fields><items></items></backups>'))
+		{
+			ImMsgReporter::setClause(
+				'items_path_exists',
+				array('itemmanager-title' => IMTITLE,
+					'gsdatapath' => IM_BACKUP_DIR)
+			);
+			$err = true;
+		} else
+		{
+			ImMsgReporter::setClause(
+				'directory_succesfull_created',
+				array('end_path' => IM_BACKUP_DIR)
+			);
+		}
+
+
 		// Uploads Verzeichnis erstellen
 		if(!file_exists(IM_UPLOAD_DIR))
 		{
@@ -188,9 +209,13 @@ class ImSetup
 
 		$field_backup = !isset($input['fieldbackup']) ? 0 : intval($input['fieldbackup']);
 
-		$cat_backupdir = empty($input['catbackupdir']) ? GSBACKUPSPATH.'other/' : $input['catbackupdir'];
+		$min_fieldbackup_days = !isset($input['min_fieldbackup_days']) ? 1 : intval($input['min_fieldbackup_days']);
 
-		$field_backupdir = empty($input['fieldbackupdir']) ? GSBACKUPSPATH.'other/' : $input['fieldbackupdir'];
+		$cat_backupdir = empty($input['catbackupdir']) ? IM_BACKUP_DIR : $input['catbackupdir'];
+
+		$min_catbackup_days = !isset($input['min_catbackup_days']) ? 1 : intval($input['min_catbackup_days']);
+
+		$field_backupdir = empty($input['fieldbackupdir']) ? IM_BACKUP_DIR : $input['fieldbackupdir'];
 
 		if(substr($cat_backupdir, -1, 1) != '/') $cat_backupdir = $cat_backupdir.'/';
 		if(substr($field_backupdir, -1, 1) != '/') $field_backupdir = $field_backupdir.'/';
@@ -215,6 +240,18 @@ class ImSetup
 		// max thumb width
 		$thumbwidth = isset($input['thumbwidth']) ? (int) $input['thumbwidth'] : 200;
 
+		$min_tmpimage_days = !isset($input['min_tmpimage_days']) ? 1 : intval($input['min_tmpimage_days']);
+
+
+		// item Backup beim löschen anlegen Checkbox
+		$item_backup = !isset($input['itembackup']) ? 1 : intval($input['itembackup']);
+		// item Backup Verzeichnis angeben
+		$item_backupdir = empty($input['itembackupdir']) ? IM_BACKUP_DIR : $input['itembackupdir'];
+		// Item Backup Aufbewahrungsfrist in Tagen angeben
+		$min_itembackup_days = !isset($input['min_itembackup_days']) ? 1 : intval($input['min_itembackup_days']);
+
+
+
 
 
 
@@ -231,14 +268,9 @@ class ImSetup
 		$common_xml->addChild('maxfieldname', $max_field_name);
 		// max item name
 		$common_xml->addChild('maxitemname', $max_item_name);
-		// category backups
-		$common_xml->addChild('catbackup', $cat_backup);
-		// fields backups
-		$common_xml->addChild('fieldbackup', $field_backup);
-		// backup directory for caterories
-		$common_xml->addChild('catbackupdir', $cat_backupdir);
-		// backup directory for fields
-		$common_xml->addChild('fieldbackupdir', $field_backupdir);
+
+
+
 
 		// Backend
 
@@ -252,11 +284,29 @@ class ImSetup
 		$backend_xml->addChild('catorder', $cat_order);
 		// category order by
 		$backend_xml->addChild('catorderby', $cat_order_by);
+		// category backups
+		$backend_xml->addChild('catbackup', $cat_backup);
+		// backup directory for caterories
+		$backend_xml->addChild('catbackupdir', $cat_backupdir);
+		$backend_xml->addChild('min_catbackup_days', $min_catbackup_days);
+
+
+		// fields backups
+		$backend_xml->addChild('fieldbackup', $field_backup);
+		// backup directory for fields
+		$backend_xml->addChild('fieldbackupdir', $field_backupdir);
+		$backend_xml->addChild('min_fieldbackup_days', $min_fieldbackup_days);
 
 		$backend_xml->addChild('itemorderby', $item_order_by);
 		$backend_xml->addChild('itemorder', $item_order);
 		$backend_xml->addChild('itemfilter', $item_filter);
 		$backend_xml->addChild('maxitemperpage', $max_item_perpage);
+
+		$backend_xml->addChild('itembackup', $item_backup);
+		$backend_xml->addChild('itembackupdir',$item_backupdir);
+		$backend_xml->addChild('min_itembackup_days', $min_itembackup_days);
+
+		$backend_xml->addChild('min_tmpimage_days', $min_tmpimage_days);
 
 
 		//Set max thumb width prop
@@ -271,6 +321,80 @@ class ImSetup
 		}
 
 		return true;
+	}
+
+
+
+	public function createBackup($path, $file, $suffix)
+	{
+		if(!file_exists($path.$file.$suffix))
+			return false;
+
+		$stamp = time();
+
+		$type = '';
+
+		$xml = false;
+		switch ($suffix)
+		{
+			case '.im.fields.xml':
+				$type = 'fields';
+				$xml = simplexml_load_file($this->backend->fieldbackupdir.'config.xml');
+				break;
+			case '.im.cat.xml':
+				$type = 'categories';
+				$xml = simplexml_load_file($this->backend->catbackupdir.'config.xml');
+				break;
+			case '.im.item.xml':
+				$type = 'items';
+				$xml = simplexml_load_file($this->backend->itembackupdir.'config.xml');
+				break;
+			default:
+				return false;
+		}
+
+		if(!$xml) return false;
+
+		if(!copy($path.$file.$suffix, IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix))
+			return false;
+
+		if(!$xml->$type)
+		{
+			$backup = $xml->{$type}->addChild('backup');
+			$backup->file = IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix;
+			$backup->origfile = $file.$suffix;
+			$backup->time = $stamp;
+		} else
+		{
+			$backup = $xml->{$type}->addChild('backup');
+			$backup->file = IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix;
+			$backup->origfile = $file.$suffix;
+			$backup->time = $stamp;
+		}
+
+		if(!count($xml->{$type}->backup)) return false;
+		// loop over the config data to determine files that have been deleted
+		//$doc=new SimpleXMLElement($data);
+		foreach($xml->$type as $val)
+		{
+			// exclude itself, because the file is not created yet
+			//echo IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix .' != '. $val->backup->file.'<br />';
+			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix != $val->backup->file) && !file_exists($val->backup->file))
+			{
+				/*$val->backup->file = '';
+				$val->backup->origfile = '';
+				$val->backup->time = '';
+				unset($val->backup->{0});*/
+				//$backup = $val->backup;
+				$dom=dom_import_simplexml($val->backup);
+				$dom->parentNode->removeChild($dom);
+			}
+				//echo '<br/><br />'.$xml->{$type}->backup;
+		}
+
+		// Todo: backup of the image directory
+
+		return 	$xml->asXml(IM_BACKUP_DIR.'config.xml');
 	}
 
 

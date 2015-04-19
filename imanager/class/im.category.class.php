@@ -55,10 +55,10 @@ class ImCategory
 			if(!$cat->setProtectedParams((int) $id))
 				continue;
 
-			$cat->name = $xml->name;
-			$cat->position = $xml->position;
-			$cat->created = $xml->created;
-			$cat->updated = $xml->updated;
+			$cat->name = (string) $xml->name;
+			$cat->position = (int) $xml->position;
+			$cat->created = (int) $xml->created;
+			$cat->updated = (int) $xml->updated;
 
 			$this->categories[$cat->get('id')] = $cat;
 		}
@@ -145,6 +145,8 @@ class ImCategory
 	 */
 	public function getCategories($stat, $offset=0, $length=0, array $categories=array())
 	{
+		// reset offset
+		$offset = ($offset > 0) ? $offset-1 : $offset;
 
 		$loccat = !empty($categories) ? $categories : $this->categories;
 		// nothing to select
@@ -231,6 +233,8 @@ class ImCategory
 	 */
 	public function filterCategories($filterby, $key, $offset=0, $length=0, array $categories=array())
 	{
+		// reset offset
+		$offset = ($offset > 0) ? $offset-1 : $offset;
 
 		$loccat = !empty($categories) ? $categories : $this->categories;
 		if(empty($categories))

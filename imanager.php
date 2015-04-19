@@ -37,6 +37,7 @@ define('IM_FIELDS_DIR', ITEMDATA.'fields/');
 define('IM_UPLOAD_DIR', GSDATAUPLOADPATH.'imanager/');
 define('IM_TEMPLATE_DIR', GSPLUGINPATH.'imanager/tpl/');
 define('IM_IMAGE_UPLOAD_DIR', GSDATAPATH.'uploads/imanager/');
+define('IM_BACKUP_DIR', GSBACKUPSPATH.'other/imanager/');
 define('IM_CONFIG_FILE', IM_SETTINGS_DIR.'config.im.xml');
 define('IM_FIELDS_FILE_SUFFIX', '.im.fields.xml');
 define('IM_CATEGORY_FILE_SUFFIX', '.im.cat.xml');
@@ -44,9 +45,6 @@ define('IM_TEMPLATE_FILE_SUFFIX', '.im.tpl');
 define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
 define('IM_SITE_URL', $SITEURL);
 define('IM_LANGUAGE', $LANG);
-
-
-define('ITEMUPLOADDIR', 'data/uploads/imanager/');
 
 
 // bestimmte bereiche im Admin deaktivieren
@@ -181,6 +179,7 @@ function imanager()
 }
 function ajaxGetLists()
 {
+	//echo 'test'; exit();
 	if(isset($_GET['getcatlist']))
 	{
 		$request = array_merge($_GET, $_POST);

@@ -322,18 +322,6 @@ class ImBackend
 				$o['content'] = $this->buildItemEditor();
 		}
 
-		// delete item
-		elseif (isset($this->input['delete']))
-		{
-			if($this->item_delete($this->input['delete']))
-			{
-				if($this->imcat->is_cat_exist)
-					$o['content'] = $this->itemregister();
-			}
-		}
-
-
-
 		// save category & settings
 		elseif (isset($this->input['category_edit']))
 		{
@@ -410,6 +398,15 @@ class ImBackend
 			{
 				return $this->buildItemRows();
 			}
+			// delete item
+			elseif (isset($this->input['delete']))
+			{
+				$this->im->deleteItem($this->input['delete']);
+			}
+
+
+
+
 
 			$o['content'] = $this->buildItemList();
 		}
@@ -535,6 +532,9 @@ class ImBackend
 		$order = ($configs->backend->catorder == 'acs') ? 'ASC' : 'DESC';
 		$attribut = isset($configs->backend->catorderby) ?
 			safe_slash_html_input($configs->backend->catorderby) : 'position';
+		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
+
+
 		// filter categories
 		$category->categories = $category->filterCategories($attribut, $order);
 
@@ -572,6 +572,7 @@ class ImBackend
 
 		return $this->tpl->render($form,  array(
 			'filter' => ((int) $configs->backend->catfilter == 1) ? $filter->content : '',
+			'page' => $page,
 			'value' => $tplrow,
 			'pagination' => ''), true, array(), true
 		);
@@ -594,6 +595,7 @@ class ImBackend
 		$option = !empty($this->input['option']) ? safe_slash_html_input($this->input['option']) : 'ASC';
 		$filterby = !empty($this->input['filterby']) ? safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
 		$perpage = !empty($this->input['getcatlist']) ? intval($this->input['getcatlist']) : $config->backend->maxcatperpage;
+		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
 
 		// change config properties
 		$config->backend->maxcatperpage = $perpage;
@@ -601,17 +603,48 @@ class ImBackend
 		$config->backend->catorder = $option;
 		$config->save();
 
+		// start item
+		$start = (($page -1) * $perpage +1);
 
 		// filter category
-		$category->categories = $category->filterCategories($filterby, $option, 0, $perpage);
+		$category->categories = $category->filterCategories($filterby, $option, $start, $perpage);
+
+
+		if(empty($category->categories))
+			return false;
+
+		if(!empty($this->input['positions']))
+		{
+			foreach($this->input['positions'] as $element)
+			{
+				if(!isset($category->categories[$element['id']]->position) || empty($element['position']))
+					continue;
+				if((int)$category->categories[$element['id']]->position != $element['position'])
+				{
+					$category->categories[$element['id']]->position = $element['position'];
+					$category->categories[$element['id']]->save();
+					/*$handle = fopen(dirname(__FILE__)."/log.txt", "a");
+					fwrite($handle, print_r($element['position'], true));
+					fclose($handle);*/
+				}
+			}
+			// refilter output
+			$category->categories = $category->filterCategories($filterby, $option, $start, $perpage, $category->categories);
+		}
+
+
 		//category rows
 		$tplrow = '';
 		foreach($category->categories as $cat)
 		{
+			$ic = new ImItem();
+			$ic->init($cat->get('id'));
+			$count = $ic->countItems();
+
 			$buff = $this->tpl->render($row, array(
 					'cat-position' => $cat->position,
 					'categoryname' => $cat->name,
-					'category' => $cat->get('id'), 'count' => '10000'), true, array());
+					'category' => $cat->get('id'), 'count' => $count), true, array());
 			$tplrow .= $buff->content;
 		}
 
@@ -641,10 +674,15 @@ class ImBackend
 		return $this->tpl->render($form,  array('maxcatname' => $configs->common->maxcatname,
 				'maxfieldname' => $configs->common->maxfieldname,
 				'maxitemname' => $configs->common->maxitemname,
-				'catbackup' => ($configs->common->catbackup == 1) ? ' checked ' : '',
-				'fieldbackup' => ($configs->common->fieldbackup == 1) ? ' checked ' : '',
-				'catbackupdir' => $configs->common->catbackupdir,
-				'fieldbackupdir' => $configs->common->fieldbackupdir,
+				'catbackup' => ($configs->backend->catbackup == 1) ? ' checked ' : '',
+				'fieldbackup' => ($configs->backend->fieldbackup == 1) ? ' checked ' : '',
+				'catbackupdir' => $configs->backend->catbackupdir,
+				'min_catbackup_days' => (intval($configs->backend->min_catbackup_days) > 0)
+						? intval($configs->backend->min_catbackup_days) : 0,
+				'fieldbackupdir' => $configs->backend->fieldbackupdir,
+				'min_fieldbackup_days' => (intval($configs->backend->min_fieldbackup_days) > 0)
+						? intval($configs->backend->min_fieldbackup_days) : 0,
+
 				'catfilter' => ($configs->backend->catfilter == 1) ? ' checked ' : '',
 				'ten' => ($configs->backend->maxcatperpage == 10) ? 'selected' : '',
 				'twenty' => ($configs->backend->maxcatperpage == 20) ? 'selected' : '',
@@ -675,6 +713,12 @@ class ImBackend
 				'i_updated' => ($i_attribut == 'updated') ? 'selected' : '',
 				'i_label' => ($i_attribut == 'label') ? 'selected' : '',
 				'i_active' => ($i_attribut == 'active') ? 'selected' : '',
+
+				'min_tmpimage_days' => (intval($configs->backend->min_tmpimage_days) > 0) ? intval($configs->backend->min_tmpimage_days) : 0,
+				'itembackup' =>  ($configs->backend->itembackup == 1) ? ' checked ' : '',
+				'min_itembackup_days' => (intval($configs->backend->min_itembackup_days) > 0) ? intval($configs->backend->min_itembackup_days) : 0,
+				'itembackupdir' => $configs->backend->itembackupdir,
+
 
 			), true, array(), true
 
@@ -1055,8 +1099,8 @@ class ImBackend
 			$rowbuff = $this->tpl->render($row, array(
 				'page' => $page,
 				'item-id' => $itemkey,
-				'item-position' => $itemvalue->position,
-				'item-name' => $itemvalue->name,
+				'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
+				'item-name' => !empty($itemvalue->name) ? $itemvalue->name : '',
 				'item-created' =>  !empty($itemvalue->created)?date((string) $configs->backend->timeformat, (int) $itemvalue->created):'',
 				'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
 				'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
@@ -1092,6 +1136,7 @@ class ImBackend
 
 		return $this->tpl->render($form, array(
 			'catselector' => $catselector,
+			'page' => $page,
 			'itemfilter' => !is_null($filter) ? $filter->content : '',
 			'content' => $lines,
 			'count' => $count,
@@ -1104,6 +1149,7 @@ class ImBackend
 	// Ajax stuff
 	private function buildItemRows()
 	{
+
 		$itemlist = $this->tpl->getTemplates('itemlist');
 		$row = $this->tpl->getTemplate('row', $itemlist);
 		$active = $this->tpl->getTemplate('active', $itemlist);
@@ -1124,6 +1170,7 @@ class ImBackend
 		$maxitemperpage = !empty($this->input['getitemlist']) ? intval($this->input['getitemlist']) : $config->backend->maxitemperpage;
 		$filter = !empty($this->input['filter']) ? safe_slash_html_input(strtolower($this->input['filter'])) : '';
 		$filtervalue = !empty($this->input['filtervalue']) ? safe_slash_html_input($this->input['filtervalue']) : '';
+		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
 
 		// change config properties
 		$configs->backend->maxitemperpage = $maxitemperpage;
@@ -1137,10 +1184,14 @@ class ImBackend
 		// template
 		$lines = '';
 
+		// start item
+		$start = (($page -1) * $maxitemperpage +1);
+
 		$fc = new ImFields();
 		if($fc->fieldsExists($this->im->cp->currentCategory()))
 		{
 			$fc->init($this->im->cp->currentCategory());
+
 			if(!empty($configs->backend->filterbyfield) && $fc->fieldNameExists((string) $configs->backend->filterbyfield) &&
 				!empty($configs->backend->filter) && !empty($configs->backend->filtervalue))
 			{
@@ -1152,13 +1203,34 @@ class ImBackend
 
 				$query = $configs->backend->filterbyfield.$filter.$configs->backend->filtervalue;
 
-				$ic->items = $ic->getItems((string)$query, 0, (int) $maxitemperpage);
+				$ic->items = $ic->getItems((string)$query, $start, (int) $maxitemperpage);
 
 			}
 		}
 
-		// order items
-		$ic->filterItems($filterby, $filteroption, 0, $maxitemperpage);
+		// change position of items
+		$ic->filterItems($filterby, $filteroption, $start, $maxitemperpage);
+
+		if(!empty($this->input['positions']) && !empty($ic->items))
+		{
+			/*$handle = fopen(dirname(__FILE__)."/log.txt", "a");
+			fwrite($handle, print_r($this->input, true));
+			fclose($handle);*/
+
+			foreach($this->input['positions'] as $element)
+			{
+					if(!isset($ic->items[$element['id']]->position) || !isset($element['position']))
+						continue;
+					if($ic->items[$element['id']]->position != $element['position'])
+					{
+						$ic->items[$element['id']]->position = $element['position'];
+						$ic->items[$element['id']]->save();
+					}
+			}
+			// refilter output
+			$ic->filterItems($filterby, $filteroption);
+		}
+
 
 		// nothing was found
 		if(empty($ic->items))
@@ -1168,7 +1240,7 @@ class ImBackend
 		foreach($ic->items as $itemkey => $itemvalue)
 		{
 			$rowbuff = $this->tpl->render($row, array(
-				'page' => 1,
+				'page' => $page,
 				'item-id' => $itemkey,
 				'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
 				'item-name' => !empty($itemvalue->name) ? $itemvalue->name : '',
@@ -1251,7 +1323,6 @@ class ImBackend
 				$fieldType->itemid = $id;
 				$fieldType->timestamp = $stamp;
 			}
-
 
 			foreach($output as $outputkey => $outputvalue)
 			{

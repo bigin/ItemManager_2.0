@@ -4,100 +4,18 @@
 */
 class ImModel
 {
-    public $is_admin_panel;
-    private $items_raw_struct = array();
-    private $items_spec_keys = array();
-    private $sort_by;
-    private $item_in_cat = array();
+	public $is_admin_panel;
     private $imfcon;
 	private $setup;
 
-    /* our static resources */
-	//private static $properties;
-
 	// new
-	public $config; // wird verwendet
-	// old
-    private static $preferences;
+	public $config;
 
-    //protected $input;
 	protected $categories;
 	// category processor
 	public $cp;
 
 
-
-    /** 
-     * register of: 
-     * key = procedure,value = tpl */
-    private static $tpls = array(
-        'output' => 'output.admin.tpl',
-        'msg' => '',
-        'catselector' => array(
-            'selector.admin.tpl', 
-            'selector.admin.element.tpl'
-        ),
-        'tabpanel' => 'tabpanel.admin.tpl',
-        
-        'itemregister' => array(
-            'itemlist.admin.tpl', 
-            'itemlist.admin.element.tpl', 
-            'itemlist.admin.vicon.tpl', 
-            'itemlist.admin.picon.tpl'
-        ),
-        'itemeditor' => array(
-            'edititem.admin.tpl',
-            'edititem.admin.option.tpl', 
-            'edititem.admin.wrapper.tpl', 
-            'edititem.admin.wrapper.element.tpl', 
-            'edititem.admin.wrapper.hidden.tpl', 
-            'edititem.admin.wrapper.input.tpl',
-            'edititem.admin.dropdown.wrapper.tpl', 
-            'edititem.admin.dropdown.tpl',
-            'edititem.admin.checkbox.tpl',
-            'edititem.admin.area.tpl',
-            'edititem.admin.hidden.tpl', 
-            'edititem.admin.thumb.tpl', 
-            'edititem.admin.wrapper.js.tpl',
-            'edititem.admin.editor.tpl'
-        ),
-        'paginator' => array(
-            'paginator.tpl', 
-            'paginator.prev.tpl', 
-            'paginator.next.tpl',
-            'paginator.centre.tpl', 
-            'paginator.prev.inactive.tpl', 
-            'paginator.next.inactive.tpl',
-            'paginator.centre.inactive.tpl', 
-            'paginator.ellipsis.tpl', 
-            'paginator.secondlast.tpl',
-            'paginator.last.tpl', 
-            'paginator.first.tpl', 
-            'paginator.second.tpl'
-        ),
-        'categoryregister' => array(
-            'categorylist.admin.tpl', 
-            'categorylist.admin.element.tpl', 
-            'categorylist.admin.rowheader.tpl'
-        ),
-        'fieldsconfigurator' => array(
-            'configure.admin.tpl', 
-            'configure.admin.element.tpl', 
-            'configure.admin.element.js.tpl', 
-            'configure.admin.linkundo.tpl'
-        ),
-        'renametool' => 'renametool.admin.tpl',
-
-        'preferencer' => array(
-            'settings.admin.tpl', 
-            'edititem.admin.option.tpl'
-        )
-    );
-
-    public $items_ordered_struct = array();
-    public $pagedata = array();
-    public $itemdata = array();
-    public $fields = null;
     public static $installed;
 	public $imcat;
 
@@ -194,259 +112,6 @@ class ImModel
 		$this->item = new ImItem();
 		$this->backend = new ImBackend($this);
 	}
-
-
-    /* start save process custom files */
-    public function fieldsgenerator()
-    {/*{{{*/
-        $q = $this->imfcon->save_preprocessor();
-        if($q == 1)
-        {
-            ImMsgReporter::setClause('save_success');
-            return true;
-        } elseif($q == 0)
-        {
-            ImMsgReporter::setClause('save_invalid').' '.implode(', ', $this->imfcon->_invalid_names);
-            return false;
-        } else
-        {
-            ImMsgReporter::setClause('save_failure');
-            return false;
-        }
-    }/*}}}*/
-	
-
-    // Saving the item data
-	public function saveitemOld()
-	{   /*{{{*/
-        // check for required data 
-        if(!isset($this->input['post-title']) || empty($this->input['post-title']))
-             ImMsgReporter::setClause('err_required_field', 
-                    array('fieldname' => ImMsgReporter::getClause('title')));
-        if(!isset($this->input['post-category']) || empty($this->input['post-category']))
-            ImMsgReporter::setClause('err_required_field', 
-                    array('fieldname' => ImMsgReporter::getClause('category')));
-        if(!$this->imcat->is_cat_valid($this->input['post-category']))
-            ImMsgReporter::setClause('invalid_category', 
-                    array('fieldname' => ImMsgReporter::getClause('category')));
-        $msg = ImMsgReporter::msgs();
-        if(!empty($msg))
-            return false;
-        if(!$this->imcat->setCategory($this->input['post-category']))
-            return false;
-        
-    
-        $fields =  self::custom_fields();
-
-		$id = clean_urls(to7bits($this->input['post-title']));
-        $title = safe_slash_html_input($this->input['post-title']);
-        
-        $orig_file = isset($this->input['id']) ? ITEMDATA.$this->input['id'].'.xml' : ''.'.xml';
-		if(file_exists($orig_file) && $id != $this->input['id'])
-			unlink($orig_file);
-
-        // validate category
-        if(!$this->imcat->is_cat_valid($this->input['post-category']))
-        {
-            ImMsgReporter::setClause('invalid_category');
-            return false;
-        }
-        $category = safe_slash_html_input($this->input['post-category']);
-        // avoid id duplication within same category (new item only)
-        if(!$this->input['edititem'])
-        {
-            if(in_array($id, $this->item_ids()))
-            {
-                ImMsgReporter::setClause('err_item_exists', array('std_name' => $title));
-                return false;
-            }
-        }     
-        $page = isset($this->input['post-page']) ? safe_slash_html_input($this->input['post-page']) : '';
-		$content = isset($this->input['post-content']) ? safe_slash_html_input($this->input['post-content']) : '';
-		if (!$data_date = $this->get_item_data($id, 'date', true))
-			$date = date('j M Y');
-		else
-			$date = $data_date;
-        
-		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8" ?><item></item>');
-
-		$note = $xml->addChild('title');
-		$note->addCData(empty($title) ? '(no title)' : $title);
-		$xml->addChild('slug', $id);
-		$xml->addChild('visible', isset($this->input['post-visible'])
-                ? (string)$this->input['post-visible'] : 1);
-        $xml->addChild('promo', isset($this->input['post-promo'])
-                ? (string)$this->input['post-promo'] : 0);
-		$xml->addChild('date', $date);
-		$xml->addChild('category', $category);
-        $xml->addChild('page', $page);
-		$note = $xml->addChild('content');  
-		$note->addCData($content);
-
-        $FILE = ITEMDATA . $id . '.xml';
-        
-        if(!isset($fields) || !is_array($fields) || count($fields) < 1)
-        {
-            XMLsave($xml, $FILE);
-            if (!is_writable($FILE))
-            {
-                ImMsgReporter::setClause('err_unable_to_write', array('data_file' => $FILE));
-                return false;
-            }
-            ImMsgReporter::setClause('succesfull_saved', array('data_file' => $FILE));
-            return true;
-        }
-
-        foreach($fields as $field)
-        {
-            if($field['type'] == 'uploader')
-            {
-
-                $fieldname = 'post-'.$field['key'];
-                if(!isset($this->input[$fieldname]))
-                    continue;
-                $imgname = basename($this->input[$fieldname]);
-				// Get file (old item field value)
-				$filename = $this->get_item_data($id, $field['key'], true);
-				// File field isn't empty
-				if(!empty($imgname) /*&& ( file_exists(SPLUGINPATH.'imanager/uploadscript/tmp/' . basename($imgname))
-						|| ( file_exists(ITEMUPLOADPATH . basename($imgname)) ))*/)
-				{
-					// New file, empty field or bullshit
-					if($this->input[$fieldname] != $filename)
-					{
-						// Check new file and file in use
-						if(file_exists(GSPLUGINPATH.'imanager/uploadscript/tmp/' . basename($imgname)))
-						{
-							@list($uid, $datetime, $stdname) = explode('_', $imgname, 3);
-							$newfile = '/' . ITEMUPLOADDIR . $stdname;
-							if($this->is_file_in_use(ITEMUPLOADPATH . basename($stdname), $field['key'], $id))
-							{
-								ImMsgReporter::setClause('err_file_exists', array('std_name' => $stdname));
-								$this->input[$fieldname] = $filename;
-							} else
-							{
-								if (!copy(GSPLUGINPATH.'imanager/uploadscript/tmp/' . basename($imgname), ITEMUPLOADPATH . basename($newfile))) {
-									ImMsgReporter::setClause('err_copy_fail', array('old_file' => $oldfile));
-									$this->input[$fieldname] = $filename;
-								} else
-								{
-									if(file_exists(ITEMUPLOADPATH . basename($filename)))
-										@unlink(ITEMUPLOADPATH . basename($filename));
-									$this->input[$fieldname] = $newfile;
-								}
-							}
-						}
-					// Old file
-					} else
-					{
-						$this->input[$fieldname] = $filename;
-					}
-				} else
-				{
-					if(file_exists(ITEMUPLOADPATH . basename($filename)) &&
-						!$this->is_file_in_use(ITEMUPLOADPATH . basename($filename), $field['key'], $id, true))
-						@unlink(ITEMUPLOADPATH . basename($filename));
-				}
-			}
-
-            /*// overwrite with old value or delete file
-            $msg = ImMsgReporter::msgs();
-            if(!empty($msg))
-                if($this->get_item_data($this->input['id'], $field['key'], true) != $this->input[$fieldname])
-                    $this->input[$fieldname] = $this->get_item_data($this->input['id'], $field['key'], true);
-                elseif($this->get_item_data($this->input['id'], $field['key'], true) != $this->input[$fieldname])
-                    if(file_exists($this->get_item_data($this->input['id'], $field['key'], true)))
-                        unlink($this->get_item_data($this->input['id'], $field['key'], true));*/
-        
-			if(isset($this->input['post-'.$field['key']]))
-			{
-			    if($field['key'] != 'content' && $field['key'] != 'excerpt')			
-				{
-					$tmp = $xml->addChild(safe_slash_html_input($field['key']));
-					$tmp->addCData(safe_slash_html_input($this->input['post-'.$field['key']]));
-				}
-			}
-        }
-        
-        XMLsave($xml, $FILE);
-		if (!is_writable($FILE))
-        {
-            ImMsgReporter::setClause('err_unable_to_write', array('data_file' => basename($FILE)));
-            return false;
-        }
-        ImMsgReporter::setClause('succesfull_saved', array('data_file' => basename($FILE)));
-        return true;
-    }/*}}}*/
-
-
-	public function item_delete($id)
-	{/*{{{*/
-        $data = $this->get_item_data($id,'', true);
-        if(!is_object($data))
-        {
-            ImMsgReporter::setClause('err_unknow_itemid');
-            return false;
-        }
-        $fields =  self::custom_fields();
-        if(is_array($fields) && count($fields) > 0)
-            foreach($fields as $field)
-                if($field['type'] == 'uploader')
-                    if(file_exists($data->$field['key']))
-                        unlink($data->$field['key']);
-        
-        $file = ITEMDATA.safe_slash_html_input(basename($id)). '.xml';   
-		if (file_exists($file))
-			unlink($file);
-		if (file_exists($file))
-        {
-            ImMsgReporter::setClause('err_unable_to_delete', array('item_file' => basename($file)));
-            return false;
-        }
-		ImMsgReporter::setClause('item_deleted', array('item_file' => basename($file)));
-        return true;
-	}/*}}}*/
-
-    private function is_file_dead($key, $pattern)
-    {/*{{{*/
-        $filenames = $this->item_files();
-        foreach($filenames as $filename)
-            if(basename($this->get_item_data(basename($filename,'.xml'), $key, true)) == $pattern)
-                return false;
-        return true;
-    }/*}}}*/
-
-
-	private function is_file_in_use($filename, $fieldkey, $itemid, $itemself = false)
-	{
-		$fields =  self::custom_fields();
-		foreach($fields as $field)
-		{
-			if($field['type'] != 'uploader')
-				continue;
-
-			$this->gen_register(array($field['key']));
-
-			foreach($this->items_ordered_struct as $item)
-			{
-				if( basename($item[$field['key']]) == basename($filename) && ($item['slug'] != $itemid) && !$itemself )
-				{
-					return true;
-				} elseif(basename($item[$field['key']]) == basename($filename) && $itemself)
-				{
-					if(($item['slug'] != $itemid) || (($item['slug'] == $itemid) && $field['key'] != $fieldkey))
-						return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-
-
-
-
 
 
 	/* ItemManager 1.0 */
@@ -694,10 +359,12 @@ class ImModel
 			ImMsgReporter::setClause('err_save_fields_unique');
 		}
 
+		$fc = new ImFields();
+		$fc->init($input['cat']);
+
 		// backup fields?
-		if(intval($this->config->common->fieldbackup) == 1)
+		if(intval($this->config->backend->fieldbackup) == 1)
 		{
-			$fc = new ImFields();
 			if(!$fc->fieldsExists($input['cat']))
 				if(!$fc->createFields($input['cat']))
 				{
@@ -705,11 +372,9 @@ class ImModel
 					return false;
 				}
 
-			$fc->init($input['cat']);
-
-			if(!$fc->backupFields($input['cat'], $this->config->common->fieldbackupdir))
+			if(!$this->config->createBackup(IM_FIELDS_DIR, $input['cat'], IM_FIELDS_FILE_SUFFIX))
 			{
-				ImMsgReporter::setClause('err_backup_fields', array('backup' => $this->config->common->fieldbackupdir), true);
+				ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->fieldbackupdir), true);
 				return false;
 			}
 		}
@@ -719,6 +384,7 @@ class ImModel
 		{
 			// check if fields already exists
 			$field = $fc->getField($id);
+
 			if($field)
 			{
 				$field->name = clean_urls($names[$key]);
@@ -937,7 +603,7 @@ class ImModel
 
 	public function saveItem($input)
 	{
-		/* check there fatal errors: The user tried to compromise the script, we'll
+		/* check there the user errors: If the user tried to compromise the script, we'll
 		reset field values to empty and display an error message */
 
 		// timestamp or item id required
@@ -957,8 +623,6 @@ class ImModel
 			}
 		}
 
-
-
 		$id = !empty($input['id']) ? intval($input['id']) : null;
 		$categoryid = !empty($input['categoryid']) ? intval($input['categoryid']) : null;
 
@@ -968,7 +632,6 @@ class ImModel
 			ImMsgReporter::setClause('invalid_category', array(), true);
 			return false;
 		}
-
 
 		// Initialize items of the passed category
 		$ic = new ImItem();
@@ -983,11 +646,13 @@ class ImModel
 		// check required item name
 		if(empty($input['name']))
 		{
-			ImMsgReporter::setClause('err_by_empty_field', array('field' => ImMsgReporter::getClause('title', array())), true);
+			ImMsgReporter::setClause('err_by_empty_field', array(
+				'field' => ImMsgReporter::getClause('title', array())), true
+			);
 			return false;
 		}
 
-		// check if item name already exist
+		// check if item name already exist and is not the same item
 		$item_by_name = $ic->getItem('name='.$input['name']);
 		if($item_by_name && $id != $item_by_name->get('id'))
 		{
@@ -995,10 +660,15 @@ class ImModel
 			return false;
 		}
 
+
+
+		/* Ok, the standard procedure is completed and now we are taking another step
+		and loop through the fields of the item to save values */
+
 		$curitem->name = $input['name'];
 
 		$tmp_image_dir = '';
-		// loops through the fields of the item and save values
+
 		foreach($curitem->fields as $fieldname => $fieldvalue)
 		{
 
@@ -1007,7 +677,9 @@ class ImModel
 			$inputClassName = 'Input'.$fieldvalue->type;
 			$InputType = new $inputClassName($curitem->fields->$fieldname);
 
-			// handle special fields
+			// handle our special fields
+
+			// imageupload
 			if($fieldvalue->type == 'imageupload')
 			{
 				// new item
@@ -1048,9 +720,7 @@ class ImModel
 					}
 					$xml->asXml($fieldinput.'config.xml');
 				}
-
 			}
-
 
 			$resultinput = $InputType->prepareInput($fieldinput);
 
@@ -1059,9 +729,11 @@ class ImModel
 				// todo: error log
 				return false;
 			}
+
 			foreach($resultinput as $inputputkey => $inputvalue)
 				$curitem->fields->$fieldname->$inputputkey = $inputvalue;
 		}
+
 
 		if(!$curitem->save())
 		{
@@ -1069,10 +741,12 @@ class ImModel
 			return false;
 		}
 
-		/* ok, item has been successfully saved */
+		/* Congratulation, we have just came through some checkpoints well.
+		   Item has been successfully saved, now we still have to take several
+		   steps to clean up the system from dated data. */
 
-
-		// check if it's a new item and temporary file directory should be renamed to original
+		/* Check if it's a new item as we have not had the standard item-ID
+		   and temporary image directory should be renamed */
 		if(!empty($tmp_image_dir))
 		{
 			if(!$this->renameTmpDir($curitem))
@@ -1080,14 +754,73 @@ class ImModel
 				ImMsgReporter::setClause('err_rename_directory', array('name' => $tmp_image_dir), true);
 				return false;
 			}
-
-			ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input($input['name'])));
-			return true;
-
+			// clean up the older data
+			$this->cleanUpTempContainers('imageupload');
 		}
 
 		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input($input['name'])));
 		return true;
+	}
+
+
+
+	public function deleteItem($id)
+	{
+		// timestamp or item id required
+		if(!is_numeric($id))
+		{
+			ImMsgReporter::setClause('err_unknow_itemid', array(), true);
+			return false;
+		}
+
+		// is current category valid
+		if(!$this->cp->isCategoryValid($this->cp->currentCategory()))
+		{
+			ImMsgReporter::setClause('invalid_category', array(), true);
+			return false;
+		}
+
+		// Initialize items of the current category
+		$ic = new ImItem();
+		$ic->init($this->cp->currentCategory());
+
+		$item = $ic->getItem($id);
+
+		// item does not exist
+		if(!$item)
+		{
+			ImMsgReporter::setClause('err_item_not_exist', array(), true);
+			return false;
+		}
+
+		// backup item before delete
+		if(intval($this->config->backend->itembackup) == 1)
+		{
+			if(!$this->config->createBackup(IM_ITEM_DIR, $item->get('id').'.'.$item->get('categoryid'), IM_ITEM_FILE_SUFFIX))
+			{
+				ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->itembackupdir), true);
+				return false;
+			}
+		}
+
+		// get image directory to delete
+		$imagedir = IM_IMAGE_UPLOAD_DIR.$item->get('id').'.'.$item->get('categoryid');
+		// get image name to display
+		$itemname = $item->name;
+
+		if(!$ic->destroyItem($item))
+		{
+			ImMsgReporter::setClause('err_item_delete', array(), true);
+			return false;
+		}
+
+		/* Item has been successfully deleted, now we have to clean up the image uploads */
+		$this->delTree($imagedir);
+
+		// The deletion was successful, show a message
+		ImMsgReporter::setClause('item_deleted', array('item' => $itemname));
+		return true;
+
 	}
 
 
@@ -1140,7 +873,50 @@ class ImModel
 	}
 
 
+	private function cleanUpTempContainers($datatyp)
+	{
+		if($datatyp == 'imageupload')
+		{
+			if(!file_exists(IM_IMAGE_UPLOAD_DIR))
+				return false;
+
+			foreach(glob(IM_IMAGE_UPLOAD_DIR.'tmp_*_*') as $file)
+			{
+				$base = basename($file);
+				$strp = explode('_', $base);
+
+				// wrong file name, continue
+				if(count($strp) < 3)
+					continue;
+
+				if(!$this->cp->isCategoryValid($strp[2]))
+					$this->delTree($file);
+
+				$min_days = intval($this->config->backend->min_tmpimage_days);
+				$storagetime =  time() - (60 * 60 * 24 * $min_days);
+
+				if($strp[1] < $storagetime && $storagetime > 0)
+					$this->delTree($file);
+			}
+			return true;
+		}
+	}
+
+
+	protected function delTree($dir)
+	{
+		if(!file_exists($dir))
+			return false;
+		$files = array_diff(scandir($dir), array('.','..'));
+		foreach ($files as $file)
+		{
+			(is_dir("$dir/$file") && !is_link($dir)) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
+		}
+		return rmdir($dir);
+	}
+
 }
+
 
 
 
@@ -1150,7 +926,7 @@ if(!function_exists('return_page_slug')) {
    }
 }
 
-/** returns current url */
+/** returns current url  [[ todo: DAS HIER NOCH LÖSCHEN function bereits vorhanden siehe ImModel::getFullUrl() Method oben  ]]*/
 function curPageURL() 
 {
     $isHTTPS = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');

@@ -12,8 +12,6 @@ class InputImageupload implements Inputinterface
 
 		$this->values->imagename = array();
 
-		//$this->values->position = array();
-
 		$this->values->imagepath = array();
 		$this->values->imagefullpath = array();
 		$this->values->imageurl = array();
@@ -31,10 +29,9 @@ class InputImageupload implements Inputinterface
 	public function prepareInput($value, $sanitize=false)
 	{
 		if(!file_exists($value))
-			return false;
+			return $this->values;
 
 		$temp_arr = array();
-
 
 
 		if(empty($this->positions) && file_exists($value.'config.xml'))
@@ -77,7 +74,6 @@ class InputImageupload implements Inputinterface
 
 		usort($temp_arr, array($this, 'sortObjects'));
 
-
 		$this->values->value = $value;
 
 		foreach($temp_arr as $key => $val)
@@ -95,24 +91,15 @@ class InputImageupload implements Inputinterface
 
 		}
 
-
-	/*	echo '<pre>';
-		print_r($this->values);
-		echo '</pre>';*/
-
 		return $this->values;
 	}
 
+
 	public function prepareOutput(){return $this->values;}
+
 
 	protected function sanitize($value){return safe_slash_html_input($value);}
 
-
-	/*private function sortOnField(&$objects, $on, $order = 'ASC') {
-		$comparer = ($order === 'DESC') ? "return -strcmp(\$a->{$on},\$b->{$on});" : "return strcmp(\$a->{$on},\$b->{$on});";
-		//usort($objects, array($this, 'sortObjects'));
-		usort($objects, create_function('$a,$b', $comparer));
-	}*/
 
 	private function sortObjects($a, $b)
 	{

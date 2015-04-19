@@ -218,7 +218,6 @@ $(function () {
         // Load existing files:
         $('#fileupload').addClass('fileupload-processing');
 
-		//alert($('.largeform').attr('action'));
         $.ajax({
             // Uncomment the following to send cross-domain cookies:
             //xhrFields: {withCredentials: true},
@@ -231,7 +230,6 @@ $(function () {
         }).done(function (result) {
             $(this).fileupload('option', 'done')
                 .call(this, $.Event('done'), {result: result});
-				console.log(result);
         });
     }
 
