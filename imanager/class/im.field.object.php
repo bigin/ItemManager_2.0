@@ -21,6 +21,14 @@ class Field
 		$this->default = '';
 		$this->options = array();
 
+		$this->info = '';
+		$this->required = null;
+		$this->minimum = null;
+		$this->maximum = null;
+		$this->areacss = '';
+		$this->labelcss = '';
+		$this->fieldcss = '';
+
 		$this->created = time();
 		$this->updated = null;
 	}
@@ -31,11 +39,14 @@ class Field
 		$val = safe_slash_html_input($val);
 
 		// id is readonly
-		if(!in_array($key, array('name', 'label', 'type', 'position', 'default', 'options', 'created', 'updated')))
+		if(!in_array($key, array('name', 'label', 'type', 'position',
+			'default', 'options', 'created', 'updated', 'info', 'required',
+			'minimum', 'maximum', 'areacss', 'labelcss', 'fieldcss')))
 			return false;
 
 		// save data depending on data type
-		if($key == 'name' || $key == 'label' || $key == 'type' || $key == 'default')
+		if($key == 'name' || $key == 'label' || $key == 'type' || $key == 'default'
+			|| $key == 'info' || $key == 'areacss' || $key == 'labelcss' || $key == 'fieldcss')
 		{
 			$this->$key = $val;
 		} elseif($key == 'options')
@@ -98,6 +109,14 @@ class Field
 			} else
 				$this->option = '';
 
+			$xmlfield->info = $this->info;
+			$xmlfield->required = $this->required;
+			$xmlfield->minimum = $this->minimum;
+			$xmlfield->maximum = $this->maximum;
+			$xmlfield->areacss = $this->areacss;
+			$xmlfield->labelcss = $this->labelcss;
+			$xmlfield->fieldcss = $this->fieldcss;
+
 			$xmlfield->created = $this->created;
 			$xmlfield->updated = $this->updated;
 
@@ -126,6 +145,15 @@ class Field
 								$field->option[] = $option;
 						} else
 							$this->option = '';
+
+						$field->info = $this->info;
+						$field->required = $this->required;
+						$field->minimum = $this->minimum;
+						$field->maximum = $this->maximum;
+						$field->areacss = $this->areacss;
+						$field->labelcss = $this->labelcss;
+						$field->fieldcss = $this->fieldcss;
+
 						$field->created = $this->created;
 						$field->updated = time();
 					}
@@ -151,6 +179,13 @@ class Field
 		unset($this->position);
 		unset($this->default);
 		unset($this->options);
+		unset($this->info);
+		unset($this->required);
+		unset($this->minimum);
+		unset($this->maximum);
+		unset($this->areacss);
+		unset($this->labelcss);
+		unset($this->fieldcss);
 		unset($this->created);
 		unset($this->updated);
 	}

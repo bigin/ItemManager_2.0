@@ -1,1 +1,1 @@
-<p class="field-info"><i class="fa [[icon]]"></i> [[infotext]]</p>
+<p class="field-info">[[infotext]]</p>

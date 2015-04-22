@@ -1,5 +1,5 @@
-<div class="fieldarea">
-	<label for="[[fieldid]]">[[label]]</label>
+<div class="fieldarea"[[area-style]]>
+	<label for="[[fieldid]]"[[label-style]]>[[label]]</label>
 	[[infotext]]
 	<p>[[field]]</p>
 </div>

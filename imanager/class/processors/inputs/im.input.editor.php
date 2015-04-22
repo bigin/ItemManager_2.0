@@ -14,6 +14,26 @@ class InputEditor implements Inputinterface
 	public function prepareInput($value)
 	{
 		$this->values->value = $value;
+		// check input required
+		if(!empty($this->field->required) && $this->field->required == 1)
+		{
+
+			if(empty($this->values->value))
+				return self::ERR_REQUIRED;
+		}
+		// check min value
+		if(!empty($this->field->minimum) && $this->field->minimum > 0)
+		{
+			if(strlen($this->values->value) < intval($this->field->minimum))
+				return self::ERR_MIN_VALUE;
+		}
+		// check input max value
+		if(!empty($this->field->maximum) && $this->field->maximum > 0)
+		{
+			if(strlen($this->values->value) > intval($this->field->maximum))
+				return self::ERR_MAX_VALUE;
+		}
+
 		return $this->values;
 	}
 

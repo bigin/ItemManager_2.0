@@ -473,7 +473,41 @@ class ImModel
 
 
 
-	private function getDuplicate($arr, $clean=false) {
+	public function saveFieldDetails($input)
+	{
+		$cf = new ImFields();
+		$cf->init($this->cp->currentCategory());
+		// get current field by id
+		$currfield = $cf->getField(intval($input['field']));
+
+		if(!$currfield)
+		{
+			// todo: korrigieren die echte Fehlermeldung
+			ImMsgReporter::setClause('err_field_id', array(), true);
+			return false;
+		}
+
+		$currfield->info = !empty($input['info']) ? $input['info'] : '';
+		$currfield->required = (isset($input['required']) && $input['required'] > 0) ? 1 : null;
+		$currfield->minimum = (isset($input['min_field_input']) && intval($input['min_field_input']) > 0)
+			? intval($input['min_field_input']) : null;
+		$currfield->maximum = (isset($input['max_field_input']) && intval($input['max_field_input']) > 0)
+			? intval($input['max_field_input']) : null;
+		$currfield->areacss = !empty($input['areacss']) ? $input['areacss'] : '';
+		$currfield->labelcss = !empty($input['labelcss']) ? $input['labelcss'] : '';
+		$currfield->fieldcss = !empty($input['fieldcss']) ? $input['fieldcss'] : '';
+
+		$currfield->save();
+
+		ImMsgReporter::setClause('save_success');
+		return true;
+
+	}
+
+
+
+	protected function getDuplicate($arr, $clean=false)
+	{
 		if($clean) {
 			return array_unique($arr);
 		}
@@ -770,8 +804,25 @@ class ImModel
 
 			$resultinput = $InputType->prepareInput($fieldinput);
 
-			if(!isset($resultinput) || empty($resultinput))
+			if(!isset($resultinput) || empty($resultinput) || is_int($resultinput))
 			{
+				// parse error
+				switch ($resultinput)
+				{
+					case 1:
+						ImMsgReporter::setClause('err_required_field', array('fieldname' => $fieldvalue->label), true);
+						break;
+					case 2:
+						ImMsgReporter::setClause('err_input_min_length', array('fieldname' => $fieldvalue->label,
+								'count' => $fieldvalue->minimum), true
+						);
+						break;
+					case 3:
+						ImMsgReporter::setClause('err_input_max_length', array('fieldname' => $fieldvalue->label,
+								'count' => $fieldvalue->maximum), true
+						);
+						break;
+				}
 				// todo: error log
 				return false;
 			}

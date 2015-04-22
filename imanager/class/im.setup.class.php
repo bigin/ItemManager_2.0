@@ -381,8 +381,8 @@ class ImSetup
 
 		if(!count($xml->{$type}->backup)) return false;
 
-		/* loop over the config data to determine files that have been deleted
-		 and to determine outdated files to remove them */
+		/* loop over the config data to determine files that
+		have been deleted and outdated files to remove them */
 		$nodes = array();
 		$i = 0;
 		foreach($xml->$type->backup as $val)
@@ -395,7 +395,8 @@ class ImSetup
 					unlink((string) $val->file);
 
 			// exclude itself, because the file is not created yet
-			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix == (string) $val->file) || file_exists((string) $val->file))
+			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix == (string) $val->file) ||
+				file_exists((string) $val->file))
 			{
 				$nodes[$i]['file'] = (string) $val->file;
 				$nodes[$i]['origfile'] = (string) $val->origfile;

@@ -21,7 +21,7 @@
 			<div class="fieldarea">
 				<label for="fieldinfo">[[lang/field_info]]</label>
 				<p class="field-info">[[lang/field_info_info]]</p>
-				<p><input id="fieldinfo" class="text-fields-left text" name="info" type="text" value="[[vieldinfo]]"></p>
+				<p><input id="fieldinfo" class="text-fields-left text" name="info" type="text" value='[[fieldinfo]]'></p>
 			</div>
 			<div class="fieldarea">
 				<label for="fieldrequired">[[lang/field_required]]</label>
@@ -31,6 +31,29 @@
 				<label for="min_field_input">[[lang/input_min_length]]</label>
 				<p><input id="min_field_input" class="number-fields-left number" name="min_field_input" type="number" value="[[min_field_input]]"></p>
 			</div>
+			<div class="fieldarea">
+				<label for="max_field_input">[[lang/input_max_length]]</label>
+				<p><input id="max_field_input" class="number-fields-left number" name="max_field_input" type="number" value="[[max_field_input]]"></p>
+			</div>
+
+			<div class="fieldarea">
+				<label for="areacss">[[lang/area_css]]</label>
+				<p class="field-info">[[lang/area_css_info]]</p>
+				<p><input id="areacss" class="text-fields-left text" name="areacss" type="text" value="[[area_css]]"></p>
+
+				<div class="fieldarea intern">
+					<label for="labelcss">[[lang/label_css]]</label>
+					<p class="field-info">[[lang/label_css_info]]</p>
+					<p><input id="labelcss" class="text-fields-left text" name="labelcss" type="text" value="[[label_css]]"></p>
+				</div>
+
+				<div class="fieldarea intern">
+					<label for="fieldcss">[[lang/field_css]]</label>
+					<p class="field-info">[[lang/field_css_info]]</p>
+					<p><input id="fieldcss" class="text-fields-left text" name="fieldcss" type="text" value="[[field_css]]"></p>
+				</div>
+			</div>
+
 			<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>
 		</div>
 	</form>

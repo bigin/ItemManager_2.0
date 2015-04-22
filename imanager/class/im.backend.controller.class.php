@@ -41,7 +41,6 @@ class ImBackend
 		// there is the basic structure of the backend view
 		$o = array('head' => '', 'msg' => '', 'content' => '' );
 		// display category selector flag
-		$catselector = true;
 
 		// first check if the category and select one to be current
 		if(isset($this->input['reloader']) && isset($this->input['post-category']))
@@ -316,8 +315,6 @@ class ImBackend
 				}
 			}
 
-
-			$catselector = false;
 			if($this->im->cp->is_cat_exist)
 				$o['content'] = $this->buildItemEditor();
 		}
@@ -325,7 +322,6 @@ class ImBackend
 		// save category & settings
 		elseif (isset($this->input['category_edit']))
 		{
-			$catselector = false;
 			// create new category. true for refresh
 			$this->im->createCategoryByName($this->input['new_category'], true);
 			$o['content'] = $this->buildCategoryEditor();
@@ -333,13 +329,11 @@ class ImBackend
 		// show details of category
 		elseif (isset($this->input['categorydetails']))
 		{
-			$catselector = false;
 			$o['content'] = $this->buildCategoryDetailsEditor();
 		}
 		// update_category
 		elseif(isset($this->input['categoryupdate']))
 		{
-			$catselector = false;
 			if($this->im->updateCategory($this->input, true))
 				$o['content'] = $this->buildCategoryEditor();
 			else
@@ -359,41 +353,41 @@ class ImBackend
 			{
 				return $this->buildCategoryList();
 			}
-			$catselector = false;
 			$o['content'] = $this->buildCategoryEditor();
 		}
 		elseif (isset($this->input['settings_edit']))
 		{
-			$catselector = false;
 			$this->im->config->setupConfig($this->input);
 			$o['content'] = $this->buildSettingsSection();
 		}
 		elseif (isset($this->input['settings']))
 		{
-			$catselector = false;
 			$o['content'] = $this->buildSettingsSection();
 		}
 
 		// configure custom fields
 		elseif (isset($this->input['fields']))
 		{
-			// rename fields
-			if(isset($this->input['sender']))
+			if(isset($this->input['save']))
 			{
-				$this->rename_item_fields();
+				$this->im->createFields($this->input);
 			}
 
-			if(isset($this->input['save']))
-				$this->im->createFields($this->input);
+			if(isset($this->input['submit']))
+			{
+				$this->im->saveFieldDetails($this->input);
+			}
+
 
 			if(isset($this->input['field']) &&
 				is_numeric($this->input['field']))
+			{
 				$o['content'] = $this->buildFieldDetails();
-			else
+			} else
+			{
 				$o['content'] = $this->buildFieldEditor();
+			}
 		}
-
-
 
 		// show item list menu
 		elseif(ImModel::$installed && !$msg)
@@ -409,25 +403,9 @@ class ImBackend
 				$this->im->deleteItem($this->input['delete']);
 			}
 
-
-
-
-
 			$o['content'] = $this->buildItemList();
 		}
-		// displays category selector
-		if($catselector)
-		{
-			// Vorübergehende Lösung wegen Itemlist
 
-			//if(!is_object($o['content'])) $o['content'] = $this->tpl->getTemplate('form');
-
-			//$o['selector'] = $this->buildCategorySelector();
-			/*$o['content'] = $this->tpl->render($o['content'], array(
-					'catselector' => $o['selector']
-				), true, array(), true
-			);*/
-		}
 
 		$o['msg'] = $this->buildMsg();
 
@@ -480,6 +458,8 @@ class ImBackend
 		$option = $this->tpl->getTemplate('option');
 
 		$category = $this->im->category;
+
+		$category->categories = $category->filterCategories('position', 'ASC');
 
 		$tvs = '';
 		if(!$category->countCategories() || empty($form) || empty($option))
@@ -917,14 +897,22 @@ class ImBackend
 		if(!$currfield)
 		{
 			// ERROR FIELD NOT FOUND
+			return false;
 		}
 
 		// replace the form placeholders and return
 		return $this->tpl->render($form,  array(
 				'field-id' => $currfield->get('id'),
-				'field_name' => $currfield->name,
-				'field_label' => $currfield->label,
-				'field_type' => $currfield->type
+				'field_name' => !empty($currfield->name) ? $currfield->name : '',
+				'field_label' => !empty($currfield->label) ? $currfield->label : '',
+				'field_type' => !empty($currfield->type) ? $currfield->type : '',
+				'fieldinfo' => !empty($currfield->info) ? $currfield->info : '',
+				'fieldrequired' => ($currfield->required == 1) ? 'checked' : '',
+				'min_field_input' => !empty($currfield->minimum) ? intval($currfield->minimum) : '',
+				'max_field_input' => !empty($currfield->maximum) ? intval($currfield->maximum) : '',
+				'area_css' => !empty($currfield->areacss) ? $currfield->areacss : '',
+				'label_css' => !empty($currfield->labelcss) ? $currfield->labelcss : '',
+				'field_css' => !empty($currfield->fieldcss) ? $currfield->fieldcss : '',
 			), true, array(), true
 		);
 	}
@@ -1332,12 +1320,6 @@ class ImBackend
 		} else
 			$active = $curitem->active;
 
-
-
-		/*echo '<pre>';
-		print_r($curitem);
-		echo '</pre>';*/
-
 		// Initialize fields
 		$fc = new ImFields();
 		$fc->init($this->im->cp->currentCategory());
@@ -1376,6 +1358,9 @@ class ImBackend
 				{
 					$fieldType->class = $field->type.'-field';
 
+					if(!empty($field->fieldcss))
+						$fieldType->style = $field->fieldcss;
+
 					if(is_array($outputvalue))
 					{
 						$fieldType->$outputkey = array();
@@ -1398,10 +1383,17 @@ class ImBackend
 				if(empty($fieldType->value) && !empty($field->default))
 					$fieldType->value = (string) $field->default;
 
+				$tplinfotext = new Template();
+				if(!empty($field->info))
+					$tplinfotext = $this->tpl->render(clone $infotext, array('infotext' => $field->info));
+
+
 				$tplfields->push($this->tpl->render($fieldarea, array(
 					'fieldid' =>  $field->name,
 					'label' => $field->label,
-					'infotext' => '',
+					'infotext' => $tplinfotext->content,
+					'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
+					'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
 					'field' => $fieldType->render()->content)
 					)
 				);

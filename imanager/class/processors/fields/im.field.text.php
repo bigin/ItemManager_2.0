@@ -11,6 +11,7 @@ class FieldText implements Fieldinterface
 		$this->class = null;
 		$this->id = null;
 		$this->value = null;
+		$this->style = null;
 	}
 
 
@@ -24,6 +25,7 @@ class FieldText implements Fieldinterface
 		$output = $this->tpl->render($textfield, array(
 				'name' => $this->name,
 				'class' => $this->class,
+				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
 				'id' => $this->id,
 				'value' => !($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
