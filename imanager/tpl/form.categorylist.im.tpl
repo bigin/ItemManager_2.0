@@ -73,6 +73,14 @@
 			return false;
 		});
 
+		$('.im-pos').dblclick(function (e) {
+			e.stopPropagation();
+			var currentPosField = $(this).children('.position');
+			var currentEle = $(this).children('.index');
+			var value = currentEle.html();
+			updateVal(currentEle, value, currentPosField);
+		});
+
 		$.indexPos = function() {
 			$('#im-catlist tbody tr').each(function(i,tr) {
 				$(tr).find('.position').each(function(k, elem) {
@@ -106,4 +114,50 @@
 			}
 		});
 	});
+
+	function updateVal(currentEle, value, currentPosField) {
+		$(document).off('click');
+		$(currentEle).html('<input class="dyn-pos" onkeypress="return event.keyCode != 13;" type="number" value="' + value + '" />');
+
+		var el = $('.dyn-pos');
+		var value = el.val();
+		var num = $('.active').children().attr('id');
+
+		if (value.length != 0) {
+			el.selectionStart = value.length;
+			el.selectionEnd = value.length;
+			el.focus();
+		}
+
+		el.keyup(function (event) {
+			if (event.keyCode == 13) {
+				$(currentEle).html(el.val().trim());
+				currentPosField.val(el.val().trim());
+				$.getList(num);
+			}
+		});
+
+		$(document).click(function () {
+			$(currentEle).html(currentPosField.val());
+			$(currentEle).stop().css('color', '#CF3805').animate({ color: '#777777'}, 1500);
+		});
+	}
+
+	$(document).ajaxComplete(function(){
+		$('.im-pos').dblclick(function (e) {
+			e.stopPropagation();
+			var currentPosField = $(this).children('.position');
+			var currentEle = $(this).children('.index');
+			var value = currentEle.html();
+			updateVal(currentEle, value, currentPosField);
+		});
+
+		$('#im-catlist tbody tr').each(function(i,tr) {
+			$(tr).find('.position').each(function(k, elem) {
+				oldpos[i] = $(elem).val();
+				i++;
+			});
+		});
+	});
+
 </script>

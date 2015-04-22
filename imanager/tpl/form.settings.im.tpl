@@ -184,6 +184,11 @@
 						</div>
 					</div>
 				</div>
+				<div class="fieldarea">
+					<label for="itemactive">[[lang/item_enabled]]</label>
+					<p class="field-info">[[lang/item_enabled_info]]</p>
+					<p><input id="itemactive" class="checkbox-fields-left" name="itemactive" type="checkbox" value="1" [[itemactive]]></p>
+				</div>
 
 
 				<h2 class="menuglava">[[lang/imageupload_settings_section]]</h2>

@@ -249,7 +249,8 @@ class ImSetup
 		$item_backupdir = empty($input['itembackupdir']) ? IM_BACKUP_DIR : $input['itembackupdir'];
 		// Item Backup Aufbewahrungsfrist in Tagen angeben
 		$min_itembackup_days = !isset($input['min_itembackup_days']) ? 1 : intval($input['min_itembackup_days']);
-
+		// Item Enabled
+		$itemactive = !isset($input['itemactive']) ? 0 : intval($input['itemactive']);
 
 
 
@@ -305,6 +306,7 @@ class ImSetup
 		$backend_xml->addChild('itembackup', $item_backup);
 		$backend_xml->addChild('itembackupdir',$item_backupdir);
 		$backend_xml->addChild('min_itembackup_days', $min_itembackup_days);
+		$backend_xml->addChild('itemactive', $itemactive);
 
 		$backend_xml->addChild('min_tmpimage_days', $min_tmpimage_days);
 
@@ -333,20 +335,25 @@ class ImSetup
 		$stamp = time();
 
 		$type = '';
+		// name token
+		$token = '';
 
 		$xml = false;
 		switch ($suffix)
 		{
 			case '.im.fields.xml':
 				$type = 'fields';
+				$token = 'field';
 				$xml = simplexml_load_file($this->backend->fieldbackupdir.'config.xml');
 				break;
 			case '.im.cat.xml':
 				$type = 'categories';
+				$token = 'cat';
 				$xml = simplexml_load_file($this->backend->catbackupdir.'config.xml');
 				break;
 			case '.im.item.xml':
 				$type = 'items';
+				$token = 'item';
 				$xml = simplexml_load_file($this->backend->itembackupdir.'config.xml');
 				break;
 			default:
@@ -373,25 +380,40 @@ class ImSetup
 		}
 
 		if(!count($xml->{$type}->backup)) return false;
-		// loop over the config data to determine files that have been deleted
-		//$doc=new SimpleXMLElement($data);
-		foreach($xml->$type as $val)
+
+		/* loop over the config data to determine files that have been deleted
+		 and to determine outdated files to remove them */
+		$nodes = array();
+		$i = 0;
+		foreach($xml->$type->backup as $val)
 		{
+			$min_days = intval($this->backend->{'min_'.$token.'backup_days'});
+			$storagetime =  time() - (60 * 60 * 24 * $min_days);
+
+			if(((int) $val->time < $storagetime) && $storagetime > 0)
+				if(file_exists((string) $val->file))
+					unlink((string) $val->file);
+
 			// exclude itself, because the file is not created yet
-			//echo IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix .' != '. $val->backup->file.'<br />';
-			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix != $val->backup->file) && !file_exists($val->backup->file))
+			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix == (string) $val->file) || file_exists((string) $val->file))
 			{
-				/*$val->backup->file = '';
-				$val->backup->origfile = '';
-				$val->backup->time = '';
-				unset($val->backup->{0});*/
-				//$backup = $val->backup;
-				$dom=dom_import_simplexml($val->backup);
-				$dom->parentNode->removeChild($dom);
+				$nodes[$i]['file'] = (string) $val->file;
+				$nodes[$i]['origfile'] = (string) $val->origfile;
+				$nodes[$i]['time'] = (int) $val->time;
 			}
-				//echo '<br/><br />'.$xml->{$type}->backup;
+			$i++;
 		}
 
+		if(count($nodes) > 0)
+		{
+			unset($xml->$type->backup);
+			foreach($nodes as $node)
+			{
+				$backup = $xml->{$type}->addChild('backup');
+				foreach($node as $key => $value)
+					$backup->$key = $value;
+			}
+		}
 		// Todo: backup of the image directory
 
 		return 	$xml->asXml(IM_BACKUP_DIR.'config.xml');

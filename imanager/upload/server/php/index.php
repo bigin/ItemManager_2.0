@@ -11,5 +11,7 @@
  */
 
 error_reporting(E_ALL | E_STRICT);
+require_once('../../../../../admin/inc/common.php');
+if(!get_cookie('GS_ADMIN_USERNAME')) {die();}
 require('UploadHandler.php');
 $upload_handler = new UploadHandler();

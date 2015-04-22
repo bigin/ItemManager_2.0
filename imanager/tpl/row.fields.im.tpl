@@ -1,4 +1,10 @@
 <tr class="[[tr-class]]">
+	<td class="im-drag">
+		<i class="fa fa-hand-o-up"></i>
+	</td>
+	<td>
+		[[field-details]]
+	</td>
     <td>
         <input type="text" class="text" style="width:80px;padding:2px;" name="cf_[[i]]_key" value="[[key]]"/>
     </td>

@@ -353,7 +353,7 @@ class ImItem
 
 
 	/**
-	 * Returns the array of objects of the type Item, sorted by any node
+	 * Returns the array of objects of the type Item, sorted by any node your choice
 	 * NOTE: However if no $items argument is passed to the function, the fields
 	 * must already be in the buffer: ImItem::$items. Call the ImItem::init($category_id)
 	 * method before to assign the fields to the buffer.

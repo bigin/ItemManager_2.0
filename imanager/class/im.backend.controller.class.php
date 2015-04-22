@@ -382,10 +382,15 @@ class ImBackend
 			{
 				$this->rename_item_fields();
 			}
+
 			if(isset($this->input['save']))
 				$this->im->createFields($this->input);
-			$o['content'] = $this->buildFieldEditor();
-			//$o['content'] .= $this->renametool();
+
+			if(isset($this->input['field']) &&
+				is_numeric($this->input['field']))
+				$o['content'] = $this->buildFieldDetails();
+			else
+				$o['content'] = $this->buildFieldEditor();
 		}
 
 
@@ -714,6 +719,7 @@ class ImBackend
 				'i_label' => ($i_attribut == 'label') ? 'selected' : '',
 				'i_active' => ($i_attribut == 'active') ? 'selected' : '',
 
+				'itemactive' => ($configs->backend->itemactive == 1) ? ' checked ' : '',
 				'min_tmpimage_days' => (intval($configs->backend->min_tmpimage_days) > 0) ? intval($configs->backend->min_tmpimage_days) : 0,
 				'itembackup' =>  ($configs->backend->itembackup == 1) ? ' checked ' : '',
 				'min_itembackup_days' => (intval($configs->backend->min_itembackup_days) > 0) ? intval($configs->backend->min_itembackup_days) : 0,
@@ -773,6 +779,7 @@ class ImBackend
 		$row = $this->tpl->getTemplate('row', $fields);
 		$js = $this->tpl->getTemplate('js', $fields);
 		$link = $this->tpl->getTemplate('link', $fields);
+		$details = $this->tpl->getTemplate('details', $fields);
 
 		// check is the current category valid
 		if(!$this->im->cp->isCategoryValid()) return;
@@ -842,8 +849,14 @@ class ImBackend
 
 				//$tploptions = $this->tpl->render($tpl, array('area-options' => $options));
 			}
+
+			// render details link
+			$tpldetails = $this->tpl->render($details, array('field-id' => $f->get('id')), true, array());
+
+
 			$rowbuffer = $this->tpl->render($row, array('tr-class' => 'sortable',
 					'i' => $i,
+					'field-details' => $tpldetails->content,
 					'id' => $f->get('id'),
 					'key' => isset($f->name) ? $f->name : '',
 					'label' => isset($f->label) ? $f->label : '',
@@ -887,6 +900,35 @@ class ImBackend
 				'cat' => $this->im->cp->currentCategory()), true, array(), true
 		);
 	}
+
+
+	private function buildFieldDetails()
+	{
+		// get fielddetail template templates
+		$fielddetails = $this->tpl->getTemplates('fielddetails');
+		$form = $this->tpl->getTemplate('form', $fielddetails);
+
+		$cf = new ImFields();
+		$cf->init($this->im->cp->currentCategory());
+		// get current field by id
+		$currfield = $cf->getField(intval($this->input['field']));
+
+
+		if(!$currfield)
+		{
+			// ERROR FIELD NOT FOUND
+		}
+
+		// replace the form placeholders and return
+		return $this->tpl->render($form,  array(
+				'field-id' => $currfield->get('id'),
+				'field_name' => $currfield->name,
+				'field_label' => $currfield->label,
+				'field_type' => $currfield->type
+			), true, array(), true
+		);
+	}
+
 
 	private function buildNumberSwitch($obj)
 	{
@@ -1286,7 +1328,11 @@ class ImBackend
 		if(!$curitem)
 		{
 			$curitem = new Item($this->im->cp->currentCategory());
-		}
+			$active = $this->im->config->backend->itemactive;
+		} else
+			$active = $curitem->active;
+
+
 
 		/*echo '<pre>';
 		print_r($curitem);
@@ -1299,68 +1345,73 @@ class ImBackend
 		$fields = $fc->filterFields('position', 'asc');
 
 		$tplfields = new Template();
-		foreach($fields as $fieldname => $field)
+		if($fields)
 		{
-			// Input
-			$inputClassName = 'Input'.$field->type;
-			$InputType = new $inputClassName($fields[$fieldname]);
-			$output = $InputType->prepareOutput();
-
-			// Field
-			$fieldClassName = 'Field'.$field->type;
-			$fieldType = new $fieldClassName($this->tpl);
-			$fieldType->name = $fieldname;
-			$fieldType->id = $fieldType->name;
-
-			// dropdown
-			if($field->type == 'dropdown')
-				$fieldType->options = $field->options;
-
-			// image upload
-			if($field->type == 'imageupload')
+			foreach($fields as $fieldname => $field)
 			{
-				$fieldType->categoryid = $this->im->cp->currentCategory();
-				$fieldType->itemid = $id;
-				$fieldType->timestamp = $stamp;
-			}
+				// Input
+				$inputClassName = 'Input'.$field->type;
+				$InputType = new $inputClassName($fields[$fieldname]);
+				$output = $InputType->prepareOutput();
 
-			foreach($output as $outputkey => $outputvalue)
-			{
-				$fieldType->class = $field->type.'-field';
+				// Field
+				$fieldClassName = 'Field'.$field->type;
+				$fieldType = new $fieldClassName($this->tpl);
+				$fieldType->name = $fieldname;
+				$fieldType->id = $fieldType->name;
 
-				if(is_array($outputvalue))
+				// dropdown
+				if($field->type == 'dropdown')
+					$fieldType->options = $field->options;
+
+				// image upload
+				if($field->type == 'imageupload')
 				{
-					$fieldType->$outputkey = array();
-					$counter = 0;
-					if(!isset($curitem->fields->$fieldname->$outputkey))
-						continue;
-					foreach($curitem->fields->$fieldname->$outputkey as $arrkey => $arrval)
+					$fieldType->categoryid = $this->im->cp->currentCategory();
+					$fieldType->itemid = $id;
+					$fieldType->timestamp = $stamp;
+				}
+
+				foreach($output as $outputkey => $outputvalue)
+				{
+					$fieldType->class = $field->type.'-field';
+
+					if(is_array($outputvalue))
 					{
-						$fieldType->{$outputkey}[] = (string) $curitem->fields->$fieldname->{$outputkey}[$counter];
-						$counter++;
-					}
-				} else
-					$fieldType->$outputkey = !empty($curitem->fields->$fieldname->$outputkey) ? (string) $curitem->fields->$fieldname->$outputkey : '';
+						$fieldType->$outputkey = array();
+						$counter = 0;
+						if(!isset($curitem->fields->$fieldname->$outputkey))
+							continue;
+						foreach($curitem->fields->$fieldname->$outputkey as $arrkey => $arrval)
+						{
+							$fieldType->{$outputkey}[] = (string) $curitem->fields->$fieldname->{$outputkey}[$counter];
+							$counter++;
+						}
+					} else
+						$fieldType->$outputkey = !empty($curitem->fields->$fieldname->$outputkey) ? (string) $curitem->fields->$fieldname->$outputkey : '';
 
-				if(ImMsgReporter::isError())
-					$fieldType->$outputkey = !empty($this->input[$fieldType->name]) ? $this->input[$fieldType->name] : '';
+					if(ImMsgReporter::isError())
+						$fieldType->$outputkey = !empty($this->input[$fieldType->name]) ? $this->input[$fieldType->name] : '';
+				}
+
+				// set default field values
+				if(empty($fieldType->value) && !empty($field->default))
+					$fieldType->value = (string) $field->default;
+
+				$tplfields->push($this->tpl->render($fieldarea, array(
+					'fieldid' =>  $field->name,
+					'label' => $field->label,
+					'infotext' => '',
+					'field' => $fieldType->render()->content)
+					)
+				);
 			}
-
-			// set default field values
-			if(empty($fieldType->value) && !empty($field->default))
-				$fieldType->value = (string) $field->default;
-
-			$tplfields->push($this->tpl->render($fieldarea, array(
-				'fieldid' =>  $field->name,
-				'label' => $field->label,
-				'infotext' => '',
-				'field' => $fieldType->render()->content)
-				)
-			);
 		}
 
 		$form = $this->tpl->render($form, array(
 				'item-id' => $id,
+				'position' => !empty($curitem->position) ? $curitem->position : '',
+				'checked' => ($active > 0) ? 'checked' : '',
 				'back-page' => $backpage,
 				'timestamp' => $stamp,
 				'currentcategory' => $this->im->cp->currentCategory(),

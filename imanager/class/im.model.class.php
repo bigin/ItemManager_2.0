@@ -123,7 +123,7 @@ class ImModel
 	/**
 	 * Deletes the category and ther fields and items
 	 *
-	 * @param mixed $cat
+	 * @param integer $cat, category id
 	 * @param bool $refresh
 	 * @return bool
 	 */
@@ -131,23 +131,9 @@ class ImModel
 	{
 		if(empty($cat)) return false;
 
-		if(is_string($cat) && false !== strpos($cat, '='))
-		{
-			$data = explode('=', $cat, 2);
-			$key = strtolower(trim($data[0]));
-			$val = trim($data[1]);
-			if(false !== strpos($key, ' '))
-				return false;
+		if(!is_numeric($cat)) return false;
 
-			if($key != 'name' && $key != 'id')
-				return false;
-
-			$cat = $this->category->getCategory($cat);
-
-		} elseif(is_numeric($cat))
-		{
-			$cat = $this->category->getCategory($cat);
-		}
+		$cat = $this->category->getCategory($cat);
 
 		if(!$cat)
 		{
@@ -157,12 +143,64 @@ class ImModel
 			return false;
 		}
 
-		// delete custom fields file
-		if($this->imfcon->fieldsExists($cat))
-			$this->imfcon->destroyFields($cat);
 
-		// ATTENTION: delete all items here
+		$fc = new ImFields();
+		$fc->init($cat->get('id'));
 
+		// try to create fields backup of the category to be deleted
+		if(intval($this->config->backend->fieldbackup) == 1)
+		{
+			if(!$fc->fieldsExists($cat->get('id')))
+				if(!$fc->createFields($cat->get('id')))
+				{
+					ImMsgReporter::setClause('save_failure', array(), true);
+					return false;
+				}
+
+			if(!$this->config->createBackup(IM_FIELDS_DIR, $cat->get('id'), IM_FIELDS_FILE_SUFFIX))
+			{
+				ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->fieldbackupdir), true);
+				return false;
+			}
+		}
+
+		// create category backup
+		if(intval($this->config->backend->catbackup) == 1)
+		{
+			if(!$this->config->createBackup(IM_CATEGORY_DIR, $cat->get('id'), IM_CATEGORY_FILE_SUFFIX))
+			{
+				ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->catbackupdir), true);
+				return false;
+			}
+		}
+
+		$ic = new ImItem();
+		$ic->init($cat->get('id'));
+
+		// backup items before delete category
+		if(intval($this->config->backend->itembackup) == 1 && !empty($ic->items))
+		{
+			foreach($ic->items as $item_id => $item)
+			{
+				if(!$this->config->createBackup(IM_ITEM_DIR, $item_id.'.'.$item->get('categoryid'), IM_ITEM_FILE_SUFFIX))
+				{
+					ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->itembackupdir), true);
+					return false;
+				}
+
+				// get image directory to delete
+				$imagedir = IM_IMAGE_UPLOAD_DIR.$item_id.'.'.$item->get('categoryid');
+
+				if(!$ic->destroyItem($item))
+				{
+					ImMsgReporter::setClause('err_item_delete', array(), true);
+					return false;
+				}
+				/* Item has been successfully deleted, now we have to clean up the image uploads */
+				$this->delTree($imagedir);
+			}
+		}
+		// destroy category file
 		if(!$this->category->destroyCategory($cat))
 		{
 			ImMsgReporter::setClause('err_deleting_category', array(
@@ -170,9 +208,17 @@ class ImModel
 			);
 			return false;
 		}
+		// destroy fields file
+		if(!$fc->destroyFieldsFile($cat))
+		{
+			ImMsgReporter::setClause('err_delete_fields_file', array(), true);
+			return false;
+		}
 
 		// reinitialize the categories
 		if($refresh) $this->category->init();
+
+		// reselect current category if its deleted
 
 		ImMsgReporter::setClause('category_deleted', array('category' => $cat->name));
 		return true;
@@ -601,7 +647,7 @@ class ImModel
 	}
 
 
-	public function saveItem($input)
+	public function saveItem(&$input)
 	{
 		/* check there the user errors: If the user tried to compromise the script, we'll
 		reset field values to empty and display an error message */
@@ -662,8 +708,8 @@ class ImModel
 
 
 
-		/* Ok, the standard procedure is completed and now we are taking another step
-		and loop through the fields of the item to save values */
+		/* Ok, the standard procedure is completed and now we want to make the next step
+		and loop through the fields of the item to save these values */
 
 		$curitem->name = $input['name'];
 
@@ -740,6 +786,8 @@ class ImModel
 			ImMsgReporter::setClause('err_save_item', array(), true);
 			return false;
 		}
+
+		$input['id'] = $curitem->get('id');
 
 		/* Congratulation, we have just came through some checkpoints well.
 		   Item has been successfully saved, now we still have to take several

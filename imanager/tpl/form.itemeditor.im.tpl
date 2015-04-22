@@ -7,8 +7,20 @@
 	<input name="timestamp" type="hidden" value="[[timestamp]]">
 	<div>
 		<div class="fieldarea">
+			<label for="catid" class="im-left">[[lang/item_id]]</label>
+			<p id="catid" class="im-cat-info">[[item-id]]</p>
+		</div>
+		<div class="fieldarea">
 			<label for="title">[[lang/title]]</label>
 			<p><input id="title" class="im-title" name="name" type="text" value="[[itemname]]" placeholder="[[lang/fill_me]]" /></p>
+		</div>
+		<div class="fieldarea">
+			<label for="position">[[lang/position]]</label>
+			<p><input id="position" name="position" type="number" value="[[position]]" /></p>
+		</div>
+		<div class="fieldarea">
+			<label for="active">[[lang/enabled]]</label>
+			<p><input id="active" name="active" type="checkbox" value="1" [[checked]] /></p>
 		</div>
 		[[custom-fields]]
 		<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>

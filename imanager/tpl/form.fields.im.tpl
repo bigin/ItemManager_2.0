@@ -7,6 +7,8 @@
     <table id="editfields" class="edittable highlight">
         <thead>
             <tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
                 <th>[[lang/fields_name]]</th>
                 <th>[[lang/fields_label]]</th>
                 <th style="width:100px;">[[lang/fields_type]]</th>
@@ -17,7 +19,7 @@
         <tbody>
             [[categorie_items]]    
             <tr>
-                <td colspan="4">
+                <td colspan="6">
                     <a href="#" class="add">[[lang/fields_create]]</a>
                 </td>
                 <td class="im-add">

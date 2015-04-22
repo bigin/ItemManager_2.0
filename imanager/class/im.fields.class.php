@@ -21,6 +21,8 @@ class ImFields
 		$file_id = substr($base, 0, $strp);
 		$xml = getXML(IM_FIELDS_DIR . intval($id) . IM_FIELDS_FILE_SUFFIX);
 
+		if(!$xml) return $this->fields;
+
 		$fieldid = 0;
 		foreach($xml->field as $field)
 		{
@@ -114,6 +116,16 @@ class ImFields
 	}
 
 
+	public function destroyFieldsFile(Category $cat)
+	{
+		if(file_exists(IM_FIELDS_DIR . $cat->get('id') . IM_FIELDS_FILE_SUFFIX))
+		{
+			return unlink(IM_FIELDS_DIR . intval($cat->get('id')) . IM_FIELDS_FILE_SUFFIX);
+		}
+		return false;
+	}
+
+
 	private function recreateFieldsFile($field)
 	{
 		if(!file_exists(IM_FIELDS_DIR . intval($field->get('categoryid')) . IM_FIELDS_FILE_SUFFIX))
@@ -134,6 +146,8 @@ class ImFields
 			$count++;
 		}
 	}
+
+
 
 
 	/**
@@ -213,6 +227,7 @@ class ImFields
 	{
 		$data = array();
 		$xml = getXML(IM_FIELDS_DIR . intval($catid) . IM_FIELDS_FILE_SUFFIX);
+		if(!$xml) return $data;
 		$data['ids'] = array_map('intval', $xml->xpath('//fields/field/id'));
 		$data['names'] = array_map('strval', $xml->xpath('//fields/field/name'));
 		$data['types'] = array_map('strval', $xml->xpath('//fields/field/type'));
