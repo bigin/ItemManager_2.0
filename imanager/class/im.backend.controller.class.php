@@ -220,6 +220,7 @@ class ImBackend
 		//$icont->init(2);
 
 
+
 	/*	$namen = array('Skander', 'Tamio', 'Beppo', 'Okko', 'Milton', 'Flint', 'Bjarke', 'Nato');
 
 		foreach($namen as $name)
@@ -1292,6 +1293,7 @@ class ImBackend
 		$form = $this->tpl->getTemplate('form', $itemeditor);
 		$fieldarea = $this->tpl->getTemplate('fieldarea', $itemeditor);
 		$infotext = $this->tpl->getTemplate('infotext', $itemeditor);
+		$required = $this->tpl->getTemplate('required', $itemeditor);
 
 		$id = !empty($this->input['edit']) ? intval($this->input['edit']) : null;
 		if(is_null($id))
@@ -1385,8 +1387,11 @@ class ImBackend
 
 				$tplinfotext = new Template();
 				if(!empty($field->info))
-					$tplinfotext = $this->tpl->render(clone $infotext, array('infotext' => $field->info));
+					$tplinfotext = $this->tpl->render($infotext, array('infotext' => $field->info));
 
+				$tplrequired = new Template();
+				if(!empty($field->required) && $field->required == 1)
+					$tplrequired = $this->tpl->render($required, array());
 
 				$tplfields->push($this->tpl->render($fieldarea, array(
 					'fieldid' =>  $field->name,
@@ -1394,6 +1399,7 @@ class ImBackend
 					'infotext' => $tplinfotext->content,
 					'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
 					'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
+					'required' => $tplrequired->content,
 					'field' => $fieldType->render()->content)
 					)
 				);

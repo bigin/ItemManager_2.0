@@ -76,20 +76,12 @@ add_filter('search-item', 'i18n_search_im_item');
 /* include your own CSS for beautiful manager style */
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
 
-//register_style('fileupload', IM_SITE_URL.'plugins/'.$thisfile.'/upload/css/jquery.style.css', GSVERSION, 'screen');
 register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css', GSVERSION, 'screen');
-
-//register_style('fileupload-ui', IM_SITE_URL.'plugins/'.$thisfile.'/upload/css/jquery.fileupload-ui.css', GSVERSION, 'screen');
-//register_style('bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', GSVERSION, 'screen');
-
 
 register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
 queue_style('imstyle', GSBOTH);
 queue_style('imstylefonts', GSBOTH);
-//queue_style('fileupload', GSBOTH);
 queue_style('blueimp', GSBOTH);
-//queue_style('fileupload-ui', GSBOTH);
-//queue_style('bootstrap', GSBOTH);
 
 // model
 include(GSPLUGINPATH.'imanager/class/im.model.class.php');

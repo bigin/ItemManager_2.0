@@ -6,6 +6,7 @@ class Field
 	protected $file;
 	protected $filename;
 	protected $id;
+	protected $confirmed;
 
 	public function __construct($catid)
 	{
@@ -28,6 +29,7 @@ class Field
 		$this->areacss = '';
 		$this->labelcss = '';
 		$this->fieldcss = '';
+		$this->confirmed = false;
 
 		$this->created = time();
 		$this->updated = null;
@@ -62,8 +64,7 @@ class Field
 
 
 
-	public function setProtected($id) {$this->id = intval($id);}
-
+	public function setProtected($key, $val) {$this->$key = intval($val);}
 
 	/**
 	 * Returns maximum field id

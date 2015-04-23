@@ -12,7 +12,7 @@ class InputText implements Inputinterface
 		$this->values->value = null;
 	}
 
-	/* Kontrolliert den Input beim speichern des Wertes  */
+	/* */
 	public function prepareInput($value, $sanitize=false)
 	{
 		$this->values->value = !$sanitize ? $value : $this->sanitize($value);

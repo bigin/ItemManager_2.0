@@ -800,6 +800,15 @@ class ImModel
 					}
 					$xml->asXml($fieldinput.'config.xml');
 				}
+			} elseif($fieldvalue->type == 'password')
+			{
+				$InputType->confirm = !empty($input['password_confirm']);
+				// refill password field values if empty
+				$InputType->password = !empty($curitem->fields->$fieldname->value)
+					? $curitem->fields->$fieldname->value : '';
+				$InputType->salt = !empty($curitem->fields->$fieldname->salt)
+					? $curitem->fields->$fieldname->salt : '';
+				$fieldinput = $input['password'];
 			}
 
 			$resultinput = $InputType->prepareInput($fieldinput);
@@ -811,20 +820,29 @@ class ImModel
 				{
 					case 1:
 						ImMsgReporter::setClause('err_required_field', array('fieldname' => $fieldvalue->label), true);
-						break;
+						return false;
 					case 2:
 						ImMsgReporter::setClause('err_input_min_length', array('fieldname' => $fieldvalue->label,
 								'count' => $fieldvalue->minimum), true
 						);
-						break;
+						return false;
 					case 3:
 						ImMsgReporter::setClause('err_input_max_length', array('fieldname' => $fieldvalue->label,
 								'count' => $fieldvalue->maximum), true
 						);
-						break;
+						return false;
+					case 5:
+						ImMsgReporter::setClause('err_input_incomplete',
+							array('fieldname' => $fieldvalue->label), true);
+						return false;
+					case 7:
+						ImMsgReporter::setClause('err_input_comparison',
+							array('fieldname' => $fieldvalue->label), true);
+						return false;
 				}
+
 				// todo: error log
-				return false;
+
 			}
 
 			foreach($resultinput as $inputputkey => $inputvalue)

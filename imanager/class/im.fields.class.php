@@ -34,11 +34,13 @@ class ImFields
 				if(is_numeric($val))
 					$f->$key = intval($val);
 				elseif($key == 'id')
-					$f->setProtected((int) $xml->field[$fieldid]->id);
+					$f->setProtected($key, (int) $xml->field[$fieldid]->id);
 				elseif($key == 'option')
 					$f->options[] = (string) $val;
 				else
 					$f->$key = (string) $val;
+
+				$f->setProtected('confirmed', false);
 
 				if($key == 'name') $fieldname = (string) $val;
 			}

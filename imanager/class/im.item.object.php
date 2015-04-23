@@ -105,7 +105,12 @@ class Item
 						$inputClassName = 'Input'.$data['types'][$key];
 						$InputType = new $inputClassName($this->fields->$data['names'][$key]);
 
-						$input = $InputType->prepareInput($this->fields->$data['names'][$key]->value);
+						//$input = $InputType->prepareInput($this->fields->$data['names'][$key]->value);
+						$output = $InputType->prepareOutput();
+						$input = new stdClass();
+
+						foreach ($output as $inputkey => $inputval)
+							$input->$inputkey = $this->fields->$data['names'][$key]->$inputkey;
 
 						foreach($input as $inputkey => $inputvalue)
 						{
@@ -156,7 +161,11 @@ class Item
 						$inputClassName = 'Input'.$data['types'][$key];
 						$InputType = new $inputClassName($this->fields->$data['names'][$key]);
 
-						$input = $InputType->prepareInput($this->fields->$data['names'][$key]->value);
+						$output = $InputType->prepareOutput();
+						$input = new stdClass();
+
+						foreach ($output as $inputkey => $inputval)
+							$input->$inputkey = $this->fields->$data['names'][$key]->$inputkey;
 
 						foreach($input as $inputkey => $inputvalue)
 						{

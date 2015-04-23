@@ -225,4 +225,6 @@ $i18n = array(
 	, 'err_required_field' => '<div class="error">The field "<strong>[[fieldname]]</strong>" must be filled out.</div>'
 	, 'err_input_max_length' => '<div class="error">Error field value length: The value of the "<strong>[[fieldname]]</strong>" is limited to a maximum of [[count]] characters.</div>'
 	, 'err_input_min_length' => '<div class="error">Error field value length: The value of the "<strong>[[fieldname]]</strong>" should be minimum of [[count]] characters.</div>'
+	, 'err_input_incomplete' => '<div class="error">Error value incomplete: "<strong>[[fieldname]]</strong>" all fields have to be filled out.</div>'
+	, 'err_input_comparison' => '<div class="error">Error: Values of the "<strong>[[fieldname]]</strong>" field do not match.</div>'
 );
