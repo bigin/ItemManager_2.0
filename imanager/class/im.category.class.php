@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ItemManager
  * Description: Full-featured  ItemManager.
- * Version: 1.0
+ * Version: 2.0
  * Author: Juri Ehret
  * Author URI: http://ehret-studio.com
  *

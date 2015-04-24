@@ -129,6 +129,8 @@ include(GSPLUGINPATH.'imanager/class/im.field.interface.php');
 include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.longtext.php');
 // field type text
 include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.text.php');
+// field type hidden
+include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.hidden.php');
 // field type checkbox
 include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.checkbox.php');
 // field type long
@@ -148,7 +150,7 @@ include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.longtext.php');
 // input type text
 include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.text.php');
 // input type hidden
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.hidden.php'); // als Field?
+include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.hidden.php');
 // input type checkbox
 include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.checkbox.php');
 // input type dropdown

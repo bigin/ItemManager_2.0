@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: ItemManager
- * Description: Full-featured  ItemManager.
- * Version: 1.0
+ * Description: full featured  Framework.
+ * Version: 2.0
  * Author: Juri Ehret
  * Author URL: http://ehret-studio.com
  *
@@ -154,12 +154,12 @@ class ImBackend
 		// ARBEITEN MIT FIELDERN ****
 
 		/*$fc = new ImFields();
-		if(!$fc->fieldsExists(2))
-			if(!$fc->createFields(2))
+		if(!$fc->fieldsExists(1))
+			if(!$fc->createFields(1))
 				echo 'Error: can\'t create new fields';
 
 		// Felder einer Kategorie (in dem Fall mit Kategorie mit id Nr. 1) initialisieren
-		$fc->init(2);*/
+		$fc->init(1);*/
 
 		/* Get field by ID */
 		//$field = $fc->getField(7);
@@ -215,11 +215,29 @@ class ImBackend
 
 
 		// ARBEITEN MIT ITEMS ****
+
+		//                  echo round(memory_get_usage()/1048576,2)." MB<br />";
 		// initialisieren
 		//$icont = new ImItem();
 		//$icont->init(2);
+		//$icont->initAll();
+
+		// Die Suche mit initAll() funktioniert nicht!
 
 
+
+		//echo '<pre>';
+		//print_r($icont->getItem('name=%Wanda'));
+		// Das verursacht Fehler bitte noch prüfen
+		//print_r($icont->items);
+		//echo '</pre>';
+
+
+
+		//echo memory_get_usage().'<br />';
+		//                  echo round(memory_get_usage()/1048576,2)." MB<br />";
+
+		//                  echo 'limit: ' .ini_get('memory_limit') .'<br />';
 
 	/*	$namen = array('Skander', 'Tamio', 'Beppo', 'Okko', 'Milton', 'Flint', 'Bjarke', 'Nato');
 
@@ -271,6 +289,10 @@ class ImBackend
 		// Felder ordnen nach einen Feldvalue
 		//print_r($icont->filterItems('dalbaeb', 'asc'));
 
+		// Suchen nach Items name Wanda
+		//print_r($icont->getItems('name=%Wanda'));
+		//print_r($icont->getItems('name=Wanda%'));
+		//print_r($icont->getItems('name=%Wanda%'));
 
 
 		// neues item erstellen
@@ -507,6 +529,8 @@ class ImBackend
 
 		$category = $this->im->category;
 
+		$catcount = $this->im->category->countCategories($category->categories);
+
 		// get settings
 		$configs = $this->im->config;
 
@@ -519,10 +543,14 @@ class ImBackend
 		$attribut = isset($configs->backend->catorderby) ?
 			safe_slash_html_input($configs->backend->catorderby) : 'position';
 		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
+		$perpage = !empty($this->input['getcatlist']) ? intval($this->input['getcatlist']) :
+			$configs->backend->maxcatperpage;
 
+		// start item
+		$start = (($page -1) * $perpage +1);
 
 		// filter categories
-		$category->categories = $category->filterCategories($attribut, $order);
+		$category->categories = $category->filterCategories($attribut, $order, $start, $perpage);
 
 		//category rows
 		$tplrow = '';
@@ -556,11 +584,34 @@ class ImBackend
 			);
 		}
 
+		// load pagination templates
+		$pagination = $this->tpl->getTemplates('pagination');
+		$tpls['wrapper'] = $this->tpl->getTemplate('wrapper', $pagination);
+		$tpls['prev'] = $this->tpl->getTemplate('prev', $pagination);
+		$tpls['prev_inactive'] = $this->tpl->getTemplate('prev', $pagination);
+		$tpls['central'] = $this->tpl->getTemplate('central', $pagination);
+		$tpls['central_inactive'] = $this->tpl->getTemplate('central_inactive', $pagination);
+		$tpls['next'] = $this->tpl->getTemplate('next', $pagination);
+		$tpls['next_inactive'] = $this->tpl->getTemplate('next_inactive', $pagination);
+		$tpls['ellipsis'] = $this->tpl->getTemplate('ellipsis', $pagination);
+		$tpls['secondlast'] = $this->tpl->getTemplate('secondlast', $pagination);
+		$tpls['second'] = $this->tpl->getTemplate('second', $pagination);
+		$tpls['last'] = $this->tpl->getTemplate('last', $pagination);
+		$tpls['first'] = $this->tpl->getTemplate('first', $pagination);
+
+		$params['page'] = $page;
+		$params['items'] = $catcount;
+		$params['lastpage'] = ($catcount / $configs->backend->maxcatperpage);
+		$params['limit'] = $configs->backend->maxcatperpage;
+		$params['pageurl'] = 'load.php?id=imanager&category&page=';
+
+		$pagination = $this->im->buildPagination($tpls, $params);
+
 		return $this->tpl->render($form,  array(
 			'filter' => ((int) $configs->backend->catfilter == 1) ? $filter->content : '',
 			'page' => $page,
 			'value' => $tplrow,
-			'pagination' => ''), true, array(), true
+			'pagination' => $pagination->content), true, array(), true
 		);
 	}
 
@@ -1122,7 +1173,8 @@ class ImBackend
 					'filtervalue' => !empty($configs->backend->filtervalue) ? $configs->backend->filtervalue : ''
 				), true, array()
 			);
-		}
+		} else
+			$filter = false;
 
 		// build item rows
 		foreach($ic->items as $itemkey => $itemvalue)
@@ -1168,7 +1220,7 @@ class ImBackend
 		return $this->tpl->render($form, array(
 			'catselector' => $catselector,
 			'page' => $page,
-			'itemfilter' => !is_null($filter) ? $filter->content : '',
+			'itemfilter' => ($filter) ? $filter->content : '',
 			'content' => $lines,
 			'count' => $count,
 			'category' => $curcat->name,
@@ -1344,6 +1396,11 @@ class ImBackend
 				$fieldType->name = $fieldname;
 				$fieldType->id = $fieldType->name;
 
+
+				// hidden
+				if($field->type == 'hidden')
+					continue;
+
 				// dropdown
 				if($field->type == 'dropdown')
 					$fieldType->options = $field->options;
@@ -1409,7 +1466,7 @@ class ImBackend
 		$form = $this->tpl->render($form, array(
 				'item-id' => $id,
 				'position' => !empty($curitem->position) ? $curitem->position : '',
-				'checked' => ($active > 0) ? 'checked' : '',
+				'checked' => ($active > 0) ? ' checked ' : '',
 				'back-page' => $backpage,
 				'timestamp' => $stamp,
 				'currentcategory' => $this->im->cp->currentCategory(),

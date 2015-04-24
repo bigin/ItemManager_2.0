@@ -20,7 +20,9 @@
 			[[value]]
 		</tbody>
 	</table>
-	[[pagination]]
+	<div id="im-info-row" >
+		<p>[[pagination]]</p>
+	</div>
 	<p class="im-buttonwrapper"><span><input class="submit" type="submit" name="category_edit" value="[[lang/add_category_submit]]" /></span></p>
 </div>
 </form>

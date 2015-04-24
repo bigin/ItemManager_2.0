@@ -716,6 +716,83 @@ li.active a {
 }
 
 .im-del a:hover, .im-itemlist-table .im-del a:hover {
-	color: #d94136 !important;;
+	color: #d94136 !important;
 }
 
+/* image upload */
+.text-danger {
+	display: none;
+}
+
+.label-danger {
+	color: #d94136 !important;
+	font-weight: bold;
+}
+
+.btn.delete {
+	border: none;
+	background: transparent;
+	color: #415A66;
+}
+.btn.delete:hover {
+	color: #d94136;
+}
+
+.btn.cancel {
+	border: none;
+	background: transparent;
+	color: #415A66;
+}
+.btn.cancel:hover {
+	color: #d94136;
+}
+
+.btn.start {
+	border: none;
+	background: transparent;
+	color: #415A66;
+}
+.btn.start:hover {
+	color: #d94136;
+}
+
+.btn {
+	padding: 10px;
+}
+
+.btn:hover {
+	cursor: pointer;
+}
+
+.fileupload-buttonbar .button {
+	padding: 8px 8px !important;
+}
+
+.fileupload-buttonbar .toggle {
+	display: block;
+	float: right;
+	margin: 10px 30px;
+}
+
+.file-upload {
+	position: relative;
+	overflow: hidden;
+	margin: 10px 50px 0 0;
+	border: 1px solid #acacac;
+	border-radius: 2px 2px 2px 2px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.06);
+	color: #333333;
+	padding: 8px 8px !important;
+}
+
+.file-upload input {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}

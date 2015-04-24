@@ -82,8 +82,8 @@ class Field
 		// new file
 		if(!file_exists(IM_FIELDS_DIR . intval($this->categoryid) . IM_FIELDS_FILE_SUFFIX))
 		{
-			$newsXML = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><fields><categoryid></categoryid></fields>');
-			return $newsXML->asXml(IM_FIELDS_DIR . intval($this->categoryid) . IM_FIELDS_FILE_SUFFIX);
+			$newXML = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><fields><categoryid></categoryid></fields>');
+			return $newXML->asXml(IM_FIELDS_DIR . intval($this->categoryid) . IM_FIELDS_FILE_SUFFIX);
 
 		} elseif(is_null($this->id))
 		{
@@ -166,6 +166,56 @@ class Field
 	}
 
 
+	public function delete()
+	{
+		if(is_null($this->id))
+			return false;
+
+		$params = array();
+		$newXML = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><fields><categoryid></categoryid></fields>');
+		$xml = simplexml_load_file($this->file);
+
+		$newXML->categoryid = $this->categoryid;
+
+		foreach($xml as $fieldkey => $field)
+		{
+			// loop through the ids to except deletion fields
+			foreach($field as $k => $v)
+			{
+				if($k == 'id' && (int) $v != (int) $this->id)
+				{
+					$xmlfield = $newXML->addChild('field');
+					//$xmlfield = $field;
+					$xmlfield->id = $field->id;
+					$xmlfield->name = $field->name;
+					$xmlfield->label = $field->label;
+					$xmlfield->type = $field->type;
+					$xmlfield->position = !is_null($field->position) ? $field->position : $field->id;
+					$xmlfield->default = $field->default;
+					if(!empty($field->option))
+					{
+						foreach($field->option as $option)
+							$xmlfield->option[] = $option;
+					} else
+						$xmlfield->option = '';
+
+					$xmlfield->info = $field->info;
+					$xmlfield->required = $field->required;
+					$xmlfield->minimum = $field->minimum;
+					$xmlfield->created = $field->maximum;
+					$xmlfield->areacss = $field->areacss;
+					$xmlfield->labelcss = $field->labelcss;
+					$xmlfield->fieldcss = $field->fieldcss;
+
+					$xmlfield->created = $field->created;
+					$xmlfield->updated = $field->updated;
+
+				}
+			}
+		}
+		unset($xml);
+		return $newXML->asXml(IM_FIELDS_DIR .intval($this->categoryid) . IM_FIELDS_FILE_SUFFIX);
+	}
 
 
 	function __destruct()

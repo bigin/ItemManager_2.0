@@ -20,7 +20,7 @@
 		</div>
 		<div class="fieldarea">
 			<label for="active">[[lang/enabled]]</label>
-			<p><input id="active" name="active" type="checkbox" value="1" [[checked]] /></p>
+			<p><input id="active" name="active" type="checkbox" value="1"[[checked]]/></p>
 		</div>
 		[[custom-fields]]
 		<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>

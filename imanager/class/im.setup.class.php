@@ -233,7 +233,7 @@ class ImSetup
 
 		$item_order = (strtolower($input['itemorder']) == 'asc') ? strtolower($input['itemorder']) : 'desc';
 
-		$item_filter = !isset($input['itemfilter']) ? 1 : intval($input['itemfilter']);
+		$item_filter = !isset($input['itemfilter']) ? 0 : intval($input['itemfilter']);
 
 		$max_item_perpage = empty($input['maxitemperpage']) ? 20 : intval($input['maxitemperpage']);
 

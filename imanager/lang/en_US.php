@@ -227,4 +227,9 @@ $i18n = array(
 	, 'err_input_min_length' => '<div class="error">Error field value length: The value of the "<strong>[[fieldname]]</strong>" should be minimum of [[count]] characters.</div>'
 	, 'err_input_incomplete' => '<div class="error">Error value incomplete: "<strong>[[fieldname]]</strong>" all fields have to be filled out.</div>'
 	, 'err_input_comparison' => '<div class="error">Error: Values of the "<strong>[[fieldname]]</strong>" field do not match.</div>'
+	, 'err_delete_field' => '<div class="error">Error: "<strong>[[fieldname]]</strong>" field could not be deleted.</div>'
+	, 'add_files' => 'Add files...'
+	, 'start_upload' => 'Start upload'
+	, 'cancel_upload' => 'Cancel upload'
+	, 'delete_upload' => 'Delete'
 );

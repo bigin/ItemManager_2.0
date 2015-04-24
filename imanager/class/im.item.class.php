@@ -97,7 +97,6 @@ class ImItem
 							} else
 								$obj->$outputkey = (string) $field->$outputkey;
 						}
-
 						if(empty($obj->value) && !empty($obj->default))
 						{
 							$obj->value = (string) $obj->default;
@@ -459,21 +458,54 @@ class ImItem
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
+
+
+			$num = substr_count($val, '%');
+
+			$pat = false;
+			if($num == 1)
+			{
+				$pos = strpos($val, '%');
+				if($pos == 0)
+				{
+					$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'$/';
+				} elseif($pos == strlen($val))
+				{
+					$pat = '/^'.strtolower(trim(str_replace('%', '', $val))).'/';
+				}
+
+			} elseif($num == 2)
+			{
+				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
+			}
+
+
+
+
 			if(false !== strpos($key, ' '))
 				return false;
 
 			// searching for the name and other simple attributs
 			if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active')
+			{
 				foreach($items as $itemkey => $item)
-					if($item->$key == $val)
+				{
+					if($item->$key == $val && !$pat)
 						return $item;
+					elseif($pat && preg_match($pat, strtolower($item->$key)))
+						return $item;
+				}
 
+				return false;
+			}
 			// searching for fields & complex value types
 			foreach($items as $itemkey => $item)
 			{
 				foreach($item->fields as $fieldkey => $fieldval)
 				{
-					if($fieldkey == $key && $fieldval->value == $val)
+					if(!empty($fieldval->value) && $fieldkey == $key && $fieldval->value == $val)
+						return $item;
+					elseif(!empty($fieldval->value) && $pat && preg_match($pat, strtolower($fieldval->value)))
 						return $item;
 				}
 			}
@@ -492,12 +524,29 @@ class ImItem
 		{
 			if(false !== strpos($stat, $pval))
 			{
-				echo $pval .'<br />';
 				$data = explode($pval, $stat, 2);
 				$key = strtolower(trim($data[0]));
 				$val = trim($data[1]);
 				if(false !== strpos($key, ' '))
 					return false;
+
+				$num = substr_count($val, '%');
+				$pat = false;
+				if($num == 1)
+				{
+					$pos = strpos($val, '%');
+					if($pos == 0)
+					{
+						$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'$/';
+					} elseif($pos == (strlen($val)-1))
+					{
+						$pat = '/^'.strtolower(trim(str_replace('%', '', $val))).'/';
+					}
+				} elseif($num == 2)
+				{
+					$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
+
+				}
 
 				// searching for the name and other simple attributs
 				if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active')
@@ -521,7 +570,10 @@ class ImItem
 							if(!isset($item->$key) || $item->$key >= $val) continue;
 						} elseif($pkey == 5)
 						{
-							if(!isset($item->$key) || $item->$key != $val) continue;
+							if((!isset($item->$key) || $item->$key != $val) && !$pat)
+								continue;
+							elseif(!isset($item->$key) || !$pat || !preg_match($pat, strtolower($item->$key)))
+								continue;
 						}
 
 						$res[$item->get('id')] = $item;
@@ -532,6 +584,7 @@ class ImItem
 				{
 					foreach($items as $itemkey => $item)
 					{
+						var_dump($item);
 						foreach($item->fields as $fieldkey => $fieldval)
 						{
 							if($pkey == 0)
@@ -551,7 +604,11 @@ class ImItem
 								if(!isset($item->fields->$key) || $item->fields->$key->value >= $val) continue;
 							}elseif($pkey == 5)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value != $val) continue;
+								if((!isset($item->fields->$key) || $item->fields->$key->value != $val) && !$pat)
+									continue;
+								elseif(!isset($item->fields->$key) || !$pat || !preg_match($pat,
+										strtolower($item->fields->$key->value)))
+									continue;
 							}
 
 							$res[$item->get('id')] = $item;

@@ -467,9 +467,24 @@ class ImModel
 			$field->save();
 		}
 
+		// remove deleted fieds
+		$data = ImFields::getFieldsSaveInfo($input['cat']);
+		$result = array_diff($data['ids'], $ids);
+		foreach($result as $fieldkey)
+		{
+			$deletion = $fc->getField($fieldkey);
+			if(!$deletion->delete())
+			{
+				ImMsgReporter::setClause('err_delete_field', array('fieldname' => $deletion->name), true);
+				return false;
+			}
+		}
+
 		ImMsgReporter::setClause('save_success');
 		return true;
 	}
+
+
 
 
 
@@ -746,6 +761,7 @@ class ImModel
 		and loop through the fields of the item to save these values */
 
 		$curitem->name = $input['name'];
+		$curitem->active = isset($input['active']) ? intval($input['active']) : 0;
 
 		$tmp_image_dir = '';
 
@@ -864,7 +880,7 @@ class ImModel
 
 		/* Check if it's a new item as we have not had the standard item-ID
 		   and temporary image directory should be renamed */
-		if(!empty($tmp_image_dir))
+		if(!empty($tmp_image_dir) && file_exists($tmp_image_dir))
 		{
 			if(!$this->renameTmpDir($curitem))
 			{
