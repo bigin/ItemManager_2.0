@@ -203,6 +203,11 @@ class ImSetup
 		$max_item_name = (isset($input['maxitemname']) && intval($input['maxitemname']) > 0)
 			? intval($input['maxitemname']) : 50;
 
+		$i18nsearch = !isset($input['i18nsearch']) ? 0 : 1;
+		$i18nsearch_field = (!empty($input['i18nsearchfield'])) ? $input['i18nsearchfield'] : '';
+		$i18nsearch_excludes = (!empty($input['i18nsearchexcludes'])) ? $input['i18nsearchexcludes'] : '';
+
+
 		$time_format = (!empty($input['timeformat'])) ? $input['timeformat'] : 'Y-m-d h:m:s';
 
 		$cat_backup = !isset($input['catbackup']) ? 0 : intval($input['catbackup']);
@@ -270,8 +275,9 @@ class ImSetup
 		// max item name
 		$common_xml->addChild('maxitemname', $max_item_name);
 
-
-
+		$common_xml->addChild('i18nsearch', $i18nsearch);
+		$common_xml->addChild('i18nsearchfield', $i18nsearch_field);
+		$common_xml->addChild('i18nsearchexcludes', $i18nsearch_excludes);
 
 		// Backend
 

@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: ItemManager
- * Description: Full-featured ItemManager.
- * Version: 1.0
+ * Description: A simple flat-file Framework.
+ * Version: 2.0
  * Author: Juri Ehret
- * Author URI: http://ehret-studio.com
+ * Author URL: http://ehret-studio.com
  *
  * This file is part of ItemManager.
  *
@@ -51,6 +51,7 @@ class ImItem
 		$this->items = array();
 		foreach(glob(IM_ITEM_DIR.'*.'.$catid.IM_ITEM_FILE_SUFFIX) as $file)
 		{
+
 			$base = basename($file, IM_ITEM_FILE_SUFFIX);
 			$strp = strpos($base, '.');
 			$id = substr($base, 0, $strp);
@@ -75,11 +76,15 @@ class ImItem
 
 			foreach($fc->fields as $name => $obj)
 			{
+				$new_field = new Field($category);
+				// clone object because otherwise we'll lose the value data
+				$new_field = clone $obj;
+
 				foreach($xml->field as $fieldkey => $field)
 				{
-					if( $obj->get('id') == $field->id)
+					if( $new_field->get('id') == $field->id)
 					{
-						$inputClassName = 'Input'.$obj->type;
+						$inputClassName = 'Input'.$new_field->type;
 						$InputType = new $inputClassName($fc->fields[$name]);
 						$output = $InputType->prepareOutput();
 
@@ -87,24 +92,27 @@ class ImItem
 						{
 							if(is_array($outputvalue))
 							{
-								$obj->$outputkey = array();
+								$new_field->$outputkey = array();
 								$counter = 0;
 								foreach($field->$outputkey as $arrkey => $arrval)
 								{
-									$obj->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
+									$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
 									$counter++;
 								}
 							} else
-								$obj->$outputkey = (string) $field->$outputkey;
+							{
+								$new_field->$outputkey = '';
+								$new_field->$outputkey = (string) $field->$outputkey;
+							}
 						}
-						if(empty($obj->value) && !empty($obj->default))
+						if(empty($new_field->value) && !empty($new_field->default))
 						{
-							$obj->value = (string) $obj->default;
+							$new_field->value = (string) $new_field->default;
 						}
 					}
 				}
-				// clone object because otherwise we'll lose the value data
-				$item->fields->$name = clone $obj;
+
+				$item->fields->$name = $new_field;
 			}
 
 			$this->items[$item->get('id')] = $item;
@@ -151,11 +159,15 @@ class ImItem
 
 				foreach($fc->fields as $name => $obj)
 				{
+					$new_field = new Field($category);
+					// clone object because otherwise we'll lose the value data
+					$new_field = clone $obj;
+
 					foreach($xml->field as $fieldkey => $field)
 					{
-						if( $obj->get('id') == $field->id)
+						if( $new_field->get('id') == $field->id)
 						{
-							$inputClassName = 'Input'.$obj->type;
+							$inputClassName = 'Input'.$new_field->type;
 							$InputType = new $inputClassName($fc->fields[$name]);
 							$output = $InputType->prepareOutput();
 
@@ -163,25 +175,28 @@ class ImItem
 							{
 								if(is_array($outputvalue))
 								{
-									$obj->$outputkey = array();
+									$new_field->$outputkey = array();
 									$counter = 0;
 									foreach($field->$outputkey as $arrkey => $arrval)
 									{
-										$obj->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
+										$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
 										$counter++;
 									}
 								} else
-									$obj->$outputkey = (string) $field->$outputkey;
+								{
+									$new_field->$outputkey = '';
+									$new_field->$outputkey = (string) $field->$outputkey;
+								}
 							}
 
-							if(empty($obj->value) && !empty($obj->default))
+							if(empty($new_field->value) && !empty($new_field->default))
 							{
-								$obj->value = (string) $obj->default;
+								$new_field->value = (string) $new_field->default;
 							}
 						}
 					}
-					// clone object because otherwise we'll lose the value data
-					$item->fields->$name = clone $obj;
+
+					$item->fields->$name = $new_field;
 				}
 
 				$this->items[$catid][$item->get('id')] = $item;
@@ -479,9 +494,6 @@ class ImItem
 				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
 			}
 
-
-
-
 			if(false !== strpos($key, ' '))
 				return false;
 
@@ -498,7 +510,7 @@ class ImItem
 
 				return false;
 			}
-			// searching for fields & complex value types
+			// searching for field in complex value types
 			foreach($items as $itemkey => $item)
 			{
 				foreach($item->fields as $fieldkey => $fieldval)
@@ -570,21 +582,24 @@ class ImItem
 							if(!isset($item->$key) || $item->$key >= $val) continue;
 						} elseif($pkey == 5)
 						{
-							if((!isset($item->$key) || $item->$key != $val) && !$pat)
+							if((!isset($item->$key) || $item->$key != $val) && !$pat) {
+
 								continue;
-							elseif(!isset($item->$key) || !$pat || !preg_match($pat, strtolower($item->$key)))
+							}
+							elseif($pat && !preg_match($pat, strtolower($item->$key))){
 								continue;
+							}
 						}
+
 
 						$res[$item->get('id')] = $item;
 					}
 
-				// searching for fields & complex value types
+				// searching for fields in complex value types
 				} else
 				{
 					foreach($items as $itemkey => $item)
 					{
-						var_dump($item);
 						foreach($item->fields as $fieldkey => $fieldval)
 						{
 							if($pkey == 0)
@@ -606,8 +621,7 @@ class ImItem
 							{
 								if((!isset($item->fields->$key) || $item->fields->$key->value != $val) && !$pat)
 									continue;
-								elseif(!isset($item->fields->$key) || !$pat || !preg_match($pat,
-										strtolower($item->fields->$key->value)))
+								elseif($pat && !preg_match($pat, strtolower($item->fields->$key->value)))
 									continue;
 							}
 

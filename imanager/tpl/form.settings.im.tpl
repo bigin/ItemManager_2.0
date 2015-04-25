@@ -25,6 +25,27 @@
 					<label for="maxitemname">[[lang/item_max_length]]</label>
 					<p><input id="maxitemname" class="number-fields-left number" name="maxitemname" type="number" value="[[maxitemname]]"></p>
 				</div>
+
+				<h2 class="menuglava">[[lang/search_settings_section]]</h2>
+
+				<div class="fieldarea">
+					<label for="i18nsearch">[[lang/i18nsearch_engine]]</label>
+					<p class="field-info">[[lang/i18nsearch_engine_info]]</p>
+					<p><input id="i18nsearch" class="checkbox-fields-left" name="i18nsearch" type="checkbox" value="1" [[i18nsearch]]></p>
+					<div class="im-toggle" id="i18nsearch_fields">
+						<div class="fieldarea intern">
+							<label for="i18nsearchfields">[[lang/i18nsearch_field]]</label>
+							<p class="field-info">[[lang/i18nsearch_field_info]]</p>
+							<p><input id="i18nsearchfield" class="text-fields-left text" name="i18nsearchfield" type="text" value="[[i18nsearch_field]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="i18nsearchexcludes">[[lang/i18nsearch_exclude_category]]</label>
+							<p class="field-info">[[lang/i18nsearch_exclude_category_info]]</p>
+							<p><input id="i18nsearchexcludes" class="text-fields-left text" name="i18nsearchexcludes" type="text" value="[[exclude_categories]]"></p>
+						</div>
+					</div>
+				</div>
+
 			</div>
 
 			<div id="tab2" class="tab">
@@ -237,6 +258,10 @@
 		if($("#itembackup").attr('checked')) {
 			$("#items").show();
 		}
+		if($("#i18nsearch").attr('checked')) {
+			$("#i18nsearch_fields").show();
+		}
+
 
 		$("#catbackup").change(function(){
 			$("#category").toggle();
@@ -247,7 +272,9 @@
 		$("#itembackup").change(function(){
 			$("#items").toggle();
 		});
-
+		$("#i18nsearch").change(function(){
+			$("#i18nsearch_fields").toggle();
+		});
 
 	});
 	</script>

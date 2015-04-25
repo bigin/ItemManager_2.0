@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: ItemManager
- * Description: Full-featured  ItemManager.
- * Version: 1.0
+ * Description: A simple flat-file Framework.
+ * Version: 2.0
  * Author: Juri Ehret
  * Author URL: http://ehret-studio.com
  *
@@ -59,10 +59,10 @@ define('IMTITLE', 'PettyShop');
 register_plugin(
 	$thisfile,
 	'Item Manager',
-	'1.0',
+	'2.0',
 	'Juri Ehret 10.04.2015',
 	'http://ehret-studio.com',
-	'Full featured Framework',
+	'A simple flat-file Framework',
 	'imanager',
 	'imanager'
 );
@@ -75,9 +75,7 @@ add_action('search-index', 'i18n_search_im_index');
 add_filter('search-item', 'i18n_search_im_item');
 /* include your own CSS for beautiful manager style */
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
-
 register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css', GSVERSION, 'screen');
-
 register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
 queue_style('imstyle', GSBOTH);
 queue_style('imstylefonts', GSBOTH);
@@ -171,9 +169,9 @@ function imanager()
 	$backend = $manager->backend->display($request);
 	echo $backend->content;
 }
+
 function ajaxGetLists()
 {
-	//echo 'test'; exit();
 	if(isset($_GET['getcatlist']))
 	{
 		$request = array_merge($_GET, $_POST);
@@ -198,13 +196,22 @@ function i18n_search_im_index()
 	$manager->item->initAll();
 	$items = $manager->item->items;
 
+	// get the array excludes
+	$excludes = array_map('trim', explode(',', $manager->config->common->i18nsearchexcludes));
+	$sfield = $manager->config->common->i18nsearchfield;
+	$fc = new ImFields();
+
 	foreach($items as $categoryid => $items)
 	{
+		if(in_array($categoryid, $excludes)) continue;
+		if(!$fc->fieldsExists($categoryid)) continue;
+
 		foreach($items as $itemid => $itemdata)
 		{
+			if(empty($itemdata->fields->$sfield->value)) continue;
 			$id = $itemid .'.'. $categoryid;
 			$title = strip_tags($itemdata->name);
-			$content = '';//html_entity_decode(strip_tags(htmlspecialchars_decode($itemdata->content)), ENT_QUOTES, 'UTF-8');
+			$content = html_entity_decode(strip_tags(htmlspecialchars_decode($itemdata->fields->$sfield->value)), ENT_QUOTES, 'UTF-8');
 			i18n_search_index_item('im:'.$id, null, $itemdata->created, $itemdata->created, null, $title, $content);
 		}
 	}
@@ -212,9 +219,9 @@ function i18n_search_im_index()
 
 function i18n_search_im_item($id, $language, $creDate, $pubDate, $score)
 {
-	if (!class_exists('I18nSearchNewsManangerResultItem'))
+	if (!class_exists('I18nSearchImResult'))
 	{
-		class I18nSearchNewsManangerResultItem extends I18nSearchResultItem
+		class I18nSearchImResult extends I18nSearchResultItem
 		{
 			protected $data = null;
 
@@ -242,7 +249,7 @@ function i18n_search_im_item($id, $language, $creDate, $pubDate, $score)
 	}
 
 	if (substr($id,0,3) == 'im:') {
-		return new I18nSearchNewsManangerResultItem($id, $language, $creDate, $pubDate, $score);
+		return new I18nSearchImResult($id, $language, $creDate, $pubDate, $score);
 	}
 	return null;
 }

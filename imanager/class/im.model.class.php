@@ -5,7 +5,6 @@
 class ImModel
 {
 	public $is_admin_panel;
-    private $imfcon;
 	private $setup;
 
 	// new
@@ -15,75 +14,39 @@ class ImModel
 	// category processor
 	public $cp;
 
+	public static $installed;
 
-    public static $installed;
-	public $imcat;
+	public $item;
 
 
 	public function __construct()
 	{
 
-        self::$installed = false;
-
-
-		// Das hier noch ersetzen
-		//self::$preferences = getXML(self::$properties['paths']['preferfile']);
-
-
+		self::$installed = false;
 
 		// get all categories
 		$this->category = new ImCategory($this);
 		$this->category->init();
 
-		//var_dump($this->category);
-
-		//$this->category->getAll();
-
-
-		//exit();
-
 		// category controller
 		$this->cp = new ImCategoryProcessor($this->category);
 		// alle categorien einlesen
 
-
 		// initialize settup class
 		$this->config = new ImSetup();
 
+		// check if user inside admin panel
+		$this->is_admin_panel = (!defined('IN_GS')) ? false : true;
 
-		//$this->config = $this->setup->config;
-
-
-
-		// Das sind neue Config-Daten
-		//self::$config = getXML(IM_CONFIG_FILE);
-
-
-		// category class
-		//$this->category = new ImCategory($this);
-
-
-
-
-        //$this->imrep = new ImReporter(GSPLUGINPATH.'imanager/tpl/');
-
-
-		//$this->category = new ImCategory($this->imcat->categories);
-
-        // initialise field configurator
-        //$this->imfcon = new ImFieldsConfigurator($this);
-        // check if user inside admin panel
-        $this->is_admin_panel = (!defined('IN_GS')) ? false : true;
-
-        // start SETUP Procedure
-        if (!file_exists(ITEMDATA))
-        {
+		// start SETUP Procedure
+		if (!file_exists(ITEMDATA))
+		{
 			if($this->config->setup())
 				if(!file_exists(IM_CONFIG_FILE))
 				{
 					if($this->config->setupConfig())
 					{
-						$this->preferencess_refresh();
+						$this->preferencessRefresh();
 						self::$installed = true;
 					}
 				}
@@ -92,21 +55,21 @@ class ImModel
 			self::$installed = true;
 		}
 
-        // if categories have not yet been created
-        if(!$this->cp->is_cat_exist && !self::$installed)
-        {
-            if(isset($this->input['view']))
-            {
-                ImMsgReporter::setClause('no_items_yet'); 
-            } elseif(isset($this->input['edit']))
-            {
-                ImMsgReporter::setClause('no_category_created',
-                    array('noun' => ImMsgReporter::getClause('elements')));
-            } elseif(isset($this->input['fields']))
-            {
-                ImMsgReporter::setClause('no_fields_yet');
-            }
-        }
+		// if categories have not yet been created
+		if(!$this->cp->is_cat_exist && !self::$installed)
+		{
+			if(isset($this->input['view']))
+			{
+				ImMsgReporter::setClause('no_items_yet');
+			} elseif(isset($this->input['edit']))
+			{
+				ImMsgReporter::setClause('no_category_created',
+					array('noun' => ImMsgReporter::getClause('elements')));
+			} elseif(isset($this->input['fields']))
+			{
+				ImMsgReporter::setClause('no_fields_yet');
+			}
+		}
 
 		// initialise our classes
 		$this->item = new ImItem();
@@ -117,7 +80,7 @@ class ImModel
 	/* ItemManager 1.0 */
 
 	// refresh process preferencess FUNKTION BITTE NOCH ÄNDERN ODER LÖSCHEN
-	public function preferencess_refresh() { self::$config = getXML(IM_CONFIG_FILE);}
+	public function preferencessRefresh() { self::$config = getXML(IM_CONFIG_FILE);}
 
 
 	/**
@@ -182,9 +145,12 @@ class ImModel
 		{
 			foreach($ic->items as $item_id => $item)
 			{
-				if(!$this->config->createBackup(IM_ITEM_DIR, $item_id.'.'.$item->get('categoryid'), IM_ITEM_FILE_SUFFIX))
+				if(!$this->config->createBackup(IM_ITEM_DIR, $item_id.'.'.$item->get('categoryid'),
+					IM_ITEM_FILE_SUFFIX))
 				{
-					ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->itembackupdir), true);
+					ImMsgReporter::setClause('err_backup', array(
+						'backup' => $this->config->backend->itembackupdir), true
+					);
 					return false;
 				}
 
@@ -519,6 +485,13 @@ class ImModel
 
 	}
 
+	function deleteSearchIndex()
+	{
+		if(function_exists('delete_i18n_search_index'))
+			delete_i18n_search_index();
+		/*require_once(GSPLUGINPATH.'i18n_search/indexer.class.php');
+		I18nSearchIndexer::deleteIndex();*/
+	}
 
 
 	protected function getDuplicate($arr, $clean=false)
@@ -572,7 +545,8 @@ class ImModel
 
  	public function buildPagination(array $tpls, array $params)
 	{
-		$maxitemperpage = ((int) $this->config->backend->maxitemperpage > 0) ? $this->config->backend->maxitemperpage : 20;
+		$maxitemperpage = ((int) $this->config->backend->maxitemperpage > 0) ?
+			$this->config->backend->maxitemperpage : 20;
 		$limit = !empty($params['limit']) ? $params['limit'] : $this->config->backend->maxitemperpage;
 		$adjacents = !empty($params['adjacents']) ? $params['adjacents'] : 3;
 		$lastpage = !empty($params['lastpage']) ? $params['lastpage'] : ceil($params['items'] / $maxitemperpage);
@@ -626,15 +600,18 @@ class ImModel
 						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter, 'counter' => $counter), true));
+						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true));
 					}
 				}
 				// ...
 				$output->push($tpl->render($tpls['ellipsis']));
 				// sec last
-				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1), 'counter' => ($lastpage - 1)), true));
+				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
+					'counter' => ($lastpage - 1)), true));
 				// last
-				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage, 'counter' => $lastpage), true));
+				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
+					'counter' => $lastpage), true));
 			}
 			// middle pos; hide some front and some back
 			elseif($lastpage - ($adjacents * 2) > $page && $page > ($adjacents * 2))
@@ -653,15 +630,18 @@ class ImModel
 						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter, 'counter' => $counter), true));
+						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true));
 					}
 				}
 				// ...
 				$output->push($tpl->render($tpls['ellipsis']));
 				// sec last
-				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1), 'counter' => ($lastpage - 1)), true));
+				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
+					'counter' => ($lastpage - 1)), true));
 				// last
-				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage, 'counter' => $lastpage), true));
+				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
+					'counter' => $lastpage), true));
 			}
 			//close to end; only hide early pages
 			else
@@ -680,7 +660,8 @@ class ImModel
 						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter, 'counter' => $counter), true));
+						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true));
 					}
 				}
 			}
@@ -755,6 +736,12 @@ class ImModel
 			return false;
 		}
 
+		// check item name length
+		if(strlen($input['name']) > $this->config->common->maxitemname)
+		{
+			ImMsgReporter::setClause('err_item_name_length', array('count' => intval($this->config->common->maxitemname)));
+			return false;
+		}
 
 
 		/* Ok, the standard procedure is completed and now we want to make the next step
@@ -891,6 +878,9 @@ class ImModel
 			$this->cleanUpTempContainers('imageupload');
 		}
 
+		// delete search index (i18n search)
+		$this->deleteSearchIndex();
+
 		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input($input['name'])));
 		return true;
 	}
@@ -929,7 +919,8 @@ class ImModel
 		// backup item before delete
 		if(intval($this->config->backend->itembackup) == 1)
 		{
-			if(!$this->config->createBackup(IM_ITEM_DIR, $item->get('id').'.'.$item->get('categoryid'), IM_ITEM_FILE_SUFFIX))
+			if(!$this->config->createBackup(IM_ITEM_DIR, $item->get('id').'.'.$item->get('categoryid'),
+				IM_ITEM_FILE_SUFFIX))
 			{
 				ImMsgReporter::setClause('err_backup', array('backup' => $this->config->backend->itembackupdir), true);
 				return false;
@@ -949,6 +940,8 @@ class ImModel
 
 		/* Item has been successfully deleted, now we have to clean up the image uploads */
 		$this->delTree($imagedir);
+		// delete search index (i18n search)
+		$this->deleteSearchIndex();
 
 		// The deletion was successful, show a message
 		ImMsgReporter::setClause('item_deleted', array('item' => $itemname));

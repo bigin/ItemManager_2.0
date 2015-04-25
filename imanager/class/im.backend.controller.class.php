@@ -227,7 +227,7 @@ class ImBackend
 
 
 		//echo '<pre>';
-		//print_r($icont->getItem('name=%Wanda'));
+		//print_r($icont->getItems('name=Wanda'));
 		// Das verursacht Fehler bitte noch prüfen
 		//print_r($icont->items);
 		//echo '</pre>';
@@ -719,6 +719,9 @@ class ImBackend
 				'fieldbackupdir' => $configs->backend->fieldbackupdir,
 				'min_fieldbackup_days' => (intval($configs->backend->min_fieldbackup_days) > 0)
 						? intval($configs->backend->min_fieldbackup_days) : 0,
+				'i18nsearch' => ($configs->common->i18nsearch == 1) ? ' checked ' : '',
+				'i18nsearch_field' => $configs->common->i18nsearchfield,
+				'exclude_categories' => $configs->common->i18nsearchexcludes,
 
 				'catfilter' => ($configs->backend->catfilter == 1) ? ' checked ' : '',
 				'ten' => ($configs->backend->maxcatperpage == 10) ? 'selected' : '',
@@ -1130,7 +1133,13 @@ class ImBackend
 		{
 
 			// build field options for items of current category
-			$fieldoptions = '';
+			$fieldoptions = new Template();
+			$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
+					'fieldname' => 'name',
+					'selected' => (!empty($configs->backend->filterbyfield) &&
+							(string) $configs->backend->filterbyfield == 'name') ? 'selected' : '',
+					'fieldlabel' => 'Item name')
+			));
 			// initialize fields
 			$fc = new ImFields();
 			if($fc->fieldsExists($curcat->get('id')))
@@ -1138,13 +1147,13 @@ class ImBackend
 				$fc->init($curcat->get('id'));
 				foreach($fc->fields as $fname => $fval)
 				{
-					$optionsbuff = $this->tpl->render($filteroptiontpl, array(
+					$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
 						'fieldname' => $fname,
 						'selected' => (!empty($configs->backend->filterbyfield) &&
 						(string) $configs->backend->filterbyfield == (string) $fname) ? 'selected' : '',
 						'fieldlabel' => !empty($fval->label) ? $fval->label : $fname)
-					);
-					$fieldoptions .= $optionsbuff->content;
+					));
+					//$fieldoptions .= $optionsbuff->content;
 				}
 			}
 
@@ -1159,7 +1168,7 @@ class ImBackend
 					'created' => ($filterby == 'created') ? 'selected' : '',
 					'updated' => ($filterby == 'updated') ? 'selected' : '',
 					'nswitch' => $this->buildNumberSwitch('item'),
-					'fieldoptions' => $fieldoptions,
+					'fieldoptions' => $fieldoptions->content,//$fieldoptions,
 					'eq' => (!empty($configs->backend->filter) &&
 							(string) $configs->backend->filter == 'eq') ? 'selected' : '',
 					'geq' => (!empty($configs->backend->filter) &&
@@ -1275,7 +1284,8 @@ class ImBackend
 		{
 			$fc->init($this->im->cp->currentCategory());
 
-			if(!empty($configs->backend->filterbyfield) && $fc->fieldNameExists((string) $configs->backend->filterbyfield) &&
+			if(!empty($configs->backend->filterbyfield) && ($fc->fieldNameExists((string) $configs->backend->filterbyfield)
+				|| $configs->backend->filterbyfield == 'name') &&
 				!empty($configs->backend->filter) && !empty($configs->backend->filtervalue))
 			{
 				if($configs->backend->filter == 'eq') $filter = '=';
@@ -1285,6 +1295,8 @@ class ImBackend
 				elseif($configs->backend->filter == 'g') $filter = '>';
 
 				$query = $configs->backend->filterbyfield.$filter.$configs->backend->filtervalue;
+
+				//echo $query; exit();
 
 				$ic->items = $ic->getItems((string)$query, $start, (int) $maxitemperpage);
 
@@ -1373,6 +1385,11 @@ class ImBackend
 			$active = $this->im->config->backend->itemactive;
 		} else
 			$active = $curitem->active;
+
+		/*echo '<pre>';
+		print_r($curitem);
+		echo '</pre>';*/
+
 
 		// Initialize fields
 		$fc = new ImFields();

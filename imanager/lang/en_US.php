@@ -181,6 +181,7 @@ $i18n = array(
 	, 'err_by_empty_field' => '<div class="error">The "<strong>[[field]]</strong>" is a required field.</div>'
 	, 'err_item_exists' => '<div class="error">Item with entered "[[name]]" name already exists.</div>'
 	, 'err_save_item' => '<div class="error">Error saving item</div>'
+	, 'err_item_name_length' => '<div class="error">Error saving item: The item names are limited to a maximum of [[count]] characters.</div>'
 	, 'item_successfully_saved' => '<div class="updated">The "<strong>[[name]]</strong>" item have been successfully saved.</div>'
 	, 'err_rename_directory' => 'Error occurred while renaming temporary directory "<strong>[[name]]</strong>". Please rename it manually and make sure that direcrory is writable.'
 	, 'tmp_itage_min_time' => 'Retention period for temporary image containers'
@@ -232,4 +233,12 @@ $i18n = array(
 	, 'start_upload' => 'Start upload'
 	, 'cancel_upload' => 'Cancel upload'
 	, 'delete_upload' => 'Delete'
+	, 'search_settings_section' => 'Search engine settings'
+	, 'i18nsearch_engine' => 'Use I18N Search plugin'
+	, 'i18nsearch_engine_info' => '<i class="fa fa-info-circle"></i> If you enable this option, the <a href="http://get-simple.info/extend/plugin/i18n/69/" >I18N Search plugin</a> must already be installed.'
+	, 'i18nsearch_field' => 'Field name(s) for searching'
+	, 'i18nsearch_field_info' => '<i class="fa fa-info-circle"></i> Enter one field name in order to make them available for searching engine. At present, only a field is accepted.'
+	, 'i18nsearch_exclude_category' => 'Exclude Categories'
+	, 'i18nsearch_exclude_category_info' => 'Enter one or several category ids separated with comma, to exclude from search results.'
+
 );
