@@ -1,5 +1,5 @@
 
-# ItemManager 2.0 # 
+# ItemManager 2.0 #
 
 *This text is still at the drafting stage at this moment*
 
