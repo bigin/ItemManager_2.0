@@ -1,10 +1,13 @@
-# ItemManager 2.0 #
+
+# ItemManager 2.0 # 
+
+*This text is still at the drafting stage at this moment*
+
 ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely configurable PHP applications bundled with GetSimple-CMS.
 
 ItemManager is distributed in the hope that it will be useful, to help to promote rapid application development, which saves you time, and reduces the amount of repetitive coding for developers.
 
 Developers can utilize IM for various reasons, but the number one reason is for speeding up the plugin development process.
-
 
 ### Compatibility with previous versions ###
 The ItemManager 2.0 was not only completely revised, but also totally restructured, as a result all previous versions of ItemManager are no longer compatible with ItemManager 2.0 version. 
