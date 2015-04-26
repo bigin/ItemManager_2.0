@@ -14,14 +14,14 @@ The ItemManager 2.0 was not only completely revised, but also totally restructur
 
 
 ### What applications can be realized with the ItemManager ###
-The ItemManager is particularly well suited for the development of any software of sufficient size and complexity, but small-sized data volumes, depending on the memory and server performance. 
-
-
-
-
+The ItemManager is particularly well suited for the development of any software of sufficient size and complexity, but for small-sized data volumes, depending on the memory and server performance. 
 
 
 ### Requirements ###
 The IM was made for modern, standards compliant browsers, older browser are not supported.
-10.10.3
-The application has been developed on the basis of PHP 5.5.10 including some additional modules like GD. The IM has also been tested with * PHP version on an Apache Server under Linux. In theory the IM will run on lower versions of PHP as well but this was not tested. 
+The application has been developed on the basis of PHP 5.5.10 including some additional modules like GD. The IM has also been tested with * PHP version on an Apache Server under Linux. In theory the IM will run on lower versions of PHP like 5.4.0 as well but this was not tested. PHP installations below version 5.4.0 won't be able to utilize this plugin.
+
+
+### How this application works ###
+ItemManager 2.0 comes with a back-end area, however, the backend is completely customizable and based on the available IM-API and provides a lot of functions in order to *.
+ 
