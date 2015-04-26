@@ -14,7 +14,7 @@ The ItemManager 2.0 was not only completely revised, but also totally restructur
 
 
 ### What applications can be realized with the ItemManager ###
-The ItemManager is particularly well suited for the development of any software of sufficient size and complexity, but for small-sized data volumes, depending on the memory and server performance. 
+The ItemManager is particularly well suited for the development of any software of sufficient size and complexity, but depending on the memory and server performance for small-sized data volumes. 
 
 
 ### Requirements ###
