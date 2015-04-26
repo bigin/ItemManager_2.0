@@ -235,7 +235,7 @@ $i18n = array(
 	, 'delete_upload' => 'Delete'
 	, 'search_settings_section' => 'Search engine settings'
 	, 'i18nsearch_engine' => 'Use I18N Search plugin'
-	, 'i18nsearch_engine_info' => '<i class="fa fa-info-circle"></i> If you enable this option, the <a href="http://get-simple.info/extend/plugin/i18n/69/" >I18N Search plugin</a> must already be installed.'
+	, 'i18nsearch_engine_info' => '<i class="fa fa-info-circle"></i> If you enable this option, the <a href="http://get-simple.info/extend/plugin/i18n-search/82/" >I18N Search plugin</a> must already be installed.'
 	, 'i18nsearch_field' => 'Field name(s) for searching'
 	, 'i18nsearch_field_info' => '<i class="fa fa-info-circle"></i> Enter one field name in order to make them available for searching engine. At present, only a field is accepted.'
 	, 'i18nsearch_exclude_category' => 'Exclude Categories'

@@ -18,6 +18,8 @@ class ImModel
 
 	public $item;
 
+	public $hooks;
+
 
 	public function __construct()
 	{
@@ -74,10 +76,23 @@ class ImModel
 		// initialise our classes
 		$this->item = new ImItem();
 		$this->backend = new ImBackend($this);
+
+		global $plugins;
+
+		$hooksarr = array('ImBeforeItemSave',
+			'ImAfterItemSave',
+		);
+
+		foreach($plugins as $key => $plugin)
+		{
+			if(in_array($plugin['hook'], $hooksarr))
+			{
+				$plugins[$key]['args']['imanager'] = & $this;
+			}
+		}
+
 	}
 
-
-	/* ItemManager 1.0 */
 
 	// refresh process preferencess FUNKTION BITTE NOCH ÄNDERN ODER LÖSCHEN
 	public function preferencessRefresh() { self::$config = getXML(IM_CONFIG_FILE);}
@@ -679,6 +694,9 @@ class ImModel
 
 	public function saveItem(&$input)
 	{
+
+		exec_action('ImBeforeItemSave');
+
 		/* check there the user errors: If the user tried to compromise the script, we'll
 		reset field values to empty and display an error message */
 
@@ -882,6 +900,8 @@ class ImModel
 		$this->deleteSearchIndex();
 
 		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input($input['name'])));
+
+		exec_action('ImAfterItemSave');
 		return true;
 	}
 

@@ -46,6 +46,10 @@ define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
 define('IM_SITE_URL', $SITEURL);
 define('IM_LANGUAGE', $LANG);
 
+//define('IM_ACTION_IMANAGER', 'imanager');
+
+
+
 
 // bestimmte bereiche im Admin deaktivieren
 //define('IM_HIDE_SETTINGS', 1);

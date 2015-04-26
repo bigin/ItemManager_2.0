@@ -565,24 +565,26 @@ class ImItem
 				{
 					foreach($items as $itemkey => $item)
 					{
+						if(!isset($item->$key)) continue;
+
 						if($pkey == 0)
 						{
-							if(!isset($item->$key) || $item->$key < $val) continue;
+							if($item->$key < $val) continue;
 						} elseif($pkey == 1)
 						{
-							if(!isset($item->$key) || $item->$key > $val) continue;
+							if($item->$key > $val) continue;
 						} elseif($pkey == 2)
 						{
-							if(!isset($item->$key) || $item->$key == $val) continue;
+							if($item->$key == $val) continue;
 						} elseif($pkey == 3)
 						{
-							if(!isset($item->$key) || $item->$key <= $val) continue;
+							if($item->$key <= $val) continue;
 						} elseif($pkey == 4)
 						{
-							if(!isset($item->$key) || $item->$key >= $val) continue;
+							if($item->$key >= $val) continue;
 						} elseif($pkey == 5)
 						{
-							if((!isset($item->$key) || $item->$key != $val) && !$pat) {
+							if($item->$key != $val && !$pat) {
 
 								continue;
 							}
@@ -602,24 +604,26 @@ class ImItem
 					{
 						foreach($item->fields as $fieldkey => $fieldval)
 						{
+							if(!isset($item->fields->$key->value)) continue;
+
 							if($pkey == 0)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value < $val) continue;
+								if($item->fields->$key->value < $val) continue;
 							} elseif($pkey == 1)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value > $val) continue;
+								if($item->fields->$key->value > $val) continue;
 							} elseif($pkey == 2)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value == $val) continue;
+								if($item->fields->$key->value == $val) continue;
 							} elseif($pkey == 3)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value <= $val) continue;
+								if($item->fields->$key->value <= $val) continue;
 							} elseif($pkey == 4)
 							{
-								if(!isset($item->fields->$key) || $item->fields->$key->value >= $val) continue;
+								if($item->fields->$key->value >= $val) continue;
 							}elseif($pkey == 5)
 							{
-								if((!isset($item->fields->$key) || $item->fields->$key->value != $val) && !$pat)
+								if($item->fields->$key->value != $val && !$pat)
 									continue;
 								elseif($pat && !preg_match($pat, strtolower($item->fields->$key->value)))
 									continue;

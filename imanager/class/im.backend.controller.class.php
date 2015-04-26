@@ -27,6 +27,7 @@ class ImBackend
 	private $im;
 	private $input;
 	private $tpl;
+	public $break;
 
 	public function __construct(ImModel &$im)
 	{
@@ -53,6 +54,7 @@ class ImBackend
 		// Initialize templates now, we'll need them soon to build the backend
 		$this->tpl = new ImTplEngine();
 		$this->tpl->init();
+
 
 		/* Beispiel Category Objekt holen und speichern */
 		/*$cat_obj = $category->getCategory('id=1');
@@ -235,7 +237,7 @@ class ImBackend
 
 
 		//echo memory_get_usage().'<br />';
-		//                  echo round(memory_get_usage()/1048576,2)." MB<br />";
+		//                 echo round(memory_get_usage()/1048576,2)." MB<br />";
 
 		//                  echo 'limit: ' .ini_get('memory_limit') .'<br />';
 
@@ -434,6 +436,11 @@ class ImBackend
 
 		return $this->buildBackend($o);
 	}
+
+
+	public function __get($name) { return $this->input[$name];}
+
+	public function __set($name, $value){$this->input[$name] = $value;}
 
 
 	/**
