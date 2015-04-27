@@ -46,11 +46,6 @@ define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
 define('IM_SITE_URL', $SITEURL);
 define('IM_LANGUAGE', $LANG);
 
-//define('IM_ACTION_IMANAGER', 'imanager');
-
-
-
-
 // bestimmte bereiche im Admin deaktivieren
 //define('IM_HIDE_SETTINGS', 1);
 //define('IM_HIDE_FIELDS', 1 );
@@ -59,7 +54,6 @@ define('IM_LANGUAGE', $LANG);
 // Initialize software name
 define('IMTITLE', 'PettyShop');
 
-// register plugin
 register_plugin(
 	$thisfile,
 	'Item Manager',
@@ -129,49 +123,12 @@ include(GSPLUGINPATH.'imanager/class/im.field.interface.php');
 
 /* FIELDS */
 
-// field type long
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.longtext.php');
-// field type text
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.text.php');
-// field type hidden
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.hidden.php');
-// field type checkbox
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.checkbox.php');
-// field type long
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.dropdown.php');
-// field type password
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.password.php');
-// field type editor
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.editor.php');
-// field type bild upload
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.imageupload.php');
-// field type slug
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.slug.php');
-// field type chunk
-include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.chunk.php');
-
+foreach (glob(GSPLUGINPATH.'imanager/class/processors/fields/im.field.*.php') as $filename)
+	{include($filename);}
 /* INPUTS */
+foreach (glob(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.*.php') as $filename)
+	{include($filename);}
 
-// input type longtext
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.longtext.php');
-// input type text
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.text.php');
-// input type hidden
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.hidden.php');
-// input type checkbox
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.checkbox.php');
-// input type dropdown
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.dropdown.php');
-// input type password
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.password.php');
-// input type editor
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.editor.php');
-// input type bild upload
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.imageupload.php');
-// input type slug
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.slug.php');
-// input type chunk
-include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.chunk.php');
 
 // backend
 function imanager()
@@ -237,8 +194,6 @@ function i18nSearchImItem($id, $language, $creDate, $pubDate, $score)
 		global $manager;
 		$manager = new IManager();
 		$manager->item->initAll();
-
-		//var_dump($manager->item->items);
 
 		class I18nSearchImResult extends I18nSearchResultItem
 		{
