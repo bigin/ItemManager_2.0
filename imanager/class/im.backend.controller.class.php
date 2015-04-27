@@ -824,6 +824,10 @@ class ImBackend
 
 	private function buildFieldEditor()
 	{
+		$result = $this->im->runAction('ImBackendBeforeRenderFieldEditor');
+		if(isset($result['action']) && $result['action'] == 'replace')
+			return !empty($result['value']) ? $result['value'] : '';
+
 		// load fied editor templates
 		$fields = $this->tpl->getTemplates('fields');
 		$form = $this->tpl->getTemplate('form', $fields);
@@ -866,14 +870,6 @@ class ImBackend
 					'id' => '',
 					'key' => '',
 					'label' => '',
-					'selected-text' => '',
-					'selected-longtext' => '',
-					'selected-dropdown' => '',
-					'selected-checkbox' => '',
-					'selected-editor' => '',
-					'selected-hidden' => '',
-					'selected-file' => '',
-					'select-password' => '',
 					'area-display' => 'display: none',
 					'text-options' => ''), true
 			);
@@ -897,32 +893,23 @@ class ImBackend
 			{
 				foreach ($f->options as $option)
 					$options .= $option . "\r\n";
-
-				//$tploptions = $this->tpl->render($tpl, array('area-options' => $options));
 			}
 
 			// render details link
 			$tpldetails = $this->tpl->render($details, array('field-id' => $f->get('id')), true, array());
 
-
-			$rowbuffer = $this->tpl->render($row, array('tr-class' => 'sortable',
+			$rowbuffer = $this->tpl->render($row, array('selected-'.$f->type => ' selected="selected" '));
+			$rowbuffer = $this->tpl->render($rowbuffer, array('tr-class' => 'sortable',
 					'i' => $i,
 					'field-details' => $tpldetails->content,
 					'id' => $f->get('id'),
 					'key' => isset($f->name) ? $f->name : '',
 					'label' => isset($f->label) ? $f->label : '',
-					'selected-text' => $f->type == 'text' ? 'selected="selected"' : '',
-					'selected-longtext' => $f->type == 'longtext' ? 'selected="selected"' : '',
-					'selected-dropdown' => $f->type == 'dropdown' ? 'selected="selected"' : '',
-					'selected-checkbox' => $f->type == 'checkbox' ? 'selected="selected"' : '',
-					'selected-editor' => $f->type == 'editor' ? 'selected="selected"' : '',
-					'selected-hidden' => $f->type == 'hidden' ? 'selected="selected"' : '',
-					'selected-file' => $f->type == 'imageupload' ? 'selected="selected"' : '',
-					'selected-password' => $f->type == 'password' ? 'selected="selected"' : '',
 					'area-display' => !$isdropdown ? 'display:none' : '',
 					'text-options' => isset($f->default) ? $f->default : '',
 					'area-options' => $options), true
 			);
+
 			$tplrow .= $rowbuffer->content;
 		}
 		// render hiden stuff
@@ -931,20 +918,12 @@ class ImBackend
 				'id' => '',
 				'key' => '',
 				'label' => '',
-				'selected-text' => '',
-				'selected-longtext' => '',
-				'selected-dropdown' => '',
-				'selected-checkbox' => '',
-				'selected-editor' => '',
-				'selected-hidden' => '',
-				'selected-file' => '',
-				'select-password' => '',
 				'area-display' => 'display: none',
 				'text-options' => ''), true
 		);
 		$tplrow .= $rowbuffer->content;
 
-		// replace the form placeholders and return
+		// replace the form placeholders
 		return $this->tpl->render($form,  array(
 				'catselector' => $catselector,
 				'categorie_items' => $tplrow,
@@ -977,6 +956,7 @@ class ImBackend
 				'field_name' => !empty($currfield->name) ? $currfield->name : '',
 				'field_label' => !empty($currfield->label) ? $currfield->label : '',
 				'field_type' => !empty($currfield->type) ? $currfield->type : '',
+				'fielddefault' => !empty($currfield->default) ? $currfield->default : '',
 				'fieldinfo' => !empty($currfield->info) ? $currfield->info : '',
 				'fieldrequired' => ($currfield->required == 1) ? 'checked' : '',
 				'min_field_input' => !empty($currfield->minimum) ? intval($currfield->minimum) : '',
@@ -1490,16 +1470,22 @@ class ImBackend
 				if(!empty($field->required) && $field->required == 1)
 					$tplrequired = $this->tpl->render($required, array());
 
-				$tplfields->push($this->tpl->render($fieldarea, array(
-					'fieldid' =>  $field->name,
-					'label' => $field->label,
-					'infotext' => $tplinfotext->content,
-					'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
-					'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
-					'required' => $tplrequired->content,
-					'field' => $fieldType->render()->content)
-					)
-				);
+				if($field->type != 'chunk')
+				{
+					$tplfields->push($this->tpl->render($fieldarea, array(
+						'fieldid' =>  $field->name,
+						'label' => $field->label,
+						'infotext' => $tplinfotext->content,
+						'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
+						'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
+						'required' => $tplrequired->content,
+						'field' => $fieldType->render()->content)
+						)
+					);
+				} else
+				{
+					$tplfields->push($fieldType->render());
+				}
 			}
 		}
 

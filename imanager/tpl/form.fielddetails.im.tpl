@@ -19,6 +19,11 @@
 				<p id="fieldid" class="im-cat-info">[[field_type]]</p>
 			</div>
 			<div class="fieldarea">
+				<label for="fielddefault">[[lang/field_default]]</label>
+				<p class="field-info">[[lang/field_default_info]]</p>
+				<p><textarea id="fielddefault" class="longtext-field" name="default" >[[fielddefault]]</textarea></p>
+			</div>
+			<div class="fieldarea">
 				<label for="fieldinfo">[[lang/field_info]]</label>
 				<p class="field-info">[[lang/field_info_info]]</p>
 				<p><input id="fieldinfo" class="text-fields-left text" name="info" type="text" value='[[fieldinfo]]'></p>

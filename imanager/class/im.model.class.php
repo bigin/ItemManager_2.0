@@ -85,6 +85,7 @@ class ImModel
 		$actions = array(
 			'ImManagerBeforeMethods',
 			'ImBackendBeforeDisplay',
+			'ImBackendBeforeRenderFieldEditor',
 			'ImBackendBeforeRenderItemRows',
 			'ImBackendBeforeRenderItemList',
 			'ImBackendBeforeRenderItemEditor',
@@ -247,7 +248,7 @@ class ImModel
 		$new_cat = new Category();
 		$new_cat->set('name', $cat);
 
-		$new_cat->slug = $this->toAscii($cat);
+		$new_cat->slug = self::toAscii($cat);
 
 		// do not save category if name already exists
 		if(!$this->category->getCategory('name='.safe_slash_html($new_cat->name)))
@@ -310,7 +311,7 @@ class ImModel
 
 
 		// set slug
-		$cat->slug =  !empty($input['slug']) ? $this->toAscii($input['slug']) : $this->toAscii($input['name']);
+		$cat->slug =  !empty($input['slug']) ? self::toAscii($input['slug']) : self::toAscii($input['name']);
 
 		if(!empty($input['position']))
 		{
@@ -432,7 +433,7 @@ class ImModel
 
 			if($field)
 			{
-				$field->name = $this->toAscii($names[$key]);
+				$field->name = self::toAscii($names[$key]);
 				$field->label = $labels[$key];
 				$field->type = $types[$key];
 				$field->position = $key+1;
@@ -449,11 +450,11 @@ class ImModel
 			} else
 			{
 				$field = new Field($input['cat']);
-				$field->name = $this->toAscii($names[$key]);
-				$field->label = $labels[$key];
+				$field->name = self::toAscii($names[$key]);
+				$field->label = str_replace('"', '\'', $labels[$key]);
 				$field->type = $types[$key];
 				$field->position = $key+1;
-				$field->default = $defaults[$key];
+				$field->default = str_replace('"', '\'', $defaults[$key]);
 				$field->options = array();
 				if(!empty($options[$key]))
 				{
@@ -472,7 +473,7 @@ class ImModel
 		foreach($result as $fieldkey)
 		{
 			$deletion = $fc->getField($fieldkey);
-			if(!$deletion->delete())
+			if(is_object($deletion) && !$deletion->delete())
 			{
 				ImMsgReporter::setClause('err_delete_field', array('fieldname' => $deletion->name), true);
 				return false;
@@ -501,6 +502,7 @@ class ImModel
 			return false;
 		}
 
+		$currfield->default = !empty($input['default']) ? str_replace('"', '\'', $input['default']) : '';
 		$currfield->info = !empty($input['info']) ? $input['info'] : '';
 		$currfield->required = (isset($input['required']) && $input['required'] > 0) ? 1 : null;
 		$currfield->minimum = (isset($input['min_field_input']) && intval($input['min_field_input']) > 0)
@@ -1080,7 +1082,7 @@ class ImModel
 	}
 
 
-	public function toAscii($str, $replace = array(), $delimiter = '-')
+	public static function toAscii($str, $replace = array(), $delimiter = '-')
 	{
 		if(!empty($replace))
 			$str = str_replace((array)$replace, ' ', $str);

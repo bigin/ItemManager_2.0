@@ -145,7 +145,10 @@ include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.password.php');
 include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.editor.php');
 // field type bild upload
 include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.imageupload.php');
-
+// field type slug
+include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.slug.php');
+// field type chunk
+include(GSPLUGINPATH.'imanager/class/processors/fields/im.field.chunk.php');
 
 /* INPUTS */
 
@@ -165,6 +168,10 @@ include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.password.php');
 include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.editor.php');
 // input type bild upload
 include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.imageupload.php');
+// input type slug
+include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.slug.php');
+// input type chunk
+include(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.chunk.php');
 
 // backend
 function imanager()
@@ -228,12 +235,10 @@ function i18nSearchImItem($id, $language, $creDate, $pubDate, $score)
 	if (!class_exists('I18nSearchImResult'))
 	{
 		global $manager;
-		$strp = strpos($id, '.');
-		$category = substr($id, $strp+1);
-
 		$manager = new IManager();
-		$manager->item->init($category);
+		$manager->item->initAll();
 
+		//var_dump($manager->item->items);
 
 		class I18nSearchImResult extends I18nSearchResultItem
 		{
@@ -248,7 +253,10 @@ function i18nSearchImItem($id, $language, $creDate, $pubDate, $score)
 
 					$strp = strpos($this->id, '.');
 					$item_id = str_replace('im:', '', substr($this->id, 0, $strp));
-					$item = $manager->item->getItem($item_id);
+
+					$category = substr($this->id, $strp+1);
+					//$manager->item->init($category);
+					$item = $manager->item->getItem($item_id, $manager->item->items[$category]);
 					$raw_url = $manager->config->common->i18nsearch_url;
 
 					$fieldname = !empty($manager->config->common->i18nsearch_segment) ?

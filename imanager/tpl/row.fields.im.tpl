@@ -13,14 +13,16 @@
     </td>
     <td>
         <select name="cf_[[i]]_type" class="text short" style="max-width:180px;" >
-            <option value="text" [[selected-text]]>[[lang/text_field_value]]</option>
-            <option value="longtext" [[selected-longtext]]>[[lang/longtext_field_value]]</option>
-            <option value="dropdown" [[selected-dropdown]]>[[lang/dropdown_field_value]]</option>
-            <option value="checkbox" [[selected-checkbox]]>[[lang/checkbox_field_value]]</option>
-            <option value="editor" [[selected-editor]] >[[lang/editor_field_value]]</option>
-            <option value="hidden" [[selected-hidden]]>[[lang/hidden_field_value]]</option>
-            <option value="imageupload" [[selected-file]]>[[lang/file_field_value]]</option>
-			<option value="password" [[selected-password]]>[[lang/password_field_value]]</option>
+            <option value="text"[[selected-text]]>[[lang/text_field_value]]</option>
+            <option value="longtext"[[selected-longtext]]>[[lang/longtext_field_value]]</option>
+            <option value="dropdown"[[selected-dropdown]]>[[lang/dropdown_field_value]]</option>
+            <option value="checkbox"[[selected-checkbox]]>[[lang/checkbox_field_value]]</option>
+            <option value="editor"[[selected-editor]] >[[lang/editor_field_value]]</option>
+            <option value="hidden"[[selected-hidden]]>[[lang/hidden_field_value]]</option>
+            <option value="imageupload"[[selected-imageupload]]>[[lang/file_field_value]]</option>
+			<option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
+			<option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>
+			<option value="chunk"[[selected-chunk]]>[[lang/chunk_field_value]]</option>
         </select>
         <textarea class="text" style="[[area-display]]" rows="3" name="cf_[[i]]_options">[[area-options]]</textarea>
     </td>
