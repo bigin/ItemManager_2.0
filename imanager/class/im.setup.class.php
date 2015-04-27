@@ -206,6 +206,9 @@ class ImSetup
 		$i18nsearch = !isset($input['i18nsearch']) ? 0 : 1;
 		$i18nsearch_field = (!empty($input['i18nsearchfield'])) ? $input['i18nsearchfield'] : '';
 		$i18nsearch_excludes = (!empty($input['i18nsearchexcludes'])) ? $input['i18nsearchexcludes'] : '';
+		$i18nsearch_url = (!empty($input['i18nsearchurl'])) ? $input['i18nsearchurl'] : '';
+		$i18nsearch_segment = (!empty($input['i18nsearchsegment'])) ? $input['i18nsearchsegment'] : 'name';
+		$i18nsearch_content = (!empty($input['i18nsearchcontent'])) ? $input['i18nsearchcontent'] : '';
 
 
 		$time_format = (!empty($input['timeformat'])) ? $input['timeformat'] : 'Y-m-d h:m:s';
@@ -279,6 +282,10 @@ class ImSetup
 		$common_xml->addChild('i18nsearchfield', $i18nsearch_field);
 		$common_xml->addChild('i18nsearchexcludes', $i18nsearch_excludes);
 
+		$common_xml->addChild('i18nsearch_url', $i18nsearch_url);
+		$common_xml->addChild('i18nsearch_segment', $i18nsearch_segment);
+		$common_xml->addChild('i18nsearch_content', $i18nsearch_content);
+
 		// Backend
 
 		// time format
@@ -325,6 +332,9 @@ class ImSetup
 		{
 			// initialize new settings
 			$this->init();
+			// recreate i18n search index
+			if($i18nsearch > 0) IManager::deleteSearchIndex();
+
 			ImMsgReporter::setClause('successfull_settings_saved',array());
 		}
 

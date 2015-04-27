@@ -27,6 +27,7 @@ $i18n = array(
 	//1.0
 	, 'invalid_category' => '<div class="error">You have entered illegal category</div>'
 	, 'category_name' => 'Name'
+	, 'category_slug' => 'Slug'
 	, 'category_id' => 'ID'
 	, 'category_position' => 'Position'
 	, 'category_created' => 'Created date'
@@ -140,7 +141,6 @@ $i18n = array(
 	, 'default_cat_orderby' => 'Categories sort by attribut'
 	, 'cat_orderby_description' => '<i class="fa fa-info-circle"></i> Here, you see the selection list in which you can choose the attribut you want to sort by.'
 	, 'position' => 'Position'
-	, 'category_name' => 'Category name'
 	, 'date_created' => 'Created date'
 	, 'date_updated' => 'Updated date'
 	, 'categories_per_page' => 'Categories per page'
@@ -240,5 +240,11 @@ $i18n = array(
 	, 'i18nsearch_field_info' => '<i class="fa fa-info-circle"></i> Enter one field name in order to make them available for searching engine. At present, only a field is accepted.'
 	, 'i18nsearch_exclude_category' => 'Exclude Categories'
 	, 'i18nsearch_exclude_category_info' => 'Enter one or several category ids separated with comma, to exclude from search results.'
+	, 'item_created' => 'Created date'
+	, 'item_updated' => 'Updated date'
+	, 'i18nsearch_url' => 'Enter Item URL'
+	, 'i18nsearch_segment' => 'Item slug'
+	, 'i18nsearch_content' => 'Result content'
+	, 'i18nsearch_content_info' => 'Field name for content to appear in the search result'
 
 );

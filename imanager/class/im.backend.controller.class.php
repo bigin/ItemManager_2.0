@@ -25,7 +25,7 @@
 class ImBackend
 {
 	private $im;
-	private $input;
+	protected $input;
 	private $tpl;
 	public $break;
 
@@ -49,11 +49,13 @@ class ImBackend
 		elseif(!empty($this->input['catsender']) && !empty($this->input['cat']))
 			$this->im->cp->setCategory($this->input['cat']);
 
-		//$category = $this->im->category;
-
 		// Initialize templates now, we'll need them soon to build the backend
 		$this->tpl = new ImTplEngine();
 		$this->tpl->init();
+
+		$result = $this->im->runAction('ImBackendBeforeDisplay');
+		if(isset($result['action']) && $result['action'] == 'replace')
+			return !empty($result['value']) ? $result['value'] : '';
 
 
 		/* Beispiel Category Objekt holen und speichern */
@@ -438,9 +440,9 @@ class ImBackend
 	}
 
 
-	public function __get($name) { return $this->input[$name];}
+	public function &__get($name) { return $this->{$name};}
 
-	public function __set($name, $value){$this->input[$name] = $value;}
+	//public function __set($name, $value){$this->{$name} = $value;}
 
 
 	/**
@@ -729,6 +731,10 @@ class ImBackend
 				'i18nsearch' => ($configs->common->i18nsearch == 1) ? ' checked ' : '',
 				'i18nsearch_field' => $configs->common->i18nsearchfield,
 				'exclude_categories' => $configs->common->i18nsearchexcludes,
+				'i18nsearch_url' => $configs->common->i18nsearch_url,
+				'i18nsearch_segment' => $configs->common->i18nsearch_segment,
+				'i18nsearch_content' => $configs->common->i18nsearch_content,
+
 
 				'catfilter' => ($configs->backend->catfilter == 1) ? ' checked ' : '',
 				'ten' => ($configs->backend->maxcatperpage == 10) ? 'selected' : '',
@@ -795,6 +801,7 @@ class ImBackend
 		// prepare some values
 		$id = $cat->get('id');
 		$name = !empty($this->input['name']) ? $this->input['name'] : $cat->get('name');
+		$slug = !empty($this->input['slug']) ? $this->input['slug'] : $cat->get('slug');
 		$positon = !empty($this->input['position']) ? $this->input['position'] : $cat->get('position');
 		$position = !empty($position) ? $position : $cat->get('id');
 
@@ -803,9 +810,11 @@ class ImBackend
 
 		return $this->tpl->render($form,  array('catid' => $id,
 				'catname' => $name,
+				'catslug' => $slug,
 				'catposition' => $position,
 				'created' => date((string) $configs->backend->timeformat, (int) $cat->get('created')),
-				'updated' => date((string) $configs->backend->timeformat, (int) $cat->get('updated')),
+				'updated' => ((int) $cat->get('updated') > 0) ?
+						date((string) $configs->backend->timeformat, (int) $cat->get('updated')) : '',
 				'categoryid' => $id), true, array(), true
 
 		);
@@ -1081,6 +1090,10 @@ class ImBackend
 
 	private function buildItemList()
 	{
+		$result = $this->im->runAction('ImBackendBeforeRenderItemList');
+		if(isset($result['action']) && $result['action'] == 'replace')
+			return !empty($result['value']) ? $result['value'] : '';
+
 		// get numberswitch templates
 		$itemlist = $this->tpl->getTemplates('itemlist');
 		$form = $this->tpl->getTemplate('form', $itemlist);
@@ -1249,6 +1262,10 @@ class ImBackend
 	private function buildItemRows()
 	{
 
+		$result = $this->im->runAction('ImBackendBeforeRenderItemRows');
+		if(isset($result['action']) && $result['action'] == 'replace')
+			return !empty($result['value']) ? $result['value'] : '';
+
 		$itemlist = $this->tpl->getTemplates('itemlist');
 		$row = $this->tpl->getTemplate('row', $itemlist);
 		$active = $this->tpl->getTemplate('active', $itemlist);
@@ -1360,6 +1377,10 @@ class ImBackend
 
 	private function buildItemEditor()
 	{
+		$result = $this->im->runAction('ImBackendBeforeRenderItemEditor');
+		if(isset($result['action']) && $result['action'] == 'replace')
+			return !empty($result['value']) ? $result['value'] : '';
+
 		$itemeditor = $this->tpl->getTemplates('itemeditor');
 		$form = $this->tpl->getTemplate('form', $itemeditor);
 		$fieldarea = $this->tpl->getTemplate('fieldarea', $itemeditor);
@@ -1392,11 +1413,6 @@ class ImBackend
 			$active = $this->im->config->backend->itemactive;
 		} else
 			$active = $curitem->active;
-
-		/*echo '<pre>';
-		print_r($curitem);
-		echo '</pre>';*/
-
 
 		// Initialize fields
 		$fc = new ImFields();
@@ -1495,7 +1511,12 @@ class ImBackend
 				'timestamp' => $stamp,
 				'currentcategory' => $this->im->cp->currentCategory(),
 				'itemname' => !empty($curitem->name) ? $curitem->name : '',
-				'custom-fields' => $tplfields->content)
+				'custom-fields' => $tplfields->content,
+				'created' => ((int) $curitem->created > 0) ?
+						date((string) $this->im->config->backend->timeformat, (int) $curitem->created) : '',
+				'updated' => ($curitem->updated > 0) ?
+						date((string) $this->im->config->backend->timeformat, (int) $curitem->updated) : ''
+			)
 		);
 
 		return $this->tpl->render($form, array(), true, array(), true);

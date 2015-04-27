@@ -23,6 +23,19 @@
 			<p><input id="active" name="active" type="checkbox" value="1"[[checked]]/></p>
 		</div>
 		[[custom-fields]]
+
+		<div class="fieldarea">
+			<label for="itemcreated" >[[lang/item_created]]</label>
+			[[infotext]]
+			<p>[[created]]</p>
+		</div>
+
+		<div class="fieldarea">
+			<label for="itemcreated" >[[lang/item_updated]]</label>
+			[[infotext]]
+			<p>[[updated]]</p>
+		</div>
+
 		<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>
 	</div>
 	</form>

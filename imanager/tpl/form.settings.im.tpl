@@ -43,6 +43,22 @@
 							<p class="field-info">[[lang/i18nsearch_exclude_category_info]]</p>
 							<p><input id="i18nsearchexcludes" class="text-fields-left text" name="i18nsearchexcludes" type="text" value="[[exclude_categories]]"></p>
 						</div>
+
+						<div class="fieldarea intern">
+							<label for="i18nsearchurl">[[lang/i18nsearch_url]]</label>
+							<p class="field-info">[[lang/i18nsearch_url_info]]</p>
+							<p><input id="i18nsearchurl" class="text-fields-left text" name="i18nsearchurl" type="text" value="[[i18nsearch_url]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="i18nsearchsegment">[[lang/i18nsearch_segment]]</label>
+							<p class="field-info">[[lang/i18nsearch_segment_info]]</p>
+							<p><input id="i18nsearchsegment" class="text-fields-left text" name="i18nsearchsegment" type="text" value="[[i18nsearch_segment]]"></p>
+						</div>
+						<div class="fieldarea intern">
+							<label for="i18nsearchcontent">[[lang/i18nsearch_content]]</label>
+							<p class="field-info">[[lang/i18nsearch_content_info]]</p>
+							<p><input id="i18nsearchcontent" class="text-fields-left text" name="i18nsearchcontent" type="text" value="[[i18nsearch_content]]"></p>
+						</div>
 					</div>
 				</div>
 

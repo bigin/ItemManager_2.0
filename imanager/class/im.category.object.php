@@ -15,6 +15,7 @@ class Category
 
 		$this->position = null;
 		$this->name = '';
+		$this->slug = '';
 		$this->created = time();
 		$this->updated = '';
 	}
@@ -27,7 +28,7 @@ class Category
 		$key = strtolower($key);
 		$val = safe_slash_html_input($val);
 		// id is readonly
-		if(!in_array($key, array('name', 'position', 'created', 'updated')))
+		if(!in_array($key, array('name', 'slug', 'position', 'created', 'updated')))
 			return false;
 		$this->$key = $val;
 	}
@@ -52,6 +53,7 @@ class Category
 
 			$xml->id = intval($this->id);
 			$xml->name = (string) $this->name;
+			$xml->slug = (string) $this->slug;
 			$xml->position = !is_null($this->position) ? intval($this->position) : intval($this->id);
 			$xml->created = intval($this->created);
 			$xml->updated = intval($this->updated);
@@ -70,10 +72,11 @@ class Category
 
 			$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><category></category>');
 
-			$xml->name = $this->name;
-			$xml->position = !is_null($this->position) ? $this->position : $this->id;
-			$xml->created = $this->created;
-			$xml->updated = $this->updated;
+			$xml->name = (string) $this->name;
+			$xml->slug = (string) $this->slug;
+			$xml->position = !is_null($this->position) ? intval($this->position) : intval($this->id);
+			$xml->created = intval($this->created);
+			$xml->updated = intval($this->updated);
 
 			return $xml->asXml($this->file);
 		}

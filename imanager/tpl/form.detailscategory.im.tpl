@@ -17,6 +17,12 @@
 				</div>
 
 				<div class="fieldarea">
+					<label for="catslug" >[[lang/category_slug]]</label>
+					[[infotext]]
+					<p><input id="catslug" class="text-fields-left text" name="slug" type="text" value="[[catslug]]"></p>
+				</div>
+
+				<div class="fieldarea">
 					<label for="catposition" >[[lang/category_position]]</label>
 					[[infotext]]
 					<p><input id="catposition" class="number-fields-left number" name="position" type="number" value="[[catposition]]"></p>

@@ -20,6 +20,9 @@ class ImModel
 
 	public $hooks;
 
+	public static $action = array();
+	//use ImObserver;
+
 
 	public function __construct()
 	{
@@ -79,17 +82,25 @@ class ImModel
 
 		global $plugins;
 
-		$hooksarr = array('ImBeforeItemSave',
+		$actions = array(
+			'ImManagerBeforeMethods',
+			'ImBackendBeforeDisplay',
+			'ImBackendBeforeRenderItemRows',
+			'ImBackendBeforeRenderItemList',
+			'ImBackendBeforeRenderItemEditor',
+			'ImBeforeItemSave',
 			'ImAfterItemSave',
 		);
 
 		foreach($plugins as $key => $plugin)
 		{
-			if(in_array($plugin['hook'], $hooksarr))
+			if(in_array($plugin['hook'], $actions))
 			{
 				$plugins[$key]['args']['imanager'] = & $this;
 			}
 		}
+
+		exec_action('ImActivated');
 
 	}
 
@@ -233,12 +244,14 @@ class ImModel
 			return false;
 		}
 		// CHECK here category name
-		$neu_cat = new Category();
-		$neu_cat->set('name', $cat);
+		$new_cat = new Category();
+		$new_cat->set('name', $cat);
+
+		$new_cat->slug = $this->toAscii($cat);
 
 		// do not save category if name already exists
-		if(!$this->category->getCategory('name='.safe_slash_html($neu_cat->name)))
-			$neu_cat->save();
+		if(!$this->category->getCategory('name='.safe_slash_html($new_cat->name)))
+			$new_cat->save();
 		else
 		{
 			ImMsgReporter::setClause('err_category_name_exists', array());
@@ -249,7 +262,7 @@ class ImModel
 		if($refresh) $this->category->init();
 
 		ImMsgReporter::setClause('successfull_category_created', array(
-			'category' => safe_slash_html($neu_cat->name))
+			'category' => safe_slash_html($new_cat->name))
 		);
 		return true;
 	}
@@ -295,6 +308,10 @@ class ImModel
 			return false;
 		}
 
+
+		// set slug
+		$cat->slug =  !empty($input['slug']) ? $this->toAscii($input['slug']) : $this->toAscii($input['name']);
+
 		if(!empty($input['position']))
 		{
 			if(intval($input['position']) != intval($cat->get('position')))
@@ -303,6 +320,7 @@ class ImModel
 				$flag = true;
 			}
 		}
+
 
 		if($flag)
 		{
@@ -414,7 +432,7 @@ class ImModel
 
 			if($field)
 			{
-				$field->name = clean_urls($names[$key]);
+				$field->name = $this->toAscii($names[$key]);
 				$field->label = $labels[$key];
 				$field->type = $types[$key];
 				$field->position = $key+1;
@@ -431,7 +449,7 @@ class ImModel
 			} else
 			{
 				$field = new Field($input['cat']);
-				$field->name = clean_urls($names[$key]);
+				$field->name = $this->toAscii($names[$key]);
 				$field->label = $labels[$key];
 				$field->type = $types[$key];
 				$field->position = $key+1;
@@ -500,7 +518,7 @@ class ImModel
 
 	}
 
-	function deleteSearchIndex()
+	public static function deleteSearchIndex()
 	{
 		if(function_exists('delete_i18n_search_index'))
 			delete_i18n_search_index();
@@ -973,7 +991,7 @@ class ImModel
 	protected function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
 
 
-	public function getFullUrl()
+	public function getSiteUrl()
 	{
 		$https = !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') === 0 ||
 			!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
@@ -1061,6 +1079,27 @@ class ImModel
 		return rmdir($dir);
 	}
 
+
+	public function toAscii($str, $replace = array(), $delimiter = '-')
+	{
+		if(!empty($replace))
+			$str = str_replace((array)$replace, ' ', $str);
+
+		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+		$clean = strtolower(trim($clean, '-'));
+		$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+
+		return $clean;
+	}
+
+	public function runAction($action)
+	{
+		exec_action($action);
+		return !empty(self::$action[$action]) ? self::$action[$action] : '';
+	}
+
+
 }
 
 
@@ -1097,22 +1136,6 @@ function reparse_url($parsed_url, $imcat)
         }
     }
   return ; 
-} 
-
-//Clean URL For Slug
-function clean_urls($text)  {
-	$text = strip_tags(lowercase($text));
-	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%',
-                                 '^','&','*','(',')','+','{','}','|',':','"',
-                                 '<','>','?','[',']','\\',';',"'",',','/',
-                                 '*','+','~','`','=','.');
-	$code_entities_replace = array('','-','-','','','','','','','','','','','',
-                                   '','','','','','','','','','','','','');
-	$text = str_replace($code_entities_match, $code_entities_replace, $text);
-	$text = urlencode($text);
-	$text = str_replace('--','-',$text);
-	$text = rtrim($text, "-");
-	return $text;
 }
 
 if(!function_exists('to7bits')) {

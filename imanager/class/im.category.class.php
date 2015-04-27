@@ -56,6 +56,7 @@ class ImCategory
 				continue;
 
 			$cat->name = (string) $xml->name;
+			$cat->slug = (string) $xml->slug;
 			$cat->position = (int) $xml->position;
 			$cat->created = (int) $xml->created;
 			$cat->updated = (int) $xml->updated;

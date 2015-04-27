@@ -75,8 +75,9 @@ register_plugin(
 add_action('admin-pre-header', 'ajaxGetLists');
 add_action('nav-tab', 'createNavTab', array('imanager', $thisfile, IMTITLE, 'view'));
 /* i18n search stuff */
-add_action('search-index', 'i18n_search_im_index');
-add_filter('search-item', 'i18n_search_im_item');
+add_action('search-index', 'i18nSearchImIndex');
+add_filter('search-item', 'i18nSearchImItem');
+add_filter('search-display', 'i18nSearchImDisplay');
 /* include your own CSS for beautiful manager style */
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
 register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css', GSVERSION, 'screen');
@@ -84,6 +85,7 @@ register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font
 queue_style('imstyle', GSBOTH);
 queue_style('imstylefonts', GSBOTH);
 queue_style('blueimp', GSBOTH);
+
 
 // model
 include(GSPLUGINPATH.'imanager/class/im.model.class.php');
@@ -193,7 +195,7 @@ function ajaxGetLists()
 	}
 }
 
-function i18n_search_im_index()
+function i18nSearchImIndex()
 {
 
 	$manager = new IManager();
@@ -221,10 +223,18 @@ function i18n_search_im_index()
 	}
 }
 
-function i18n_search_im_item($id, $language, $creDate, $pubDate, $score)
+function i18nSearchImItem($id, $language, $creDate, $pubDate, $score)
 {
 	if (!class_exists('I18nSearchImResult'))
 	{
+		global $manager;
+		$strp = strpos($id, '.');
+		$category = substr($id, $strp+1);
+
+		$manager = new IManager();
+		$manager->item->init($category);
+
+
 		class I18nSearchImResult extends I18nSearchResultItem
 		{
 			protected $data = null;
@@ -233,28 +243,50 @@ function i18n_search_im_item($id, $language, $creDate, $pubDate, $score)
 			{
 				if (!$this->data)
 				{
-					$strp = strpos($this->id, '.');
-					$id = str_replace('im:', '', substr($this->id, 0, $strp));
-					$category = substr($this->id, $strp+1);
+					// really ugly solution
+					global $manager;
 
-					$manager = new IManager();
-					$manager->item->init($category);
-					$this->item = $manager->item->getItem($id);
+					$strp = strpos($this->id, '.');
+					$item_id = str_replace('im:', '', substr($this->id, 0, $strp));
+					$item = $manager->item->getItem($item_id);
+					$raw_url = $manager->config->common->i18nsearch_url;
+
+					$fieldname = !empty($manager->config->common->i18nsearch_segment) ?
+						$manager->config->common->i18nsearch_segment : '';
+					$slug = !empty($item->fields->$fieldname->value) ? $item->fields->$fieldname->value : $item->name;
+					$url  = $manager->getSiteUrl().$raw_url.$slug;
+
+					$fieldname = !empty($manager->config->common->i18nsearch_content) ?
+						$manager->config->common->i18nsearch_content : '';
+					$content = !empty($item->fields->$fieldname->value) ?
+						htmlspecialchars($item->fields->$fieldname->value) : '';
 				}
 				switch ($input)
 				{
-					case 'title': return $this->item->name;
-					case 'content': return null;
-					case 'link':  //$url = nm_get_url('post') . $slug;return $url;
-					default: return $this->item->name;
+					case 'title': return $item->name;
+					case 'content': return $content;
+					case 'link':  return $url;
+					default: return $item->name;
 				}
 			}
 		}
 	}
 
-	if (substr($id,0,3) == 'im:') {
+	if(substr($id,0,3) == 'im:')
+	{
 		return new I18nSearchImResult($id, $language, $creDate, $pubDate, $score);
 	}
 	return null;
+}
+
+function i18nSearchImDisplay($item, $showLanguage, $showDate, $dateFormat, $numWords)
+{
+	if (substr($item->id, 0, 3) == 'im:')
+	{
+		echo '<h3><a href="'.$item->link.'" >'.htmlspecialchars($item->title). '</a></h3>';
+		echo '<p>'.htmlspecialchars($item->content) . '</p>';
+		return true;
+	}
+	return false;
 }
 ?>
