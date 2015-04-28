@@ -107,7 +107,7 @@ class ImCategory
 			if(!isset($loccat[(int) $stat]) || empty($loccat[(int) $stat]->get('id')))
 				return false;
 
-			return $loccat[(int) $stat];
+			return !empty($loccat[(int) $stat]) ? $loccat[(int) $stat] : false;
 
 		// stat is a string
 		} elseif (false !== strpos($stat, '='))
@@ -118,11 +118,16 @@ class ImCategory
 			if(false !== strpos($key, ' '))
 				return false;
 
+			// id
+			if($key == 'id')
+			{
+				return !empty($loccat[(int) $val]) ? $loccat[(int) $val] : false;
+			}
 			foreach($loccat as $catid => $c)
 			{
 				if(!isset($c->$key) || $c->$key != $val) continue;
 
-				return $loccat[$catid];
+				return !empty($loccat[$catid]) ? $loccat[$catid] : false;
 			}
 		}
 		return false;

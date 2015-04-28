@@ -17,6 +17,7 @@ class ImModel
 	public static $installed;
 
 	public $item;
+	public $category;
 
 	public $hooks;
 
@@ -246,7 +247,7 @@ class ImModel
 		}
 		// CHECK here category name
 		$new_cat = new Category();
-		$new_cat->set('name', $cat);
+		$new_cat->set('name', str_replace('"', '\'', $cat));
 
 		$new_cat->slug = self::toAscii($cat);
 
@@ -291,11 +292,11 @@ class ImModel
 			ImMsgReporter::setClause('err_category_name_length', array('count' => $this->config->common->maxcatname));
 			return false;
 		}
-		if($input['name'] != $cat->get('name'))
+		if(str_replace('"', '\'', $input['name']) != $cat->get('name'))
 		{
-			if(!$this->category->getCategory('name='.safe_slash_html($input['name'])))
+			if(!$this->category->getCategory('name='.safe_slash_html(str_replace('"', '\'', $input['name']))))
 			{
-				$cat->set('name', safe_slash_html($input['name']));
+				$cat->set('name', safe_slash_html(str_replace('"', '\'', $input['name'])));
 				$flag = true;
 			} else
 			{
@@ -434,14 +435,14 @@ class ImModel
 			if($field)
 			{
 				$field->name = self::toAscii($names[$key]);
-				$field->label = $labels[$key];
-				$field->type = $types[$key];
+				$field->label = str_replace('"', '\'', $labels[$key]);
+				$field->type = self::toAscii($types[$key]);
 				$field->position = $key+1;
-				$field->default = $defaults[$key];
+				$field->default = str_replace('"', '\'', $defaults[$key]);
 				$field->options = array();
 				if(!empty($options[$key]))
 				{
-					$split = preg_split("/\r?\n/", rtrim(stripslashes($options[$key])));
+					$split = preg_split("/\r?\n/", rtrim(stripslashes(str_replace('"', '\'', $options[$key]))));
 					foreach($split as $option)
 						$field->options[] = $option;
 				}
@@ -452,13 +453,13 @@ class ImModel
 				$field = new Field($input['cat']);
 				$field->name = self::toAscii($names[$key]);
 				$field->label = str_replace('"', '\'', $labels[$key]);
-				$field->type = $types[$key];
+				$field->type = self::toAscii($types[$key]);
 				$field->position = $key+1;
 				$field->default = str_replace('"', '\'', $defaults[$key]);
 				$field->options = array();
 				if(!empty($options[$key]))
 				{
-					$split = preg_split("/\r?\n/", rtrim(stripslashes($options[$key])));
+					$split = preg_split("/\r?\n/", rtrim(stripslashes(str_replace('"', '\'', $options[$key]))));
 					foreach($split as $option)
 						$field->options[] = $option;
 				}
@@ -503,15 +504,15 @@ class ImModel
 		}
 
 		$currfield->default = !empty($input['default']) ? str_replace('"', '\'', $input['default']) : '';
-		$currfield->info = !empty($input['info']) ? $input['info'] : '';
+		$currfield->info = !empty($input['info']) ? str_replace('"', '\'', $input['info']) : '';
 		$currfield->required = (isset($input['required']) && $input['required'] > 0) ? 1 : null;
 		$currfield->minimum = (isset($input['min_field_input']) && intval($input['min_field_input']) > 0)
 			? intval($input['min_field_input']) : null;
 		$currfield->maximum = (isset($input['max_field_input']) && intval($input['max_field_input']) > 0)
 			? intval($input['max_field_input']) : null;
-		$currfield->areacss = !empty($input['areacss']) ? $input['areacss'] : '';
-		$currfield->labelcss = !empty($input['labelcss']) ? $input['labelcss'] : '';
-		$currfield->fieldcss = !empty($input['fieldcss']) ? $input['fieldcss'] : '';
+		$currfield->areacss = !empty($input['areacss']) ? str_replace('"', '\'', $input['areacss']) : '';
+		$currfield->labelcss = !empty($input['labelcss']) ? str_replace('"', '\'', $input['labelcss']) : '';
+		$currfield->fieldcss = !empty($input['fieldcss']) ? str_replace('"', '\'', $input['fieldcss']) : '';
 
 		$currfield->save();
 
@@ -544,35 +545,6 @@ class ImModel
 			}
 		}
 		return $dups;
-	}
-
-
-
-	/**
-	 * Gives ordered array of categories
-	 * NOTE: The categories must already be in the buffer: ImCategoryController::$categories
-	 * Call the ImCategoryController::init_categories() method before to assign the categories to the buffer.
-	 *
-	 *
-	 * You can search for category by ID: ImModel::get_category(2) or similar to ImModel::get_category('id=2')
-	 * or by category name ImModel::get_category('name=My category name')
-	 *
-	 * @param string/integer $stat
-	 */
-	public function get_categories($stat='')
-	{
-		// no arguments
-		if(!$stat)
-		{
-
-		}
-	}
-
-
-	public function getLastPage($items)
-	{
-		// $this->config->backend->maxitemperpage
-		//return ceil(count($items) / 1);
 	}
 
 
@@ -714,7 +686,6 @@ class ImModel
 
 	public function saveItem(&$input)
 	{
-
 		exec_action('ImBeforeItemSave');
 
 		/* check there the user errors: If the user tried to compromise the script, we'll
@@ -767,10 +738,10 @@ class ImModel
 		}
 
 		// check if item name already exist and is not the same item
-		$item_by_name = $ic->getItem('name='.$input['name']);
+		$item_by_name = $ic->getItem('name='.str_replace('"', '\'', $input['name']));
 		if($item_by_name && $id != $item_by_name->get('id'))
 		{
-			ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input($input['name'])), true);
+			ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))), true);
 			return false;
 		}
 
@@ -785,15 +756,15 @@ class ImModel
 		/* Ok, the standard procedure is completed and now we want to make the next step
 		and loop through the fields of the item to save these values */
 
-		$curitem->name = $input['name'];
-		$curitem->active = isset($input['active']) ? intval($input['active']) : 0;
+		$curitem->name = str_replace('"', '\'', $input['name']);
+		$curitem->active = isset($input['active']) ? 1 : 0;
 
 		$tmp_image_dir = '';
 
 		foreach($curitem->fields as $fieldname => $fieldvalue)
 		{
 
-			$fieldinput = !empty($input[$fieldname]) ? $input[$fieldname] : '';
+			$fieldinput = !empty($input[$fieldname]) ? str_replace('"', '\'', $input[$fieldname]) : '';
 
 			$inputClassName = 'Input'.$fieldvalue->type;
 			$InputType = new $inputClassName($curitem->fields->$fieldname);
@@ -812,7 +783,7 @@ class ImModel
 				} else
 				{
 					// pass image directory
-					$fieldinput = IM_IMAGE_UPLOAD_DIR.$input['id'].'.'.$categoryid.'/';
+					$fieldinput = IM_IMAGE_UPLOAD_DIR.intval($input['id']).'.'.$categoryid.'/';
 				}
 
 				// position is send
@@ -919,7 +890,7 @@ class ImModel
 		// delete search index (i18n search)
 		$this->deleteSearchIndex();
 
-		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input($input['name'])));
+		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))));
 
 		exec_action('ImAfterItemSave');
 		return true;

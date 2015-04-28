@@ -248,5 +248,6 @@ $i18n = array(
 	, 'i18nsearch_segment' => 'Item slug'
 	, 'i18nsearch_content' => 'Result content'
 	, 'i18nsearch_content_info' => 'Field name for content to appear in the search result'
+	, 'general_settings_tab_text' => '<p>The General Settings let you control how the plugin behaves across the whole application scope.</p>'
 
 );

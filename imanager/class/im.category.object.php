@@ -56,7 +56,7 @@ class Category
 			$xml->slug = (string) $this->slug;
 			$xml->position = !is_null($this->position) ? intval($this->position) : intval($this->id);
 			$xml->created = intval($this->created);
-			$xml->updated = intval($this->updated);
+			$xml->updated = !empty($this->updated) ? intval($this->updated) : time();
 
 			return $xml->asXml($this->file);
 		}
@@ -75,7 +75,7 @@ class Category
 			$xml->name = (string) $this->name;
 			$xml->slug = (string) $this->slug;
 			$xml->position = !is_null($this->position) ? intval($this->position) : intval($this->id);
-			$xml->created = intval($this->created);
+			$xml->created = !empty($this->created) ? intval($this->created) : time();
 			$xml->updated = intval($this->updated);
 
 			return $xml->asXml($this->file);

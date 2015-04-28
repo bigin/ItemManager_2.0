@@ -11,8 +11,8 @@
 		<div class="tab-content">
 			<div id="tab1" class="tab active">
 				<h3 class="menuglava">[[lang/general_settings]]</h3>
-				<p>Tab #1 content goes here!</p>
-				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis.</p>
+				[[lang/general_settings_tab_text]]
+				<script src="https://gist.github.com/bigin/29331c8c1c5ce9eea0e3.js"></script>
 				<div class="fieldarea">
 					<label for="maxcatname">[[lang/cat_max_length]]</label>
 					<p><input id="maxcatname" class="number-fields-left number" name="maxcatname" type="number" value="[[maxcatname]]"></p>
