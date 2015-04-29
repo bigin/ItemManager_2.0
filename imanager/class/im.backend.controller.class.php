@@ -58,65 +58,6 @@ class ImBackend
 			return !empty($result['value']) ? $result['value'] : '';
 
 
-		/* Beispiel Category Objekt holen und speichern */
-		/*$cat_obj = $category->getCategory('id=1');
-		// immer kontrollieren ob objekt existiert
-		if($cat_obj)
-		{
-			$cat_obj->set('updated', time());
-			$cat_obj->name = 'Das ist der neue Name für Kategorie 1';
-			$cat_obj->save();
-		}*/
-
-
-
-		/* Beispiel neu Category erstellen und speichern */
-		/*$neu_cat = new Category();
-		//$neu_cat->name = 'Überschriebenes Objekt';
-		// Das geht auch:
-		$neu_cat->set('name', 'Das ist die Kategorie Nr3');
-		// schreiben nur wenn der Name noch nicht vorhanden ist
-		if(!$this->im->category->getCategory('name='.$neu_cat->name))
-			$neu_cat->save();
-		// Refresh categories buffer
-		$this->im->category->init();*/
-
-
-
-		/* Beispiel: Zeig Anzahl der Categorien */
-		//$this->im->category->countCategories();
-
-		/* Beispiel: Holle alle Categorien mit position == 1 */
-		//$cat_obj = $category->getCategories('position=1');
-
-		/* Beispiel: Holle alle Categorien mit position >= 1 */
-		//$cat_obj = $category->getCategories('position>=1');
-
-		/* Beispiel: Holle alle Categorien mit position <= 2 */
-		//$cat_obj = $category->getCategories('position<=2');
-
-		/* Beispiel: Holle alle Categorien mit position != 2 */
-		//$cat_obj = $category->getCategories('position!=2');
-
-		/* Beispiel: Holle alle Categorien mit position > 2 */
-		//$cat_obj = $category->getCategories('position>2');
-
-		/* Beispiel: Holle alle Categorien mit position < 2 */
-		//$cat_obj = $category->getCategories('position<2');
-
-		/* Beispiel: Holle alle Categorien mit position < 2
-		   und danach aus dem Rückgabe-Array hole dem Namen "Das ist die Kategorie Nr3" */
-		//$cat_obj = $category->getCategories('position>=2');
-		//$cat_obj = $category->getCategories('name = Aas ist die Kategorie Nr3', $cat_obj);
-
-
-		/* Beispiel Categorien filtern nach position */
-		// $cat_obj = $category->filterCategories('position', 'DESC', $category->categories);
-
-		/* Beispiel sortieren der Categorien alphabetisch nach Namen */
-		// $cat_obj = $category->filterCategories('name', 'ASC', $category->categories);
-
-
 
 
 		// TEMPLATES ****
@@ -151,70 +92,6 @@ class ImBackend
 			//print_r($mytpl);
 			echo '</pre>';
 		}*/
-
-
-
-
-		// ARBEITEN MIT FIELDERN ****
-
-		/*$fc = new ImFields();
-		if(!$fc->fieldsExists(1))
-			if(!$fc->createFields(1))
-				echo 'Error: can\'t create new fields';
-
-		// Felder einer Kategorie (in dem Fall mit Kategorie mit id Nr. 1) initialisieren
-		$fc->init(1);*/
-
-		/* Get field by ID */
-		//$field = $fc->getField(7);
-		//var_dump($field);
-
-		/* Neues Feld erstellen und speichern */
-		/*$new_field = new Field(2);
-		$new_field->name = 'Bieter_bohlen';
-		$new_field->save();*/
-
-		/* Beispiel: Eien Feld mit dem Namen "Dieter_Bohlen" löschen */
-		/*$myfield = $fc->getField('name= Dieter_Bohlen');
-		// immer zuerst komtrollieren:
-		if($myfield)
-		{
-			$fc->destroyField($myfield);
-		}*/
-
-		/* Beispiel Felder nach position sortieren */
-		//$fc->filterFields('position', 'ASC');
-
-		/* Initialisierten Felder holen */
-		//$fields = $fc->fields;
-
-
-		/* Daten eines Feldes mit dem namen title holen */
-		/*$myfield = $fc->getField('name=Aieter_bohlen');
-		$myfield->name = 'Dieter_Bohlen';
-		$myfield->save();*/
-
-		/* Prüfen ob ein Feld mit dem Namen Dalbaeb bereis existiert, wenn nicht anlegen */
-		/*$field = $fc->getField('name=Dalbaeb');
-		if(!$field)
-		{
-			$myfield = new Field(2);
-			$myfield->name = 'Dalbaeb';
-			$myfield->position = 10;
-			$myfield->default = 'Das isd der Default Wert<p>HTML</p>';
-			$myfield->save();
-		}*/
-
-
-
-		// ARBEITEN MIT CONFIGS ****
-
-		// Config option setzen und speichern
-		//$this->im->config->set('backend', 'catorderby', 'position');
-		// oder so:
-		//$this->im->config->backend->catorderby = 'position';
-		//$this->im->config->save();
-
 
 
 

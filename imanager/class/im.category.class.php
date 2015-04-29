@@ -173,7 +173,7 @@ class ImCategory
 
 				$data = explode($pval, $stat, 2);
 				$key = strtolower(trim($data[0]));
-				if($pkey != 5)
+				if($pkey != 5 && $pkey != 2)
 					$val = (int) trim($data[1]);
 				else
 					$val = trim($data[1]);

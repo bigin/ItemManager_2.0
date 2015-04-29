@@ -272,6 +272,9 @@ class ImItem
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
 
+		if($offset > 0 && $length > 0 && $offset >= $length)
+			return false;
+
 		$locitems = !empty($items) ? $items : $this->items;
 
 		// nothing to select
@@ -326,7 +329,20 @@ class ImItem
 			}
 			if(!empty($sepitems[0]) || !empty($sepitems[1]))
 			{
-				if(count($sepitems[0]) > count($sepitems[1]))
+				if(is_array($sepitems[0]) && is_array($sepitems[1]))
+				{
+					// limited output
+					if(!empty($sepitems[0]) && ((int) $offset > 0 || (int) $length > 0))
+					{
+						if((int) $length == 0) $len = null;
+						$sepitems[0] = array_slice($sepitems[0], (int) $offset, (int) $length, true);
+						$sepitems[1] = array_slice($sepitems[1], (int) $offset, (int) $length, true);
+						$return = array_merge($sepitems[0], $sepitems[1]);
+						return array_slice($return, (int) $offset, (int) $length, true);
+					}
+					return array_merge($sepitems[0], $sepitems[1]);
+
+				} elseif(is_array($sepitems[0]) && !is_array($sepitems[1]))
 				{
 					// limited output
 					if(!empty($sepitems[0]) && ((int) $offset > 0 || (int) $length > 0))
@@ -395,7 +411,8 @@ class ImItem
 
 		$itemcontainer = array();
 
-		if($filterby == 'position' || $filterby == 'name' || $filterby == 'label' || $filterby == 'active')
+		if($filterby == 'position' || $filterby == 'name' || $filterby == 'label' || $filterby == 'active'
+			|| $filterby == 'created' || $filterby == 'updated')
 		{
 			if(empty($locitems)) return false;
 
@@ -498,7 +515,8 @@ class ImItem
 				return false;
 
 			// searching for the name and other simple attributs
-			if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active')
+			if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
+				|| $key == 'created' || $key == 'updated')
 			{
 				foreach($items as $itemkey => $item)
 				{
@@ -561,7 +579,8 @@ class ImItem
 				}
 
 				// searching for the name and other simple attributs
-				if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active')
+				if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
+					|| $key == 'created' || $key == 'updated')
 				{
 					foreach($items as $itemkey => $item)
 					{

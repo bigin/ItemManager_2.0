@@ -12,7 +12,9 @@
 			<div id="tab1" class="tab active">
 				<h3 class="menuglava">[[lang/general_settings]]</h3>
 				[[lang/general_settings_tab_text]]
-				<script src="https://gist.github.com/bigin/29331c8c1c5ce9eea0e3.js"></script>
+				<script src="https://gist.github.com/bigin/704d5154c09694225826.js?file=imfields.php"></script>
+				hallo bla
+				<script src="https://gist.github.com/bigin/704d5154c09694225826.js?file=working_with_fields.php&ts=4"></script>
 				<div class="fieldarea">
 					<label for="maxcatname">[[lang/cat_max_length]]</label>
 					<p><input id="maxcatname" class="number-fields-left number" name="maxcatname" type="number" value="[[maxcatname]]"></p>
