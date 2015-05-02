@@ -260,6 +260,8 @@ class ImSetup
 		// Item Enabled
 		$itemactive = !isset($input['itemactive']) ? 0 : intval($input['itemactive']);
 
+		$unique_itemname = !isset($input['uniqueitemname']) ? 0 : intval($input['uniqueitemname']);
+
 
 
 
@@ -320,6 +322,7 @@ class ImSetup
 		$backend_xml->addChild('itembackupdir',$item_backupdir);
 		$backend_xml->addChild('min_itembackup_days', $min_itembackup_days);
 		$backend_xml->addChild('itemactive', $itemactive);
+		$backend_xml->addChild('unique_itemname', $unique_itemname);
 
 		$backend_xml->addChild('min_tmpimage_days', $min_tmpimage_days);
 

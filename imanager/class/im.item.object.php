@@ -56,11 +56,50 @@ class Item
 	}
 
 
-	public function set($key, $val)
-	{
-		$this->$key = $val;
-	}
+	public function set($key, $val){ $this->$key = $val; }
 
+
+	public function setFieldValue($fieldname, $value, $sanitize=true)
+	{
+		if(empty($this->fields->$fieldname)) return false;
+		$field = $this->fields->$fieldname;
+
+		$inputClassName = 'Input'.$field->type;
+		$Input = new $inputClassName($field);
+		if(!is_array($value))
+		{
+			if(!$sanitize)
+				$this->fields->{$fieldname}->value = $Input->prepareInput($value)->value;
+			else
+				$this->fields->{$fieldname}->value = $Input->prepareInput($value, true)->value;
+			return true;
+		} else
+		{
+			foreach($value as $key => $val)
+			{
+				if($key != 'value')
+					$Input->$key = $val;
+				elseif($key == 'value')
+					$inputval = $val;
+			}
+			if(isset($inputval))
+			{
+				if(!$sanitize)
+					$resultinput = $Input->prepareInput($inputval);
+				else
+					$resultinput = $Input->prepareInput($inputval, true);
+
+				if(!empty($resultinput) && !is_int($resultinput))
+				{
+					foreach($resultinput as $inputputkey => $inputvalue)
+						$this->fields->{$fieldname}->$inputputkey = $inputvalue;
+					return true;
+				}
+				return $resultinput; // error code
+			}
+			return false;
+		}
+	}
 
 
 	public function get($key)

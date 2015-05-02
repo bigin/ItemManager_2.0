@@ -249,5 +249,7 @@ $i18n = array(
 	, 'i18nsearch_content' => 'Result content'
 	, 'i18nsearch_content_info' => 'Field name for content to appear in the search result'
 	, 'general_settings_tab_text' => '<p>The General Settings let you control how the plugin behaves across the whole application scope.</p>'
+	, 'unique_itemname' => 'Unique item names'
+	, 'unique_itemname_info' => '<i class="fa fa-info-circle"></i> Please check this in order for the item names to be unique.'
 
 );

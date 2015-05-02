@@ -15,7 +15,7 @@ interface Inputinterface
 
 	//public function checkInput($value);
 
-	public function prepareInput($value);
+	public function prepareInput($value, $sanitize);
 
 	public function prepareOutput();
 }

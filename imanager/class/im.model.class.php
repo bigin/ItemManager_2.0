@@ -737,12 +737,16 @@ class ImModel
 			return false;
 		}
 
-		// check if item name already exist and is not the same item
-		$item_by_name = $ic->getItem('name='.str_replace('"', '\'', $input['name']));
-		if($item_by_name && $id != $item_by_name->get('id'))
+		// should the item name to be unique
+		if($this->config->backend->unique_itemname == 1)
 		{
-			ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))), true);
-			return false;
+			// check if item name already exist and is not the same item
+			$item_by_name = $ic->getItem('name='.str_replace('"', '\'', $input['name']));
+			if($item_by_name && $id != $item_by_name->get('id'))
+			{
+				ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))), true);
+				return false;
+			}
 		}
 
 		// check item name length
@@ -1071,7 +1075,6 @@ class ImModel
 		exec_action($action);
 		return !empty(self::$action[$action]) ? self::$action[$action] : '';
 	}
-
 
 }
 

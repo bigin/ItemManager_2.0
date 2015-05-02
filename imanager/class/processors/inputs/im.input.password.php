@@ -15,8 +15,10 @@ class InputPassword implements Inputinterface
 		$this->values->salt = null;
 	}
 
-	public function prepareInput($value)
+	public function prepareInput($value, $sanitize=false)
 	{
+		$value = trim($value);
+		$this->confirm = trim($this->confirm);
 		// check input required
 		if(!empty($this->field->required) && $this->field->required == 1)
 		{
@@ -62,12 +64,8 @@ class InputPassword implements Inputinterface
 	public function prepareOutput(){return $this->values;}
 
 
-	public function checkInput($pass, $confirm)
-	{
+	public function checkInput($pass, $confirm){return self::SUCCESS;}
 
-
-		return self::SUCCESS;
-	}
 
 	function randomString($length = 10)
 	{

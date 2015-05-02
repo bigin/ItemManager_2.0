@@ -12,9 +12,6 @@
 			<div id="tab1" class="tab active">
 				<h3 class="menuglava">[[lang/general_settings]]</h3>
 				[[lang/general_settings_tab_text]]
-				<script src="https://gist.github.com/bigin/704d5154c09694225826.js?file=imfields.php"></script>
-				hallo bla
-				<script src="https://gist.github.com/bigin/704d5154c09694225826.js?file=working_with_fields.php&ts=4"></script>
 				<div class="fieldarea">
 					<label for="maxcatname">[[lang/cat_max_length]]</label>
 					<p><input id="maxcatname" class="number-fields-left number" name="maxcatname" type="number" value="[[maxcatname]]"></p>
@@ -227,6 +224,11 @@
 					<label for="itemactive">[[lang/item_enabled]]</label>
 					<p class="field-info">[[lang/item_enabled_info]]</p>
 					<p><input id="itemactive" class="checkbox-fields-left" name="itemactive" type="checkbox" value="1" [[itemactive]]></p>
+				</div>
+				<div class="fieldarea">
+					<label for="uniqueitemname">[[lang/unique_itemname]]</label>
+					<p class="field-info">[[lang/unique_itemname_info]]</p>
+					<p><input id="uniqueitemname" class="checkbox-fields-left" name="uniqueitemname" type="checkbox" value="1" [[uniqueitemname]]></p>
 				</div>
 
 

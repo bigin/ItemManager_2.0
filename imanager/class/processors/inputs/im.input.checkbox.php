@@ -11,7 +11,7 @@ class InputCheckbox implements Inputinterface
 		$this->values->value = null;
 	}
 
-	public function prepareInput($value)
+	public function prepareInput($value, $sanitize=false)
 	{
 		$this->values->value = ($value > 0) ? 1 : 0;
 		return $this->values;

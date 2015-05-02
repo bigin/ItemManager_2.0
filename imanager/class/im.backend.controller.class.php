@@ -645,6 +645,7 @@ class ImBackend
 				'i_active' => ($i_attribut == 'active') ? 'selected' : '',
 
 				'itemactive' => ($configs->backend->itemactive == 1) ? ' checked ' : '',
+				'uniqueitemname' => ($configs->backend->unique_itemname == 1) ? ' checked ' : '',
 				'min_tmpimage_days' => (intval($configs->backend->min_tmpimage_days) > 0) ? intval($configs->backend->min_tmpimage_days) : 0,
 				'itembackup' =>  ($configs->backend->itembackup == 1) ? ' checked ' : '',
 				'min_itembackup_days' => (intval($configs->backend->min_itembackup_days) > 0) ? intval($configs->backend->min_itembackup_days) : 0,

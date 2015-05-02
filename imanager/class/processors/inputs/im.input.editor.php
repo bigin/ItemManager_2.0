@@ -11,7 +11,7 @@ class InputEditor implements Inputinterface
 		$this->values->value = null;
 	}
 
-	public function prepareInput($value)
+	public function prepareInput($value, $sanitize=false)
 	{
 		$this->values->value = $value;
 		// check input required
