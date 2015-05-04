@@ -114,7 +114,7 @@ class ImModel
 
 
 	// refresh process preferencess FUNKTION BITTE NOCH ÄNDERN ODER LÖSCHEN
-	public function preferencesRefresh() { self::$config = getXML(IM_CONFIG_FILE);}
+	public function preferencesRefresh() { $this->config = getXML(IM_CONFIG_FILE);}
 
 
 	/**

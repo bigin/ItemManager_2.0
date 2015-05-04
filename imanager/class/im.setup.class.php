@@ -231,7 +231,8 @@ class ImSetup
 		$cat_filter = !isset($input['catfilter']) ? 0 : intval($input['catfilter']);
 		$max_cat_perpage = empty($input['maxcatperpage']) ? 10 : intval($input['maxcatperpage']);
 
-		$cat_order = (strtolower($input['catorder']) == 'asc') ? strtolower($input['catorder']) : 'desc';
+		$cat_order = (isset($input['catorder']) && strtolower($input['catorder']) == 'asc')
+			? strtolower($input['catorder']) : 'desc';
 
 		$cat_order_by = !empty($input['catorderby']) ?
 			strtolower(safe_slash_html_input($input['catorderby'])) : 'position';
@@ -239,7 +240,8 @@ class ImSetup
 		$item_order_by = !empty($input['itemorderby']) ?
 			strtolower(safe_slash_html_input($input['itemorderby'])) : 'position';
 
-		$item_order = (strtolower($input['itemorder']) == 'asc') ? strtolower($input['itemorder']) : 'desc';
+		$item_order = (isset($input['itemorder']) && strtolower($input['itemorder']) == 'asc')
+			? strtolower($input['itemorder']) : 'desc';
 
 		$item_filter = !isset($input['itemfilter']) ? 0 : intval($input['itemfilter']);
 
@@ -252,7 +254,7 @@ class ImSetup
 
 
 		// item Backup beim löschen anlegen Checkbox
-		$item_backup = !isset($input['itembackup']) ? 1 : intval($input['itembackup']);
+		$item_backup = !isset($input['itembackup']) ? 0 : intval($input['itembackup']);
 		// item Backup Verzeichnis angeben
 		$item_backupdir = empty($input['itembackupdir']) ? IM_BACKUP_DIR : $input['itembackupdir'];
 		// Item Backup Aufbewahrungsfrist in Tagen angeben
@@ -316,10 +318,13 @@ class ImSetup
 
 		$backend_xml->addChild('itemorderby', $item_order_by);
 		$backend_xml->addChild('itemorder', $item_order);
+		$item_filter = !isset($this->backend->itemfilter) ? 1 : $item_filter;
 		$backend_xml->addChild('itemfilter', $item_filter);
 		$backend_xml->addChild('maxitemperpage', $max_item_perpage);
 
+		$item_backup = !isset($this->backend->itembackup) ? 1 : $item_backup;
 		$backend_xml->addChild('itembackup', $item_backup);
+
 		$backend_xml->addChild('itembackupdir',$item_backupdir);
 		$backend_xml->addChild('min_itembackup_days', $min_itembackup_days);
 		$backend_xml->addChild('itemactive', $itemactive);

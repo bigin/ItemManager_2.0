@@ -52,11 +52,11 @@ define('IM_LANGUAGE', $LANG);
 
 
 // Initialize software name
-define('IMTITLE', 'PettyShop');
+define('IMTITLE', 'ItemManager');
 
 register_plugin(
 	$thisfile,
-	'Item Manager',
+	'ItemManager',
 	'2.0',
 	'Juri Ehret 10.04.2015',
 	'http://ehret-studio.com',
