@@ -61,7 +61,11 @@ class Item
 
 	public function setFieldValue($fieldname, $value, $sanitize=true)
 	{
-		if(empty($this->fields->$fieldname)) return false;
+		if(empty($this->fields->$fieldname))
+		{
+			ImMsgReporter::setCode(6);
+			return false;
+		}
 		$field = $this->fields->$fieldname;
 
 		$inputClassName = 'Input'.$field->type;
@@ -95,8 +99,10 @@ class Item
 						$this->fields->{$fieldname}->$inputputkey = $inputvalue;
 					return true;
 				}
-				return $resultinput; // error code
+				ImMsgReporter::setCode($resultinput);
+				return false;
 			}
+			ImMsgReporter::setCode(6);
 			return false;
 		}
 	}
@@ -184,6 +190,13 @@ class Item
 			$xml->active = $this->active;
 
 			$xml->created = $this->created;
+			// simple check if item has been updated by another process
+			if((int) $this->updated != (int) $xml->updated)
+			{
+				ImMsgReporter::setClause('err_updated_by_process', array(), true);
+				ImMsgReporter::setCode(ImMsgReporter::ERR_UPDATED_BY_PROCESS);
+				return false;
+			}
 			$xml->updated = time();
 
 			$data = $this->getFieldsDataToSave();

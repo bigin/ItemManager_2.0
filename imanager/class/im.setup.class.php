@@ -268,6 +268,7 @@ class ImSetup
 
 		// store values
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8" ?><settings></settings>');
+
 		$common_xml = $xml->addChild('common');
 		$frontend_xml = $xml->addChild('frontend');
 		$backend_xml = $xml->addChild('backend');
@@ -322,6 +323,8 @@ class ImSetup
 		$backend_xml->addChild('itembackupdir',$item_backupdir);
 		$backend_xml->addChild('min_itembackup_days', $min_itembackup_days);
 		$backend_xml->addChild('itemactive', $itemactive);
+		// set to 1 on start
+		$unique_itemname = !isset($this->backend->unique_itemname) ? 1 : $unique_itemname;
 		$backend_xml->addChild('unique_itemname', $unique_itemname);
 
 		$backend_xml->addChild('min_tmpimage_days', $min_tmpimage_days);

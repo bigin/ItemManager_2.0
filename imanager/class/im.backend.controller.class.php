@@ -304,7 +304,8 @@ class ImBackend
 			// delete item
 			elseif (isset($this->input['delete']))
 			{
-				$this->im->deleteItem($this->input['delete']);
+				$this->im->deleteItem($this->input['delete'],
+					$this->im->cp->currentCategory());
 			}
 
 			$o['content'] = $this->buildItemList();
@@ -959,6 +960,7 @@ class ImBackend
 		$filter = $this->tpl->getTemplate('filter', $itemlist);
 		$active = $this->tpl->getTemplate('active', $itemlist);
 		$inactive = $this->tpl->getTemplate('inactive', $itemlist);
+		$noitems = $this->tpl->getTemplate('noitemsrow', $itemlist);
 		$filteroptiontpl = $this->tpl->getTemplate('filteroption', $itemlist);
 
 		// get settings
@@ -1063,20 +1065,27 @@ class ImBackend
 		} else
 			$filter = false;
 
-		// build item rows
-		foreach($ic->items as $itemkey => $itemvalue)
+		if(empty($ic->items))
 		{
-			$rowbuff = $this->tpl->render($row, array(
-				'page' => $page,
-				'item-id' => $itemkey,
-				'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
-				'item-name' => !empty($itemvalue->name) ? $itemvalue->name : '',
-				'item-created' =>  !empty($itemvalue->created)?date((string) $configs->backend->timeformat, (int) $itemvalue->created):'',
-				'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
-				'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
-			), true);
-
+			$rowbuff = $this->tpl->render($noitems, array(), true);
 			$lines .= $rowbuff->content;
+		} else
+		{
+			// build item rows
+			foreach($ic->items as $itemkey => $itemvalue)
+			{
+				$rowbuff = $this->tpl->render($row, array(
+					'page' => $page,
+					'item-id' => $itemkey,
+					'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
+					'item-name' => !empty($itemvalue->name) ? $itemvalue->name : '',
+					'item-created' =>  !empty($itemvalue->created)?date((string) $configs->backend->timeformat, (int) $itemvalue->created):'',
+					'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
+					'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
+				), true);
+
+				$lines .= $rowbuff->content;
+			}
 		}
 
 		// build pagination

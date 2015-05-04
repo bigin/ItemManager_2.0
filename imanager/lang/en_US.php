@@ -16,7 +16,6 @@ $i18n = array(
   , 'relad_page' => 'Reload...'
   , 'FILTER' => 'Filter'
   , 'no_items' => '<div class="error">No items available for this category</div>'
-  , 'no_items_yet' => '<div class="error">No items available.</div>'
   , 'no_fields_yet' => '<div class="error">The custom fields panel is not available yet.</div>'
 
   , 'add_category' => 'Manage categories'//1.0
@@ -25,6 +24,7 @@ $i18n = array(
   , 'add_category_submit' => 'Add category'
 
 	//1.0
+	, 'no_items_yet' => 'No items available'
 	, 'invalid_category' => '<div class="error">You have entered illegal category</div>'
 	, 'category_name' => 'Name'
 	, 'category_slug' => 'Slug'
@@ -133,6 +133,7 @@ $i18n = array(
 	, 'cat_backups_dir' => 'Backup directory for categories'
 	, 'field_backups_dir' => 'Backup directory for fields'
 	, 'err_backup' => '<div class="error">Error creating a backup file (Check if the backup directory exists: [[backup]])</div>'
+	, 'err_updated_by_process' => '<div class="error">Error saving item: The item has been updated by another process</div>'
 	, 'cat_per_page' => 'Categories per page'
 	, 'cat_per_page_description' => '<i class="fa fa-info-circle"></i> You can change the number of categories per page by selecting another value.'
 	, 'display_cat_filter' => 'Display Category filter'

@@ -18,6 +18,7 @@ class ImModel
 
 	public $item;
 	public $category;
+	public $field;
 
 	public $hooks;
 
@@ -38,6 +39,11 @@ class ImModel
 		$this->cp = new ImCategoryProcessor($this->category);
 		// alle categorien einlesen
 
+		// field
+		$field = new ImFields();
+
+
+
 		// initialize settup class
 		$this->config = new ImSetup();
 
@@ -52,7 +58,7 @@ class ImModel
 				{
 					if($this->config->setupConfig())
 					{
-						$this->preferencessRefresh();
+						$this->preferencesRefresh();
 						self::$installed = true;
 					}
 				}
@@ -108,7 +114,7 @@ class ImModel
 
 
 	// refresh process preferencess FUNKTION BITTE NOCH ÄNDERN ODER LÖSCHEN
-	public function preferencessRefresh() { self::$config = getXML(IM_CONFIG_FILE);}
+	public function preferencesRefresh() { self::$config = getXML(IM_CONFIG_FILE);}
 
 
 	/**
@@ -135,7 +141,7 @@ class ImModel
 		}
 
 
-		$fc = new ImFields();
+		$fc = $this->field;
 		$fc->init($cat->get('id'));
 
 		// try to create fields backup of the category to be deleted
@@ -406,7 +412,7 @@ class ImModel
 			ImMsgReporter::setClause('err_save_fields_unique');
 		}
 
-		$fc = new ImFields();
+		$fc = $this->field;
 		$fc->init($input['cat']);
 
 		// backup fields?
@@ -491,7 +497,7 @@ class ImModel
 
 	public function saveFieldDetails($input)
 	{
-		$cf = new ImFields();
+		$cf = $this->field;
 		$cf->init($this->cp->currentCategory());
 		// get current field by id
 		$currfield = $cf->getField(intval($input['field']));
@@ -818,7 +824,7 @@ class ImModel
 				}
 			} elseif($fieldvalue->type == 'password')
 			{
-				$InputType->confirm = !empty($input['password_confirm']);
+				$InputType->confirm = !empty($input['password_confirm']) ? $input['password_confirm'] : '';
 				// refill password field values if empty
 				$InputType->password = !empty($curitem->fields->$fieldname->value)
 					? $curitem->fields->$fieldname->value : '';
@@ -902,7 +908,7 @@ class ImModel
 
 
 
-	public function deleteItem($id)
+	public function deleteItem($id, $catid)
 	{
 		// timestamp or item id required
 		if(!is_numeric($id))
@@ -912,7 +918,7 @@ class ImModel
 		}
 
 		// is current category valid
-		if(!$this->cp->isCategoryValid($this->cp->currentCategory()))
+		if(!$this->cp->isCategoryValid($catid))
 		{
 			ImMsgReporter::setClause('invalid_category', array(), true);
 			return false;
@@ -920,7 +926,7 @@ class ImModel
 
 		// Initialize items of the current category
 		$ic = new ImItem();
-		$ic->init($this->cp->currentCategory());
+		$ic->init($catid);
 
 		$item = $ic->getItem($id);
 
