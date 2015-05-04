@@ -258,7 +258,7 @@ class ImSetup
 		// item Backup Verzeichnis angeben
 		$item_backupdir = empty($input['itembackupdir']) ? IM_BACKUP_DIR : $input['itembackupdir'];
 		// Item Backup Aufbewahrungsfrist in Tagen angeben
-		$min_itembackup_days = !isset($input['min_itembackup_days']) ? 1 : intval($input['min_itembackup_days']);
+		$min_itembackup_days = !isset($input['min_itembackup_days']) ? 10 : intval($input['min_itembackup_days']);
 		// Item Enabled
 		$itemactive = !isset($input['itemactive']) ? 0 : intval($input['itemactive']);
 

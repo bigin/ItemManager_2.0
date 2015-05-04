@@ -67,7 +67,10 @@ class Category
 			$c = new ImCategory();
 			$c->init();
 
-			$this->id = max(array_keys($c->categories))+1;
+			$this->id = 1;
+			if(!empty($c->categories))
+				$this->id = max(array_keys($c->categories))+1;
+
 			$this->file = IM_CATEGORY_DIR.$this->id.IM_CATEGORY_FILE_SUFFIX;
 
 			$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><category></category>');
