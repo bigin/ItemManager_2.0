@@ -142,11 +142,11 @@ class ImModel
 
 
 		$fc = $this->field;
-		$fc->init($cat->get('id'));
 
 		// try to create fields backup of the category to be deleted
-		if(intval($this->config->backend->fieldbackup) == 1)
+		if(intval($this->config->backend->fieldbackup) == 1  && !empty($fc))
 		{
+			$fc->init($cat->get('id'));
 			if(!$fc->fieldsExists($cat->get('id')))
 				if(!$fc->createFields($cat->get('id')))
 				{
