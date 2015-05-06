@@ -104,7 +104,7 @@ class ImCategory
 		if(is_numeric($stat))
 		{
 			// id not found
-			if(!isset($loccat[(int) $stat]) || empty($loccat[(int) $stat]->get('id')))
+			if(!isset($loccat[(int) $stat]) || !$loccat[(int) $stat]->get('id'))
 				return false;
 
 			return !empty($loccat[(int) $stat]) ? $loccat[(int) $stat] : false;

@@ -125,7 +125,7 @@
 					jsonObj.push(item);
 				});
 
-				$.post("/admin/load.php?id=imanager&getitemlist="+num+"&filterby="+ftr+"&option="+opt+"&filterbyfield="+ordf+"&filter="+flr+"&filtervalue="+flrv,
+				$.post("load.php?id=imanager&getitemlist="+num+"&filterby="+ftr+"&option="+opt+"&filterbyfield="+ordf+"&filter="+flr+"&filtervalue="+flrv,
 						{ page: [[page]],positions: jsonObj },
 						function(data, status){
 							if(status = 'success' && data) $('#im-itemlist-body').html(data);

@@ -37,7 +37,7 @@ class ImCategoryProcessor
 	{
 
 		if(!isset($this->category->categories[(int) $newcat]) ||
-			empty($this->category->categories[(int) $newcat]->get('id')))
+			($this->category->categories[(int) $newcat]->get('id') == ''))
 			return false;
 		$this->is_cat_exist = true;
 		$_SESSION['cat'] = (int) $newcat;
@@ -52,13 +52,14 @@ class ImCategoryProcessor
 	public function isCategoryValid($cq='')
 	{
 		if(isset($cq) && !empty($cq))
-			if(!empty($this->category->categories[(int)$cq]->get('id')))
+			if($this->category->categories[(int)$cq]->get('id'))
 				return true;
 
 		if(!isset($_SESSION['cat']) || empty($_SESSION['cat']))
 			return false;
 
-		if(isset($this->category->categories[$_SESSION['cat']]) && !empty($this->category->categories[$_SESSION['cat']]->get('id')))
+		if(isset($this->category->categories[$_SESSION['cat']]) &&
+			$this->category->categories[$_SESSION['cat']]->get('id') != '')
 			return true;
 
 		return false;

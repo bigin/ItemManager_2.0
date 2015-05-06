@@ -388,7 +388,7 @@ span.redoff:hover {
 }
 
 #filterarea .sm-label {
-	cler: left;
+	clear: left;
 	margin: 0 0 0 10px;
 	font-size: 10px;
 	color: #c0c0c0;

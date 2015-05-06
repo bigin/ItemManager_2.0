@@ -24,16 +24,15 @@ class FieldDropdown implements Fieldinterface
 		$select = $this->tpl->getTemplate('select', $itemeditor);
 		$tploption = $this->tpl->getTemplate('option', $itemeditor);
 
+		$tplbuffer = '';
 		if(is_array($this->options))
 		{
-			$tplbuffer = new Template();
 			foreach($this->options as $option)
 			{
-				$tplbuffer->push($this->tpl->render($tploption, array(
-						'option' => !$sanitize ? $this->sanitize($option) : $option,
-						'selected' => (!empty($this->value) && ($option == $this->value)) ? 'selected' : ''
-						), true
-					)
+				$tplbuffer .= $this->tpl->render($tploption, array(
+					'option' => !$sanitize ? $this->sanitize($option) : $option,
+					'selected' => (!empty($this->value) && ($option == $this->value)) ? 'selected' : ''
+					), true
 				);
 			}
 		}
@@ -42,7 +41,7 @@ class FieldDropdown implements Fieldinterface
 				'name' => $this->name,
 				'class' => $this->class,
 				'id' => $this->id,
-				'options' => $tplbuffer->content), true, array()
+				'options' => $tplbuffer), true, array()
 		);
 	}
 	protected function sanitize($value){return safe_slash_html_input($value);}

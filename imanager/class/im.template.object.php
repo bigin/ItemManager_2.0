@@ -46,6 +46,6 @@ class Template
 			$this->$key = $val;
 	}
 
-	public function push(Template $val){ $this->content .= $val->content;}
-
+	//public function push(Template $val){ $this->content = $val->content;}
+	//public function push($val){ $this->content .= $val;}
 }

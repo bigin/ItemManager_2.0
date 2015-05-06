@@ -275,7 +275,7 @@ class ImBackend
 		{
 			$tag = ($this->im->cp->currentCategory() == $cat->get('id')) ? 'selected' : '';
 			$tploption = $this->tpl->render($option, array('selected' => $tag, 'value' => $cat->get('id'), 'name' => $cat->name));
-			$tvs .= $tploption;
+			$tvs .= $tploption->content;
 		}
 		// render category selector form
 		return $this->tpl->render($form,  array('options' => $tvs,
@@ -342,11 +342,12 @@ class ImBackend
 			$ic->init($cat->get('id'));
 			$count = $ic->countItems();
 
-			$tplrow .= $this->tpl->render($row, array(
+			$buff = $this->tpl->render($row, array(
 				'cat-position' => $cat->position,
 				'categoryname' => $cat->name,
 				'category' => $cat->get('id'), 'count' => $count), true, array()
 			);
+			$tplrow .= $buff->content;
 		}
 
 		// display category filter?
@@ -389,10 +390,10 @@ class ImBackend
 		$pagination = $this->im->buildPagination($tpls, $params);
 
 		return $this->tpl->render($form,  array(
-			'filter' => ((int) $configs->backend->catfilter == 1) ? $filter : '',
+			'filter' => ((int) $configs->backend->catfilter == 1) ? $filter->content : '',
 			'page' => $page,
 			'value' => $tplrow,
-			'pagination' => $pagination), true, array(), true
+			'pagination' => $pagination->content), true, array(), true
 		);
 	}
 
@@ -459,10 +460,11 @@ class ImBackend
 			$ic->init($cat->get('id'));
 			$count = $ic->countItems();
 
-			$tplrow .= $this->tpl->render($row, array(
+			$buff = $this->tpl->render($row, array(
 					'cat-position' => $cat->position,
 					'categoryname' => $cat->name,
 					'category' => $cat->get('id'), 'count' => $count), true, array());
+			$tplrow .= $buff->content;
 		}
 
 		return $tplrow;
@@ -627,7 +629,7 @@ class ImBackend
 
 		// define template buffers
 		$tplrow = '';
-		$rowbuffer = '';
+		$rowbuffer = null;
 		$tploptions = null;
 		$catselector = null;
 
@@ -638,7 +640,7 @@ class ImBackend
 		if(!$cf->fields)
 		{
 			// render row template
-			$tplrow .=  $this->tpl->render($row, array('tr-class' => 'hidden',
+			$rowbuffer = $this->tpl->render($row, array('tr-class' => 'hidden',
 					'i' => 0,
 					'id' => '',
 					'key' => '',
@@ -646,13 +648,14 @@ class ImBackend
 					'area-display' => 'display: none',
 					'text-options' => ''), true
 			);
+			$tplrow .= $rowbuffer->content;
 			// replace the form placeholders and return
 			return $this->tpl->render($form,  array('catselector' => $catselector, 'categorie_items' => $tplrow,
 					'cat' => $this->im->cp->currentCategory()), true, array(), true
 			);
 		}
 
-		// Hmmm Ok, some fields seems to be there, let's try to display them
+		// Hmmm Ok, some fields seems to be there, try to display them
 		$i = 0;
 		foreach($cf->fields as $f)
 		{
@@ -670,12 +673,10 @@ class ImBackend
 			// render details link
 			$tpldetails = $this->tpl->render($details, array('field-id' => $f->get('id')), true, array());
 
-			//$rowbuffer = $this->tpl->render($row, array());
-			$tplrow .= $this->tpl->render($row, array(
-					'selected-'.$f->type => ' selected="selected" ',
-					'tr-class' => 'sortable',
+			$rowbuffer = $this->tpl->render($row, array('selected-'.$f->type => ' selected="selected" '));
+			$rowbuffer = $this->tpl->render($rowbuffer, array('tr-class' => 'sortable',
 					'i' => $i,
-					'field-details' => $tpldetails,
+					'field-details' => $tpldetails->content,
 					'id' => $f->get('id'),
 					'key' => isset($f->name) ? $f->name : '',
 					'label' => isset($f->label) ? $f->label : '',
@@ -684,10 +685,10 @@ class ImBackend
 					'area-options' => $options), true
 			);
 
-			//$tplrow .= $rowbuffer;
+			$tplrow .= $rowbuffer->content;
 		}
 		// render hiden stuff
-		$tplrow .=  $this->tpl->render($row, array('tr-class' => 'hidden',
+		$rowbuffer = $this->tpl->render($row, array('tr-class' => 'hidden',
 				'i' => 0,
 				'id' => '',
 				'key' => '',
@@ -695,6 +696,7 @@ class ImBackend
 				'area-display' => 'display: none',
 				'text-options' => ''), true
 		);
+		$tplrow .= $rowbuffer->content;
 
 		// replace the form placeholders
 		return $this->tpl->render($form,  array(
@@ -907,19 +909,13 @@ class ImBackend
 		{
 
 			// build field options for items of current category
-			//$fieldoptions = new Template();
-			$fieldoptions = $this->tpl->render($filteroptiontpl, array(
+			$fieldoptions = new Template();
+			$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
 					'fieldname' => 'name',
 					'selected' => (!empty($configs->backend->filterbyfield) &&
 							(string) $configs->backend->filterbyfield == 'name') ? 'selected' : '',
 					'fieldlabel' => 'Item name')
-			);
-			/*$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
-					'fieldname' => 'name',
-					'selected' => (!empty($configs->backend->filterbyfield) &&
-							(string) $configs->backend->filterbyfield == 'name') ? 'selected' : '',
-					'fieldlabel' => 'Item name')
-			));*/
+			));
 			// initialize fields
 			$fc = new ImFields();
 			if($fc->fieldsExists($curcat->get('id')))
@@ -927,12 +923,13 @@ class ImBackend
 				$fc->init($curcat->get('id'));
 				foreach($fc->fields as $fname => $fval)
 				{
-					$fieldoptions .= $this->tpl->render($filteroptiontpl, array(
+					$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
 						'fieldname' => $fname,
 						'selected' => (!empty($configs->backend->filterbyfield) &&
 						(string) $configs->backend->filterbyfield == (string) $fname) ? 'selected' : '',
 						'fieldlabel' => !empty($fval->label) ? $fval->label : $fname)
-					);
+					));
+					//$fieldoptions .= $optionsbuff->content;
 				}
 			}
 
@@ -947,7 +944,7 @@ class ImBackend
 					'created' => ($filterby == 'created') ? 'selected' : '',
 					'updated' => ($filterby == 'updated') ? 'selected' : '',
 					'nswitch' => $this->buildNumberSwitch('item'),
-					'fieldoptions' => $fieldoptions,//$fieldoptions,
+					'fieldoptions' => $fieldoptions->content,//$fieldoptions,
 					'eq' => (!empty($configs->backend->filter) &&
 							(string) $configs->backend->filter == 'eq') ? 'selected' : '',
 					'geq' => (!empty($configs->backend->filter) &&
@@ -966,13 +963,14 @@ class ImBackend
 
 		if(empty($ic->items))
 		{
-			$lines .= $this->tpl->render($noitems, array(), true);
+			$rowbuff = $this->tpl->render($noitems, array(), true);
+			$lines .= $rowbuff->content;
 		} else
 		{
 			// build item rows
 			foreach($ic->items as $itemkey => $itemvalue)
 			{
-				$lines .= $this->tpl->render($row, array(
+				$rowbuff = $this->tpl->render($row, array(
 					'page' => $page,
 					'item-id' => $itemkey,
 					'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
@@ -981,6 +979,8 @@ class ImBackend
 					'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
 					'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
 				), true);
+
+				$lines .= $rowbuff->content;
 			}
 		}
 
@@ -1012,11 +1012,11 @@ class ImBackend
 		return $this->tpl->render($form, array(
 			'catselector' => $catselector,
 			'page' => $page,
-			'itemfilter' => ($filter) ? $filter : '',
+			'itemfilter' => ($filter) ? $filter->content : '',
 			'content' => $lines,
 			'count' => $count,
 			'category' => $curcat->name,
-			'pagination' => $pagination), true, array(), true
+			'pagination' => $pagination->content), true, array(), true
 		);
 	}
 
@@ -1121,7 +1121,7 @@ class ImBackend
 		// build item rows
 		foreach($ic->items as $itemkey => $itemvalue)
 		{
-			$lines .= $this->tpl->render($row, array(
+			$rowbuff = $this->tpl->render($row, array(
 				'page' => $page,
 				'item-id' => $itemkey,
 				'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
@@ -1130,6 +1130,8 @@ class ImBackend
 				'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
 				'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
 			), true);
+
+			$lines .= $rowbuff->content;
 		}
 
 		return $lines;
@@ -1181,7 +1183,7 @@ class ImBackend
 
 		$fields = $fc->filterFields('position', 'asc');
 
-		$tplfields = '';
+		$tplfields = new Template();
 		if($fields)
 		{
 			foreach($fields as $fieldname => $field)
@@ -1243,33 +1245,34 @@ class ImBackend
 				if(empty($fieldType->value) && !empty($field->default))
 					$fieldType->value = (string) $field->default;
 
-				$tplinfotext = '';
+				$tplinfotext = new Template();
 				if(!empty($field->info))
 					$tplinfotext = $this->tpl->render($infotext, array('infotext' => $field->info));
 
-				$tplrequired = '';
+				$tplrequired = new Template();
 				if(!empty($field->required) && $field->required == 1)
 					$tplrequired = $this->tpl->render($required, array());
 
 				if($field->type != 'chunk')
 				{
-					$tplfields .= $this->tpl->render($fieldarea, array(
+					$tplfields->push($this->tpl->render($fieldarea, array(
 						'fieldid' =>  $field->name,
 						'label' => $field->label,
-						'infotext' => $tplinfotext,
+						'infotext' => $tplinfotext->content,
 						'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
 						'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
-						'required' => $tplrequired,
-						'field' => $fieldType->render())
+						'required' => $tplrequired->content,
+						'field' => $fieldType->render()->content)
+						)
 					);
 				} else
 				{
-					$tplfields .= $fieldType->render();
+					$tplfields->push($fieldType->render());
 				}
 			}
 		}
 
-		return $this->tpl->render($form, array(
+		$form = $this->tpl->render($form, array(
 				'item-id' => $id,
 				'position' => !empty($curitem->position) ? $curitem->position : '',
 				'checked' => ($active > 0) ? ' checked ' : '',
@@ -1277,15 +1280,15 @@ class ImBackend
 				'timestamp' => $stamp,
 				'currentcategory' => $this->im->cp->currentCategory(),
 				'itemname' => !empty($curitem->name) ? $curitem->name : '',
-				'custom-fields' => $tplfields,
+				'custom-fields' => $tplfields->content,
 				'created' => ((int) $curitem->created > 0) ?
 						date((string) $this->im->config->backend->timeformat, (int) $curitem->created) : '',
 				'updated' => ($curitem->updated > 0) ?
 						date((string) $this->im->config->backend->timeformat, (int) $curitem->updated) : ''
-			), true, array(), true
+			)
 		);
 
-		//return $this->tpl->render($form, array(), true, array(), true);
+		return $this->tpl->render($form, array(), true, array(), true);
 
 	}
 

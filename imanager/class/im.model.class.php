@@ -84,7 +84,6 @@ class ImModel
 		}
 
 		// initialise our classes
-		$this->item = new ImItem();
 		$this->backend = new ImBackend($this);
 
 		global $plugins;
@@ -112,8 +111,35 @@ class ImModel
 
 	}
 
+	/* map our classes */
 
-	// refresh process preferencess FUNKTION BITTE NOCH ÄNDERN ODER LÖSCHEN
+	public function getTemplates($member){return $this->tpl->getTemplates($member);}
+
+	public function getTemplate($name, array $bunch=array()){return $this->tpl->getTemplate($name, $bunch);}
+
+	public function newTemplate(){return new Template();}
+
+	public function getTemplateEngine(){return new ImTplEngine();}
+
+
+	public function getCategoryClass(){return $this->category;}
+
+	public function newCategory(){return new Category();}
+
+
+	public function getFieldsClass(){return new ImFields();}
+
+	public function newField($catid){return new Field($catid);}
+
+
+	public function getItemClass(){return new ImItem();}
+
+	public function newItem($catid){return new Item($catid);}
+
+
+
+
+	// refresh process preferencess
 	public function preferencesRefresh() { $this->config = getXML(IM_CONFIG_FILE);}
 
 
@@ -141,7 +167,7 @@ class ImModel
 		}
 
 
-		$fc = $this->field;
+		$fc = new ImFields();
 
 		// try to create fields backup of the category to be deleted
 		if(intval($this->config->backend->fieldbackup) == 1  && !empty($fc))
@@ -209,7 +235,7 @@ class ImModel
 			return false;
 		}
 		// destroy fields file
-		if(!$fc->destroyFieldsFile($cat))
+		if(isset($fc) && !$fc->destroyFieldsFile($cat))
 		{
 			ImMsgReporter::setClause('err_delete_fields_file', array(), true);
 			return false;
@@ -412,7 +438,7 @@ class ImModel
 			ImMsgReporter::setClause('err_save_fields_unique');
 		}
 
-		$fc = $this->field;
+		$fc = new ImFields();
 		$fc->init($input['cat']);
 
 		// backup fields?
@@ -440,7 +466,7 @@ class ImModel
 
 			if($field)
 			{
-				$field->name = self::toAscii($names[$key]);
+				$field->name = str_replace('-', '_', self::toAscii($names[$key]));
 				$field->label = str_replace('"', '\'', $labels[$key]);
 				$field->type = self::toAscii($types[$key]);
 				$field->position = $key+1;
@@ -497,7 +523,7 @@ class ImModel
 
 	public function saveFieldDetails($input)
 	{
-		$cf = $this->field;
+		$cf = new ImFields();
 		$cf->init($this->cp->currentCategory());
 		// get current field by id
 		$currfield = $cf->getField(intval($input['field']));
@@ -578,12 +604,12 @@ class ImModel
 			return $tpl->render($tpls['wrapper'], array('value' => ''), true);
 
 
-		$output = new Template();
+		$output = '';
 
 		if($page > 1)
-			$output->push($tpl->render($tpls['prev'], array('href' => $pageurl . $prev), true));
+			$output .= $tpl->render($tpls['prev'], array('href' => $pageurl . $prev), true);
 		else
-			$output->push($tpl->render($tpls['prev_inactive'], array(), true));
+			$output .= $tpl->render($tpls['prev_inactive'], array(), true);
 
 		// not enough pages to bother breaking it up
 		if($lastpage < 7 + ($adjacents * 2))
@@ -592,11 +618,11 @@ class ImModel
 			{
 				if($counter == $page)
 				{
-					$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
+					$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 				} else
 				{
-					$output->push($tpl->render($tpls['central'], array(
-						'href' => $pageurl . $counter, 'counter' => $counter), true)
+					$output .= $tpl->render($tpls['central'], array(
+						'href' => $pageurl . $counter, 'counter' => $counter), true
 					);
 				}
 			}
@@ -610,82 +636,82 @@ class ImModel
 				{
 					if($counter == $page)
 					{
-						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
+						$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
-							'counter' => $counter), true));
+						$output .= $tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true);
 					}
 				}
 				// ...
-				$output->push($tpl->render($tpls['ellipsis']));
+				$output .= $tpl->render($tpls['ellipsis']);
 				// sec last
-				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
-					'counter' => ($lastpage - 1)), true));
+				$output .= $tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
+					'counter' => ($lastpage - 1)), true);
 				// last
-				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
-					'counter' => $lastpage), true));
+				$output .= $tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
+					'counter' => $lastpage), true);
 			}
 			// middle pos; hide some front and some back
 			elseif($lastpage - ($adjacents * 2) > $page && $page > ($adjacents * 2))
 			{
 				// first
-				$output->push($tpl->render($tpls['first'], array('href' => $pageurl . '1'), true));
+				$output .= $tpl->render($tpls['first'], array('href' => $pageurl . '1'), true);
 				// second
-				$output->push($tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true));
+				$output .= $tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true);
 				// ...
-				$output->push($tpl->render($tpls['ellipsis']));
+				$output .= $tpl->render($tpls['ellipsis']);
 
 				for($counter = $page - $adjacents; $counter <= $page + $adjacents; $counter++)
 				{
 					if($counter == $page)
 					{
-						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
+						$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
-							'counter' => $counter), true));
+						$output .= $tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true);
 					}
 				}
 				// ...
-				$output->push($tpl->render($tpls['ellipsis']));
+				$output .= $tpl->render($tpls['ellipsis']);
 				// sec last
-				$output->push($tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
-					'counter' => ($lastpage - 1)), true));
+				$output .= $tpl->render($tpls['secondlast'], array('href' => $pageurl . ($lastpage - 1),
+					'counter' => ($lastpage - 1)), true);
 				// last
-				$output->push($tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
-					'counter' => $lastpage), true));
+				$output .= $tpl->render($tpls['last'], array('href' => $pageurl . $lastpage,
+					'counter' => $lastpage), true);
 			}
 			//close to end; only hide early pages
 			else
 			{
 				// first
-				$output->push($tpl->render($tpls['first'], array('href' => $pageurl . '1'), true));
+				$output .= $tpl->render($tpls['first'], array('href' => $pageurl . '1'), true);
 				// second
-				$output->push($tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true));
+				$output .= $tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true);
 				// ...
-				$output->push($tpl->render($tpls['ellipsis']));
+				$output .= $tpl->render($tpls['ellipsis']);
 
 				for($counter = $lastpage - (2 + ($adjacents * 2)); $counter <= $lastpage; $counter++)
 				{
 					if($counter == $page)
 					{
-						$output->push($tpl->render($tpls['central_inactive'], array('counter' => $counter), true));
+						$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 					} else
 					{
-						$output->push($tpl->render($tpls['central'], array('href' => $pageurl . $counter,
-							'counter' => $counter), true));
+						$output .= $tpl->render($tpls['central'], array('href' => $pageurl . $counter,
+							'counter' => $counter), true);
 					}
 				}
 			}
 		}
 		//next link
 		if($page < $counter - 1)
-			$output->push($tpl->render($tpls['next'], array('href' => $pageurl . $next), true));
+			$output .= $tpl->render($tpls['next'], array('href' => $pageurl . $next), true);
 		else
-			$output->push($tpl->render($tpls['next_inactive'], array(), true));
+			$output .= $tpl->render($tpls['next_inactive'], array(), true);
 
-		return $tpl->render($tpls['wrapper'], array('value' => $output->content), true);
+		return $tpl->render($tpls['wrapper'], array('value' => $output), true);
 
 	}
 
@@ -830,7 +856,7 @@ class ImModel
 					? $curitem->fields->$fieldname->value : '';
 				$InputType->salt = !empty($curitem->fields->$fieldname->salt)
 					? $curitem->fields->$fieldname->salt : '';
-				$fieldinput = $input['password'];
+				$fieldinput = !empty($input['password']) ? $input['password'] : '';
 			}
 
 			$resultinput = $InputType->prepareInput($fieldinput);

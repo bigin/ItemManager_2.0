@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: ItemManager
- * Description: Full-featured  ItemManager.
- * Version: 1.0
+ * Description: A simple flat-file Framework.
+ * Version: 2.0
  * Author: Juri Ehret
  * Author URL: http://ehret-studio.com
  *
@@ -216,9 +216,24 @@ class ImTplEngine
 
 		if($clean) return preg_replace('%\[\[(.*)\]\]%', '', $tpl->content);
 
-		return $tpl;
+		return $tpl->content;
 	}
 
+
+	public function process(Template $template, array $tvs=array(),
+						   $lflag=false, array $lvs=array(), $clean=false)
+	{
+		$tpl = clone $template;
+		if($lflag) $tpl->content = $this->renderLvs($tpl->content, $lvs);
+
+		if(!empty($tvs))
+			foreach($tvs as $key => $val)
+				$tpl->content = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $val, $tpl->content);
+
+		if($clean) return preg_replace('%\[\[(.*)\]\]%', '', $tpl->content);
+
+		return $tpl->content;
+	}
 
 	/**
 	 * Replaces language placeholders (lvs)

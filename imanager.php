@@ -22,7 +22,9 @@
  * with ItemManager.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-if(session_status() == PHP_SESSION_NONE) {session_start();}
+// php 5.4.x
+#if(session_status() == PHP_SESSION_NONE) {session_start();}
+if(!isset($_SESSION)){session_start();}
 if(!isset($_SESSION['cat']) || is_null($_SESSION['cat'])) $_SESSION['cat'] = null;
 
 # get correct id for plugin
@@ -137,7 +139,7 @@ function imanager()
 	$manager = new IManager();
 	// run
 	$backend = $manager->backend->display($request);
-	echo $backend->content;
+	echo $backend;
 }
 
 function ajaxGetLists()

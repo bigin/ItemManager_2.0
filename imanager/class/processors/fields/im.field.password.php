@@ -24,17 +24,16 @@ class FieldPassword implements Fieldinterface
 		$names = array($this->name, 'password_confirm');
 		$labels = array('[[lang/password_field]]', '[[lang/password_confirm_field]]');
 		$label_classes = array('label-left', 'label-right');
-		$fields = new Template();
+		$fields = '';
 
 		for($i=0;$i<2;$i++)
 		{
-			$fields->push($this->tpl->render($field, array(
-					'label' => !empty($labels[$i]) ? $labels[$i] : '',
-					'labelclass' => !empty($label_classes[$i]) ? $label_classes[$i] : '',
-					'name' => $names[$i],
-					'class' => $this->class,
-					'value' => '')
-				)
+			$fields = $this->tpl->render($field, array(
+				'label' => !empty($labels[$i]) ? $labels[$i] : '',
+				'labelclass' => !empty($label_classes[$i]) ? $label_classes[$i] : '',
+				'name' => $names[$i],
+				'class' => $this->class,
+				'value' => '')
 			);
 		}
 		return $fields;
