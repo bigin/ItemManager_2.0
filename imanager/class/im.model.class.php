@@ -119,7 +119,7 @@ class ImModel
 
 	public function newTemplate(){return new Template();}
 
-	public function getTemplateEngine(){return new ImTplEngine();}
+	public function getTemplateEngine($path=''){return new ImTplEngine($path);}
 
 
 	public function getCategoryClass(){return $this->category;}

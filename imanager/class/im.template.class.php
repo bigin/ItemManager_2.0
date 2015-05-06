@@ -220,21 +220,6 @@ class ImTplEngine
 	}
 
 
-	public function process(Template $template, array $tvs=array(),
-						   $lflag=false, array $lvs=array(), $clean=false)
-	{
-		$tpl = clone $template;
-		if($lflag) $tpl->content = $this->renderLvs($tpl->content, $lvs);
-
-		if(!empty($tvs))
-			foreach($tvs as $key => $val)
-				$tpl->content = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $val, $tpl->content);
-
-		if($clean) return preg_replace('%\[\[(.*)\]\]%', '', $tpl->content);
-
-		return $tpl->content;
-	}
-
 	/**
 	 * Replaces language placeholders (lvs)
 	 *
