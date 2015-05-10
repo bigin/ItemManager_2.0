@@ -14,6 +14,7 @@ class FieldImageupload implements Fieldinterface
 		$this->categoryid = null;
 		$this->itemid = null;
 		$this->timestamp = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -38,4 +39,6 @@ class FieldImageupload implements Fieldinterface
 		);
 		return $output;
 	}
+
+	public function getConfigFieldtype(){}
 }

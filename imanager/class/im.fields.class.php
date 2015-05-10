@@ -37,6 +37,8 @@ class ImFields
 					$f->setProtected($key, (int) $xml->field[$fieldid]->id);
 				elseif($key == 'option')
 					$f->options[] = (string) $val;
+				elseif($key == 'configs')
+					$f->configs = $val;
 				else
 					$f->$key = (string) $val;
 
@@ -169,7 +171,8 @@ class ImFields
 
 	public function fieldsExists($id){return file_exists(IM_FIELDS_DIR . intval($id) . IM_FIELDS_FILE_SUFFIX);}
 
-	public function fieldNameExists($fieldname){return array_key_exists($fieldname, $this->fields);}
+	public function fieldNameExists($fieldname){return array_key_exists(
+		str_replace('-', '_', IManager::toAscii($fieldname)), $this->fields);}
 
 
 

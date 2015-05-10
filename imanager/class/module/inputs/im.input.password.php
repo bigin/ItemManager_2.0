@@ -67,7 +67,7 @@ class InputPassword implements Inputinterface
 	public function checkInput($pass, $confirm){return self::SUCCESS;}
 
 
-	function randomString($length = 10)
+	public function randomString($length = 10)
 	{
 		$characters = '0123456*789abcdefg$hijk#lmnopqrstuvwxyzABC+EFGHIJKLMNOPQRSTUVW@XYZ';
 		$charactersLength = strlen($characters);

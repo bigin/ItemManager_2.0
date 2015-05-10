@@ -1,10 +1,10 @@
 <tr class="[[tr-class]]">
-	<td class="im-drag">
-		<i class="fa fa-hand-o-up"></i>
-	</td>
-	<td>
-		[[field-details]]
-	</td>
+    <td class="im-drag">
+        <i class="fa fa-hand-o-up"></i>
+    </td>
+    <td>
+        [[field-details]]
+    </td>
     <td>
         <input type="text" class="text" style="width:80px;padding:2px;" name="cf_[[i]]_key" value="[[key]]"/>
     </td>
@@ -20,9 +20,10 @@
             <option value="editor"[[selected-editor]] >[[lang/editor_field_value]]</option>
             <option value="hidden"[[selected-hidden]]>[[lang/hidden_field_value]]</option>
             <option value="imageupload"[[selected-imageupload]]>[[lang/file_field_value]]</option>
-			<option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
-			<option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>
-			<option value="chunk"[[selected-chunk]]>[[lang/chunk_field_value]]</option>
+            <option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
+            <option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>
+            <option value="chunk"[[selected-chunk]]>[[lang/chunk_field_value]]</option>
+            <option value="money"[[selected-money]]>[[lang/money_field_value]]</option>
         </select>
         <textarea class="text" style="[[area-display]]" rows="3" name="cf_[[i]]_options">[[area-options]]</textarea>
     </td>
@@ -31,6 +32,6 @@
     </td>
     <td class="im-del">
         <a href="#" class="deletefield" title="[[lang/delete]]"><i class="fa fa-times"></i></a>
-		<input type="hidden" name="cf_[[i]]_id" value="[[id]]"/>
+        <input type="hidden" name="cf_[[i]]_id" value="[[id]]"/>
     </td>
 </tr>

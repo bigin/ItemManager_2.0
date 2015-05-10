@@ -385,7 +385,6 @@ class ImModel
 			return false;
 		}
 
-
 		$ids = array();
 		$names = array();
 		$labels = array();
@@ -408,7 +407,7 @@ class ImModel
 			if(!empty($input['cf_'.$i.'_key']))
 			{
 				$ids[] = !empty($input['cf_'.$i.'_id']) ? intval($input['cf_'.$i.'_id']) : null;
-				$names[] = $input['cf_'.$i.'_key'];
+				$names[] = strtolower($input['cf_'.$i.'_key']);
 				$labels[] = !empty($input['cf_'.$i.'_label']) ? $input['cf_'.$i.'_label'] : '';
 				$types[] = !empty($input['cf_'.$i.'_type']) ? $input['cf_'.$i.'_type'] : '';
 				$options[] = !empty($input['cf_'.$i.'_options']) ? $input['cf_'.$i.'_options'] : '';
@@ -530,7 +529,7 @@ class ImModel
 
 		if(!$currfield)
 		{
-			// todo: korrigieren die echte Fehlermeldung
+			// todo: must to be corrected (real error?)
 			ImMsgReporter::setClause('err_field_id', array(), true);
 			return false;
 		}
@@ -542,9 +541,19 @@ class ImModel
 			? intval($input['min_field_input']) : null;
 		$currfield->maximum = (isset($input['max_field_input']) && intval($input['max_field_input']) > 0)
 			? intval($input['max_field_input']) : null;
-		$currfield->areacss = !empty($input['areacss']) ? str_replace('"', '\'', $input['areacss']) : '';
-		$currfield->labelcss = !empty($input['labelcss']) ? str_replace('"', '\'', $input['labelcss']) : '';
-		$currfield->fieldcss = !empty($input['fieldcss']) ? str_replace('"', '\'', $input['fieldcss']) : '';
+		$currfield->areaclass = !empty($input['areaclass']) ? str_replace('"', '\'', $input['areaclass']) : '';
+		$currfield->labelclass = !empty($input['labelclass']) ? str_replace('"', '\'', $input['labelclass']) : '';
+		$currfield->fieldclass = !empty($input['fieldclass']) ? str_replace('"', '\'', $input['fieldclass']) : '';
+
+		// process custom Fieldtype settings
+		foreach($input as $key => $value)
+		{
+			if(strpos($key, 'custom-') !== false)
+			{
+				$fieldkey = str_replace('custom-', '', $key);
+				$currfield->configs->$fieldkey = $value;
+			}
+		}
 
 		$currfield->save();
 
@@ -776,7 +785,8 @@ class ImModel
 			$item_by_name = $ic->getItem('name='.str_replace('"', '\'', $input['name']));
 			if($item_by_name && $id != $item_by_name->get('id'))
 			{
-				ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))), true);
+				ImMsgReporter::setClause('err_item_exists', array('name' => safe_slash_html_input(
+					str_replace('"', '\'', $input['name']))), true);
 				return false;
 			}
 		}
@@ -784,7 +794,8 @@ class ImModel
 		// check item name length
 		if(strlen($input['name']) > $this->config->common->maxitemname)
 		{
-			ImMsgReporter::setClause('err_item_name_length', array('count' => intval($this->config->common->maxitemname)));
+			ImMsgReporter::setClause('err_item_name_length', array('count' =>
+				intval($this->config->common->maxitemname)));
 			return false;
 		}
 
@@ -887,6 +898,10 @@ class ImModel
 						ImMsgReporter::setClause('err_input_comparison',
 							array('fieldname' => $fieldvalue->label), true);
 						return false;
+					case 8:
+						ImMsgReporter::setClause('err_input_format',
+							array('fieldname' => $fieldvalue->label), true);
+						return false;
 				}
 
 				// todo: error log
@@ -926,7 +941,8 @@ class ImModel
 		// delete search index (i18n search)
 		$this->deleteSearchIndex();
 
-		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input(str_replace('"', '\'', $input['name']))));
+		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input(
+			str_replace('"', '\'', $input['name']))));
 
 		exec_action('ImAfterItemSave');
 		return true;

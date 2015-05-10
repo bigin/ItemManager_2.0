@@ -11,6 +11,7 @@ class FieldEditor implements Fieldinterface
 		$this->class = null;
 		$this->id = null;
 		$this->value = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -192,4 +193,6 @@ class FieldEditor implements Fieldinterface
 
 		);
 	}
+
+	public function getConfigFieldtype(){}
 }

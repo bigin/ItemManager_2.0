@@ -11,6 +11,7 @@ class FieldPassword implements Fieldinterface
 		$this->class = null;
 		$this->id = null;
 		$this->value = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -28,15 +29,19 @@ class FieldPassword implements Fieldinterface
 
 		for($i=0;$i<2;$i++)
 		{
-			$fields = $this->tpl->render($field, array(
+			//echo 'test<br />';
+			$fields .= $this->tpl->render($field, array(
 				'label' => !empty($labels[$i]) ? $labels[$i] : '',
 				'labelclass' => !empty($label_classes[$i]) ? $label_classes[$i] : '',
 				'name' => $names[$i],
 				'class' => $this->class,
-				'value' => '')
+				'value' => ''), true, array(), true
 			);
 		}
+
 		return $fields;
 	}
 	protected function sanitize($value){return safe_slash_html_input($value);}
+
+	public function getConfigFieldtype(){}
 }

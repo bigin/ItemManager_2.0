@@ -12,6 +12,7 @@ class FieldDropdown implements Fieldinterface
 		$this->id = null;
 		$this->options = array();
 		$this->value = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -45,4 +46,6 @@ class FieldDropdown implements Fieldinterface
 		);
 	}
 	protected function sanitize($value){return safe_slash_html_input($value);}
+
+	public function getConfigFieldtype(){}
 }

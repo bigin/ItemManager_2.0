@@ -44,21 +44,21 @@
 			<div class="fieldarea">
 				<label for="areacss">[[lang/area_css]]</label>
 				<p class="field-info">[[lang/area_css_info]]</p>
-				<p><input id="areacss" class="text-fields-left text" name="areacss" type="text" value="[[area_css]]"></p>
+				<p><input id="areacss" class="text-fields-left text" name="areaclass" type="text" value="[[area_class]]"></p>
 
 				<div class="fieldarea intern">
 					<label for="labelcss">[[lang/label_css]]</label>
 					<p class="field-info">[[lang/label_css_info]]</p>
-					<p><input id="labelcss" class="text-fields-left text" name="labelcss" type="text" value="[[label_css]]"></p>
+					<p><input id="labelcss" class="text-fields-left text" name="labelclass" type="text" value="[[label_class]]"></p>
 				</div>
 
 				<div class="fieldarea intern">
 					<label for="fieldcss">[[lang/field_css]]</label>
 					<p class="field-info">[[lang/field_css_info]]</p>
-					<p><input id="fieldcss" class="text-fields-left text" name="fieldcss" type="text" value="[[field_css]]"></p>
+					<p><input id="fieldcss" class="text-fields-left text" name="fieldclass" type="text" value="[[field_class]]"></p>
 				</div>
 			</div>
-
+			[[fieldproperties]]
 			<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>
 		</div>
 	</form>

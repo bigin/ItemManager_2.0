@@ -26,10 +26,10 @@ class Field
 		$this->required = null;
 		$this->minimum = null;
 		$this->maximum = null;
-		$this->areacss = '';
-		$this->labelcss = '';
-		$this->fieldcss = '';
-		$this->confirmed = false;
+		$this->areaclass = '';
+		$this->labelclass = '';
+		$this->fieldclass = '';
+		$this->configs = new stdClass();
 
 		$this->created = time();
 		$this->updated = null;
@@ -43,12 +43,12 @@ class Field
 		// id is readonly
 		if(!in_array($key, array('name', 'label', 'type', 'position',
 			'default', 'options', 'created', 'updated', 'info', 'required',
-			'minimum', 'maximum', 'areacss', 'labelcss', 'fieldcss')))
+			'minimum', 'maximum', 'areaclass', 'labelclass', 'fieldclass')))
 			return false;
 
 		// save data depending on data type
 		if($key == 'name' || $key == 'label' || $key == 'type' || $key == 'default'
-			|| $key == 'info' || $key == 'areacss' || $key == 'labelcss' || $key == 'fieldcss')
+			|| $key == 'info' || $key == 'areaclass' || $key == 'labelclass' || $key == 'fieldclass')
 		{
 			$this->$key = $val;
 		} elseif($key == 'options')
@@ -114,10 +114,15 @@ class Field
 			$xmlfield->required = $this->required;
 			$xmlfield->minimum = $this->minimum;
 			$xmlfield->maximum = $this->maximum;
-			$xmlfield->areacss = $this->areacss;
-			$xmlfield->labelcss = $this->labelcss;
-			$xmlfield->fieldcss = $this->fieldcss;
-
+			$xmlfield->areacss = $this->areaclass;
+			$xmlfield->labelcss = $this->labelclass;
+			$xmlfield->fieldcss = $this->fieldclass;
+			if(!empty($this->configs))
+			{
+				unset($xmlfield->configs);
+				foreach($this->configs as $key => $config)
+					$xmlfield->configs->$key = (string) $config;
+			}
 			$xmlfield->created = $this->created;
 			$xmlfield->updated = $this->updated;
 
@@ -151,10 +156,15 @@ class Field
 						$field->required = $this->required;
 						$field->minimum = $this->minimum;
 						$field->maximum = $this->maximum;
-						$field->areacss = $this->areacss;
-						$field->labelcss = $this->labelcss;
-						$field->fieldcss = $this->fieldcss;
-
+						$field->areaclass = $this->areaclass;
+						$field->labelclass = $this->labelclass;
+						$field->fieldclass = $this->fieldclass;
+						if(!empty($this->configs))
+						{
+							unset($field->configs);
+							foreach($this->configs as $key => $config)
+								$field->configs->$key = (string) $config;
+						}
 						$field->created = $this->created;
 						$field->updated = time();
 					}
@@ -206,7 +216,11 @@ class Field
 					$xmlfield->areacss = $field->areacss;
 					$xmlfield->labelcss = $field->labelcss;
 					$xmlfield->fieldcss = $field->fieldcss;
-
+					if(!empty($field->configs))
+					{
+						foreach($field->configs as $key => $config)
+							$xmlfield->configs->$key = (string) $config;
+					}
 					$xmlfield->created = $field->created;
 					$xmlfield->updated = $field->updated;
 

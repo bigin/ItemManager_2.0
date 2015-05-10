@@ -3,7 +3,7 @@
 		<div>
 			<div id="cat-details">
 				<h3 class="menuglava">[[lang/edit_category]]</h3>
-				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis.</p>
+				<p>[[lang/edit_category_info]]</p>
 				<div class="fieldarea">
 					<label for="catid" class="im-left">[[lang/category_id]]</label>
 					[[infotext]]

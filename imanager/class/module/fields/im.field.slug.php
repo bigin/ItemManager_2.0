@@ -1,5 +1,5 @@
 <?php
-class FieldText implements Fieldinterface
+class FieldSlug implements Fieldinterface
 {
 	public $properties;
 	protected $tpl;
@@ -12,6 +12,7 @@ class FieldText implements Fieldinterface
 		$this->id = null;
 		$this->value = null;
 		$this->style = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -32,4 +33,6 @@ class FieldText implements Fieldinterface
 		return $output;
 	}
 	protected function sanitize($value){return safe_slash_html_input($value);}
+
+	public function getConfigFieldtype(){}
 }

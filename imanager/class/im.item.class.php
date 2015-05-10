@@ -520,7 +520,7 @@ class ImItem
 			{
 				foreach($items as $itemkey => $item)
 				{
-					if($item->$key == $val && !$pat)
+					if(strtolower($item->$key) == strtolower($val) && !$pat)
 						return $item;
 					elseif($pat && preg_match($pat, strtolower($item->$key)))
 						return $item;

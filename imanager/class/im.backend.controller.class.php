@@ -58,48 +58,11 @@ class ImBackend
 			return !empty($result['value']) ? $result['value'] : '';
 
 
-
-
-		// TEMPLATES ****
-
-		/* Templates initialisieren */
-		//$tpl = new ImTplEngine();
-		//$tpl->init();
-
-		/* Beispiel template nach Namen */
-		//$tpl = $tpl->getTemplate('testfile');
-		//$tpl = $tpl->getTemplate('name=testfile');
-
-		/* Beispiel Template "testfile" holen, Platzhalter und language Platzhalter ersetzen */
-		//$test_template = $tpl->getTemplate('testfile');
-		//$test_template = $tpl->render($test_template, array('world' => 'Welt'), true);
-
-		/* Beispiel alle Templates des Bündels "generals" holen, danach Template mit dem Namen "testfile" zeigen */
-		//$test_template = $this->tpl->getTemplates('general');
-		//print_r($this->tpl->getTemplate('testfile', $test_template));
-
-		/*$test_template = $tpl->getTemplates('general');
-		$my_tpl = $tpl->getTemplate('testfile', $test_template);
-
-		$i=2;
-		for($a=0; $a<$i; $a++)
-		{
-
-			$mytpl = $tpl->render(clone $my_tpl, array('bla' => $a));
-
-
-			echo '<pre>';
-			//print_r($mytpl);
-			echo '</pre>';
-		}*/
-
 		// build tab panel template
 		$o['head'] = $this->buildTabpanel();
 
 		// errors already send?
 		$msg = ImMsgReporter::msgs();
-
-
 
 		// build edit item menu
 		if(isset($this->input['edit']))
@@ -212,11 +175,7 @@ class ImBackend
 		return $this->buildBackend($o);
 	}
 
-
 	public function &__get($name) { return $this->{$name};}
-
-	//public function __set($name, $value){$this->{$name} = $value;}
-
 
 	/**
 	 * Displays admin tab panel
@@ -618,8 +577,7 @@ class ImBackend
 			if(!$cf->createFields($this->im->cp->currentCategory()))
 				return false;
 
-		/* initialize all fields of the current category. After this, they are
-		   stored in $cf->fields array */
+		/* initialize all the fields of the current category */
 		$cf->init($this->im->cp->currentCategory());
 
 		// order fields by position
@@ -634,7 +592,7 @@ class ImBackend
 		// render category selector template
 		$catselector = $this->buildCategorySelector();
 
-		// Ok, there are no fields available for this category, so just show the hiden stuff
+		// Ok, there are no fields available for this category, so just show the hidden stuff
 		if(!$cf->fields)
 		{
 			// render row template
@@ -683,8 +641,6 @@ class ImBackend
 					'text-options' => isset($f->default) ? $f->default : '',
 					'area-options' => $options), true
 			);
-
-			//$tplrow .= $rowbuffer;
 		}
 		// render hiden stuff
 		$tplrow .=  $this->tpl->render($row, array('tr-class' => 'hidden',
@@ -723,6 +679,23 @@ class ImBackend
 			return false;
 		}
 
+		$fieldClassName = 'Field'.$currfield->type;
+		$FieldType = new $fieldClassName($this->tpl);
+
+		if(!empty($currfield->configs))
+		{
+			foreach($currfield->configs as $key => $val)
+			{
+				$FieldType->configs->$key = $val;
+			}
+		}
+
+
+		$fieldproperties = $FieldType->getConfigFieldtype();
+
+
+
+		//getConfigFieldtype
 		// replace the form placeholders and return
 		return $this->tpl->render($form,  array(
 				'field-id' => $currfield->get('id'),
@@ -734,9 +707,16 @@ class ImBackend
 				'fieldrequired' => ($currfield->required == 1) ? 'checked' : '',
 				'min_field_input' => !empty($currfield->minimum) ? intval($currfield->minimum) : '',
 				'max_field_input' => !empty($currfield->maximum) ? intval($currfield->maximum) : '',
+
+				'area_class' => !empty($currfield->areaclass) ? $currfield->areaclass : '',
+				'label_class' => !empty($currfield->labelclass) ? $currfield->labelclass : '',
+				'field_class' => !empty($currfield->fieldclass) ? $currfield->fieldclass : '',
+
+				'fieldproperties' => !empty($fieldproperties) ? $fieldproperties : '',
+/*
 				'area_css' => !empty($currfield->areacss) ? $currfield->areacss : '',
 				'label_css' => !empty($currfield->labelcss) ? $currfield->labelcss : '',
-				'field_css' => !empty($currfield->fieldcss) ? $currfield->fieldcss : '',
+				'field_css' => !empty($currfield->fieldcss) ? $currfield->fieldcss : '',*/
 			), true, array(), true
 		);
 	}
@@ -1083,8 +1063,6 @@ class ImBackend
 
 				$query = $configs->backend->filterbyfield.$filter.$configs->backend->filtervalue;
 
-				//echo $query; exit();
-
 				$ic->items = $ic->getItems((string)$query, $start, (int) $maxitemperpage);
 
 			}
@@ -1197,6 +1175,14 @@ class ImBackend
 				$fieldType->name = $fieldname;
 				$fieldType->id = $fieldType->name;
 
+				if(!empty($field->configs))
+				{
+					foreach($field->configs as $key => $val)
+					{
+						$fieldType->configs->$key = $val;
+					}
+				}
+
 
 				// hidden
 				if($field->type == 'hidden')
@@ -1216,7 +1202,7 @@ class ImBackend
 
 				foreach($output as $outputkey => $outputvalue)
 				{
-					$fieldType->class = $field->type.'-field';
+					$fieldType->class = empty($field->fieldclass) ? $field->type.'-field' : $field->fieldclass;
 
 					if(!empty($field->fieldcss))
 						$fieldType->style = $field->fieldcss;
@@ -1257,7 +1243,9 @@ class ImBackend
 						'fieldid' =>  $field->name,
 						'label' => $field->label,
 						'infotext' => $tplinfotext,
+						'area-class' => !empty($field->areaclass) ? $field->areaclass : 'fieldarea',
 						'area-style' => !empty($field->areacss) ? ' style="'.$field->areacss.'"' : '',
+						'label-class' => !empty($field->labelclass) ? $field->labelclass : '',
 						'label-style' => !empty($field->labelcss) ? ' style="'.$field->labelcss.'"' : '',
 						'required' => $tplrequired,
 						'field' => $fieldType->render())
@@ -1284,9 +1272,6 @@ class ImBackend
 						date((string) $this->im->config->backend->timeformat, (int) $curitem->updated) : ''
 			), true, array(), true
 		);
-
-		//return $this->tpl->render($form, array(), true, array(), true);
-
 	}
 
 

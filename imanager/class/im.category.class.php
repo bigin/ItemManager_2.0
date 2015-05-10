@@ -125,7 +125,7 @@ class ImCategory
 			}
 			foreach($loccat as $catid => $c)
 			{
-				if(!isset($c->$key) || $c->$key != $val) continue;
+				if(!isset($c->$key) || strtolower($c->$key) != strtolower($val)) continue;
 
 				return !empty($loccat[$catid]) ? $loccat[$catid] : false;
 			}

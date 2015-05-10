@@ -125,10 +125,10 @@ include(GSPLUGINPATH.'imanager/class/im.field.interface.php');
 
 /* FIELDS */
 
-foreach (glob(GSPLUGINPATH.'imanager/class/processors/fields/im.field.*.php') as $filename)
+foreach (glob(GSPLUGINPATH.'imanager/class/module/fields/im.field.*.php') as $filename)
 	{include($filename);}
 /* INPUTS */
-foreach (glob(GSPLUGINPATH.'imanager/class/processors/inputs/im.input.*.php') as $filename)
+foreach (glob(GSPLUGINPATH.'imanager/class/module/inputs/im.input.*.php') as $filename)
 	{include($filename);}
 
 

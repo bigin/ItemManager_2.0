@@ -1,5 +1,5 @@
 <?php
-class FieldChunk implements Fieldinterface
+class FieldHidden implements Fieldinterface
 {
 	public $properties;
 	protected $tpl;
@@ -12,17 +12,13 @@ class FieldChunk implements Fieldinterface
 		$this->id = null;
 		$this->value = null;
 		$this->style = null;
+		$this->configs = new stdClass();
 	}
 
 
-	public function render($sanitize=false)
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
-
-		$output = new Template();
-
-		$output->content = $this->value;
-		return  $output;
+		return '';
 	}
+	public function getConfigFieldtype(){}
 }

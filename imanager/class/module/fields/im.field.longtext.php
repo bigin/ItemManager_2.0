@@ -1,5 +1,5 @@
 <?php
-class FieldCheckbox implements Fieldinterface
+class FieldLongtext implements Fieldinterface
 {
 	public $properties;
 	protected $tpl;
@@ -11,6 +11,7 @@ class FieldCheckbox implements Fieldinterface
 		$this->class = null;
 		$this->id = null;
 		$this->value = null;
+		$this->configs = new stdClass();
 	}
 
 
@@ -20,14 +21,16 @@ class FieldCheckbox implements Fieldinterface
 			return false;
 
 		$itemeditor = $this->tpl->getTemplates('field');
-		$textfield = $this->tpl->getTemplate('checkbox', $itemeditor);
+		$textfield = $this->tpl->getTemplate('longtext', $itemeditor);
 		$output = $this->tpl->render($textfield, array(
 				'name' => $this->name,
 				'class' => $this->class,
 				'id' => $this->id,
-				'value' => 1,
-				'checked' => (!empty($this->value) && $this->value > 0) ? 'checked' : ''), true, array()
+				'value' => isset($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 		return $output;
 	}
+	protected function sanitize($value){return safe_slash_html_input($value);}
+
+	public function getConfigFieldtype(){}
 }

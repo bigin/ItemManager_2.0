@@ -14,10 +14,11 @@ class ImMsgReporter
 	const ERR_COMPARISON = 7;
 	const SUCCESS = 10;*/
 
-	public static function setClause($name, array $var=array(), $error=false)
+	public static function setClause($name, array $var=array(), $error=false, $dir=false)
 	{
 		i18n_merge('imanager') || i18n_merge('imanager','en_US');
-		$o = i18n_r('imanager/'.$name);
+		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
+		$o = i18n_r($dir . $name);
 		if(empty($var))
 		{
 			if($error) self::setError();
@@ -30,10 +31,11 @@ class ImMsgReporter
 		if($error) self::setError();
 	}
 
-	public static function getClause($name, array $var=array())
+	public static function getClause($name, array $var=array(), $dir=false)
 	{
 		i18n_merge('imanager') || i18n_merge('imanager','en_US');
-		$o = i18n_r('imanager/'.$name);
+		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
+		$o = i18n_r($dir . $name);
 		if(empty($var))
 			return $o;
 		foreach($var as $key => $value)
@@ -47,5 +49,14 @@ class ImMsgReporter
 	public static function msgs(){return (self::$_msgs);}
 	public static function isError(){return (self::$error);}
 	public static function errorCode(){return (self::$error_code);}
+
+	public static function buildMsg()
+	{
+		$o = '';
+		$msg = self::msgs();
+		if(!empty($msg))
+			foreach($msg as $val) $o .= $val;
+		return $o;
+	}
 }
 ?>
