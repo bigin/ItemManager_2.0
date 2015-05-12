@@ -195,7 +195,7 @@ $i18n = array(
 	, 'item_backups_dir' => 'Input your backup folder'
 	, 'itembackup_min_time' => 'Retention period for the recoverable items'
 	, 'itembackup_min_time_info' => '<i class="fa fa-info-circle"></i> Here, you can define the minimum number of days to keep temp image data in the system directory. Put 0 to never delete temporary image containers automatically.'
-	, 'directory_musst_exist_info' => '<i class="fa fa-info-circle"></i> Please provide the absolute path ends with a slash, where you want to save all the backup files. The directory must already exist and should be writable.'
+	, 'directory_musst_exist_info' => '<i class="fa fa-info-circle"></i> Input an absolute path (ends with a slash), where you want to save all the backup files. Note: The directory must already exist and should be writable.'
 	, 'catbackup_min_time' => 'Retention period for the recoverable categories'
 	, 'fieldbackup_min_time' => 'Retention period for the recoverable fields'
 	, 'catbackup_min_time_info' => '<i class="fa fa-info-circle"></i> Here, you can define the minimum number of days to keep backup of categories in the system directory. Put 0 to never delete backups automatically.'

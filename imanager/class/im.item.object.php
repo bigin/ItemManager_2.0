@@ -73,10 +73,25 @@ class Item
 		if(!is_array($value))
 		{
 			if(!$sanitize)
-				$this->fields->{$fieldname}->value = $Input->prepareInput($value)->value;
-			else
-				$this->fields->{$fieldname}->value = $Input->prepareInput($value, true)->value;
+			{
+				$fieldvalue =  $Input->prepareInput($value);
+				if(empty($fieldvalue) || is_int($fieldvalue))
+				{
+					ImMsgReporter::setCode($fieldvalue);
+					return false;
+				}
+				$this->fields->{$fieldname}->value = $fieldvalue->value;
+			} else {
+				$fieldvalue = $Input->prepareInput($value, true);
+				if(empty($fieldvalue) || is_int($fieldvalue))
+				{
+					ImMsgReporter::setCode($fieldvalue);
+					return false;
+				}
+				$this->fields->{$fieldname}->value = $fieldvalue->value;
+			}
 			return true;
+
 		} else
 		{
 			foreach($value as $key => $val)
@@ -203,10 +218,29 @@ class Item
 
 			if(!empty($data['ids']))
 			{
+				$xmlbackup = clone $xml->field;
 				unset($xml->field);
 				foreach($data['ids'] as $key => $val)
 				{
 					$xml->field[$key]->id = $val;
+
+					// first, check whether field exists (quickInit)
+					if(!isset($this->fields->$data['names'][$key]->value) && !empty($xmlbackup[$key]->value))
+					{
+						foreach($xmlbackup[$key] as $xmbackupkey => $xmlbackupvalue)
+						{
+							if(!is_array($xmlbackupvalue))
+							{
+								$xml->field[$key]->$xmbackupkey = $xmlbackupvalue;
+							} else
+							{
+								foreach($xmlbackupvalue as $xmlbackupvalue_key => $xmlbackupvalue_value)
+								{
+									$xml->field[$key]->{$xmbackupkey}[] = $xmlbackupvalue_value;
+								}
+							}
+						}
+					}
 
 					if(!empty($this->fields->$data['names'][$key]->value))
 					{
@@ -217,7 +251,9 @@ class Item
 						$input = new stdClass();
 
 						foreach ($output as $inputkey => $inputval)
+						{
 							$input->$inputkey = $this->fields->$data['names'][$key]->$inputkey;
+						}
 
 						foreach($input as $inputkey => $inputvalue)
 						{
@@ -235,7 +271,7 @@ class Item
 					}
 				}
 			} else
-				$xml->field = '';
+				$xml->fields = '';
 
 			return $xml->asXml($this->file);
 

@@ -58,24 +58,26 @@ class FieldMoney implements Fieldinterface
         // next, build options template: <option value=[[option]][[selected]]>[[option]]</option>
         $option .= $this->tpl->render($tploption, array(
                 'option' => 'English notation',
-                'selected' => ($this->configs->notation == 'English notation' ||
-                    empty($this->configs->notation)) ? ' selected ' : ''
+                'selected' => (empty($this->configs->notation) || $this->configs->notation == 'English notation'
+                    ) ? ' selected ' : ''
             )
         );
         $option .= $this->tpl->render($tploption, array(
                 'option' => 'French notation',
-                'selected' => ($this->configs->notation == 'French notation') ? ' selected ' : ''
+                'selected' => (!empty($this->configs->notation) &&
+                        $this->configs->notation == 'French notation') ? ' selected ' : ''
             )
         );
         $option .= $this->tpl->render($tploption, array(
                 'option' => 'German notation',
-                'selected' => ($this->configs->notation == 'German notation') ? ' selected ' : ''
+                'selected' => (!empty($this->configs->notation) &&
+                        $this->configs->notation == 'German notation') ? ' selected ' : ''
             )
         );
 
         // render select template <select name="[[name]]">[[options]]</select>
         $select = $this->tpl->render($tplselect, array(
-				// NOTE: The PREFIX must always be used as a part of the field name
+                // NOTE: The PREFIX must always be used as a part of the field name
                 'name' => self::PREFIX . 'notation',
                 'options' => $option,
             )

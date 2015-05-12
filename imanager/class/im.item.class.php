@@ -37,8 +37,172 @@ class ImItem
 	 */
 	private $fieldflag = false;
 
+
 	public function __construct(){$this->items = array();}
 
+
+	public function quickInit($catid, $fields=array(), $bulk=false, $pat='*')
+	{
+		// nitialize the fields class
+		$fc = new ImFields();
+		$fc->init($catid);
+		$this->items = array();
+		$i=0;
+		foreach(glob(IM_ITEM_DIR.$pat.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT) as $file)
+		{
+
+			$base = basename($file, IM_ITEM_FILE_SUFFIX);
+			$strp = strpos($base, '.');
+			$id = substr($base, 0, $strp);
+			$category = substr($base, $strp+1);
+
+			$xml = getXML($file);
+
+			$item = new Item($category);
+
+			$item->set('categoryid', $category);
+			$item->set('id', $id);
+			$item->set('file', $file);
+			$item->set('filename',$base.IM_ITEM_FILE_SUFFIX);
+
+			$item->name = (string) $xml->name;
+			$item->label = (string) $xml->label;
+			$item->position = (int) $xml->position;
+			$item->active = (int) $xml->active;
+
+			$item->created = (int) $xml->created;
+			$item->updated = (int) $xml->updated;
+
+			$this->items[$item->get('id')] = $item;
+
+			foreach($fc->fields as $name => $obj)
+			{
+				if(in_array($name, $fields))
+				{
+					$new_field = new Field($category);
+					// clone object because otherwise we'll lose the value data
+					$new_field = clone $obj;
+
+					foreach($xml->field as $fieldkey => $field)
+					{
+						if( $new_field->get('id') == $field->id)
+						{
+							$inputClassName = 'Input'.$new_field->type;
+							$InputType = new $inputClassName($fc->fields[$name]);
+							$output = $InputType->prepareOutput();
+
+							foreach($output as $outputkey => $outputvalue)
+							{
+								if(is_array($outputvalue))
+								{
+									$new_field->$outputkey = array();
+									$counter = 0;
+									foreach($field->$outputkey as $arrkey => $arrval)
+									{
+										$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
+										$counter++;
+									}
+								} else
+								{
+									$new_field->$outputkey = '';
+									$new_field->$outputkey = (string) $field->$outputkey;
+								}
+							}
+							if(empty($new_field->value) && !empty($new_field->default))
+							{
+								$new_field->value = (string) $new_field->default;
+							}
+						}
+					}
+
+					$item->fields->$name = $new_field;
+				}
+			}
+			$this->items[$item->get('id')] = $item;
+			if($bulk && (++$i) == $bulk) return;
+		}
+	}
+
+
+	public function limitedInit($catid, $from, $too)
+	{
+		// nitialize the fields class
+		$fc = new ImFields();
+		$fc->init($catid);
+		$this->items = array();
+
+		for($i = $from; $i < $too; $i++)
+		{
+			foreach(glob(IM_ITEM_DIR.$i.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT) as $file)
+			{
+
+				$base = basename($file, IM_ITEM_FILE_SUFFIX);
+				$strp = strpos($base, '.');
+				$id = substr($base, 0, $strp);
+				$category = substr($base, $strp+1);
+
+				$xml = getXML($file);
+
+				$item = new Item($category);
+
+				$item->set('categoryid', $category);
+				$item->set('id', $id);
+				$item->set('file', $file);
+				$item->set('filename',$base.IM_ITEM_FILE_SUFFIX);
+
+				$item->name = (string) $xml->name;
+				$item->label = (string) $xml->label;
+				$item->position = (int) $xml->position;
+				$item->active = (int) $xml->active;
+
+				$item->created = (int) $xml->created;
+				$item->updated = (int) $xml->updated;
+
+				$this->items[$item->get('id')] = $item;
+
+				foreach($fc->fields as $name => $obj)
+				{
+					$new_field = new Field($category);
+					// clone object because otherwise we'll lose the value data
+					$new_field = clone $obj;
+
+					foreach($xml->field as $fieldkey => $field)
+					{
+						if( $new_field->get('id') == $field->id)
+						{
+							$inputClassName = 'Input'.$new_field->type;
+							$InputType = new $inputClassName($fc->fields[$name]);
+							$output = $InputType->prepareOutput();
+
+							foreach($output as $outputkey => $outputvalue)
+							{
+								if(is_array($outputvalue))
+								{
+									$new_field->$outputkey = array();
+									$counter = 0;
+									foreach($field->$outputkey as $arrkey => $arrval)
+									{
+										$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
+										$counter++;
+									}
+								} else
+								{
+									$new_field->$outputkey = '';
+									$new_field->$outputkey = (string) $field->$outputkey;
+								}
+							}
+							if(empty($new_field->value) && !empty($new_field->default))
+							{
+								$new_field->value = (string) $new_field->default;
+							}
+						}
+					}
+					$item->fields->$name = $new_field;
+				}
+				$this->items[$item->get('id')] = $item;
+			}
+		}
+	}
 
 	/**
 	 * Initializes all the items of a category and made them available in ImItem::$items
