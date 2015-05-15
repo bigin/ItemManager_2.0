@@ -24,9 +24,9 @@
  */
 class ImBackend
 {
-	private $im;
+	protected $im;
 	protected $input;
-	private $tpl;
+	protected $tpl;
 	public $break;
 
 	public function __construct(ImModel &$im)
@@ -53,10 +53,6 @@ class ImBackend
 		$this->tpl = $this->im->getTemplateEngine();
 		$this->tpl->init();
 
-		$result = $this->im->runAction('ImBackendBeforeDisplay');
-		if(isset($result['action']) && $result['action'] == 'replace')
-			return !empty($result['value']) ? $result['value'] : '';
-
 
 		// build tab panel template
 		$o['head'] = $this->buildTabpanel();
@@ -73,10 +69,10 @@ class ImBackend
 			{
 				if(!empty($this->input['timestamp']) || !empty($this->input['id']))
 				{
-					$this->im->saveItem($this->input);
+					$this->callModelMethod('saveItem', $this->input);
 				}
 			}
-
+			// show item editor
 			if($this->im->cp->is_cat_exist)
 				$o['content'] = $this->buildItemEditor();
 		}
@@ -85,7 +81,7 @@ class ImBackend
 		elseif (isset($this->input['category_edit']))
 		{
 			// create new category. true for refresh
-			$this->im->createCategoryByName($this->input['new_category'], true);
+			$this->callModelMethod('createCategoryByName', array($this->input['new_category'], true));
 			$o['content'] = $this->buildCategoryEditor();
 		}
 		// show details of category
@@ -96,7 +92,8 @@ class ImBackend
 		// update_category
 		elseif(isset($this->input['categoryupdate']))
 		{
-			if($this->im->updateCategory($this->input, true))
+			//if($this->im->updateCategory($this->input, true))
+			if($this->callModelMethod('updateCategory', array($this->input, true)))
 				$o['content'] = $this->buildCategoryEditor();
 			else
 				$o['content'] = $this->buildCategoryDetailsEditor();
@@ -104,7 +101,8 @@ class ImBackend
 		// delete category
 		elseif (isset($this->input['deletecategory']))
 		{
-			$this->im->deleteCategory($this->input['deletecategory'], true);
+			//$this->im->deleteCategory($this->input['deletecategory'], true);
+			$this->callModelMethod('deleteCategory', array($this->input['deletecategory'], true));
 			$o['content'] = $this->buildCategoryEditor();
 		}
 		// category menu
@@ -119,6 +117,7 @@ class ImBackend
 		}
 		elseif (isset($this->input['settings_edit']))
 		{
+			// todo: do it dynamically
 			$this->im->config->setupConfig($this->input);
 			$o['content'] = $this->buildSettingsSection();
 		}
@@ -132,12 +131,12 @@ class ImBackend
 		{
 			if(isset($this->input['save']))
 			{
-				$this->im->createFields($this->input);
+				$this->callModelMethod('createFields', $this->input);
 			}
 
 			if(isset($this->input['submit']))
 			{
-				$this->im->saveFieldDetails($this->input);
+				$this->callModelMethod('saveFieldDetails', $this->input);
 			}
 
 
@@ -162,8 +161,7 @@ class ImBackend
 			// delete item
 			elseif (isset($this->input['delete']))
 			{
-				$this->im->deleteItem($this->input['delete'],
-					$this->im->cp->currentCategory());
+				$this->callModelMethod('deleteItem', array($this->input['delete'], $this->im->cp->currentCategory()));
 			}
 
 			$o['content'] = $this->buildItemList();
@@ -175,14 +173,28 @@ class ImBackend
 		return $this->buildBackend($o);
 	}
 
-	public function &__get($name) { return $this->{$name};}
+	public function &__get($name){return $this->{$name};}
+
+
+	/* call_user_func_array is really slow and if you are calling a method with a
+	known number of parameters it is much faster to call it this way */
+	protected function callModelMethod($method, $args)
+	{
+		//$multiargs = array('deleteItem');
+		if($method == 'deleteItem' || $method == 'deleteCategory' || $method == 'updateCategory' ||
+			$method == 'createCategoryByName')
+		{
+			return $this->im->{$method}($args[0], $args[1]);
+		}
+		return $this->im->{$method}($args);
+	}
 
 	/**
 	 * Displays admin tab panel
 	 *
 	 * @return Template object
 	 */
-	private function buildTabpanel()
+	protected function buildTabpanel()
 	{
 		// get temple with the name tabpanel
 		$tabpanel = $this->tpl->getTemplate('tabpanel');
@@ -214,7 +226,7 @@ class ImBackend
 	}
 
 
-	private function buildCategorySelector()
+	protected function buildCategorySelector()
 	{
 		// get temples of type "catselector" then get the form
 		$form = $this->tpl->getTemplate('form', $this->tpl->getTemplates('catselector'));
@@ -242,7 +254,7 @@ class ImBackend
 	}
 
 
-	private function buildMsg()
+	protected function buildMsg()
 	{
 		$o = '';
 		$msg = ImMsgReporter::msgs();
@@ -252,7 +264,7 @@ class ImBackend
 	}
 
 
-	private function buildBackend($values)
+	protected function buildBackend($values)
 	{
 		// get "backend" temple
 		$backend = $this->tpl->getTemplate('backend');
@@ -260,7 +272,7 @@ class ImBackend
 	}
 
 
-	private function buildCategoryEditor()
+	protected function buildCategoryEditor()
 	{
 		// get some templates of categorylist bundle
 		$categorylist = $this->tpl->getTemplates('categorylist');
@@ -357,7 +369,7 @@ class ImBackend
 
 
 	// Ajax stuff
-	private function buildCategoryList()
+	protected function buildCategoryList()
 	{
 		$categorylist = $this->tpl->getTemplates('categorylist');
 		$row = $this->tpl->getTemplate('row', $categorylist);
@@ -400,9 +412,6 @@ class ImBackend
 				{
 					$category->categories[$element['id']]->position = $element['position'];
 					$category->categories[$element['id']]->save();
-					/*$handle = fopen(dirname(__FILE__)."/log.txt", "a");
-					fwrite($handle, print_r($element['position'], true));
-					fclose($handle);*/
 				}
 			}
 			// refilter output
@@ -429,7 +438,7 @@ class ImBackend
 	}
 
 
-	private function buildSettingsSection()
+	protected function buildSettingsSection()
 	{
 		$settings = $this->tpl->getTemplates('settings');
 		$form = $this->tpl->getTemplate('form', $settings);
@@ -445,8 +454,6 @@ class ImBackend
 		$i_attribut = isset($configs->backend->itemorderby) ?
 			safe_slash_html_input($configs->backend->itemorderby) : 'i_position';
 
-		/*// true to refresh settings
-		$configs = $this->im->config;*/
 		return $this->tpl->render($form,  array('maxcatname' => $configs->common->maxcatname,
 				'maxfieldname' => $configs->common->maxfieldname,
 				'maxitemname' => $configs->common->maxitemname,
@@ -511,7 +518,7 @@ class ImBackend
 	}
 
 
-	private function buildCategoryDetailsEditor()
+	protected function buildCategoryDetailsEditor()
 	{
 		$settings = $this->tpl->getTemplates('detailscategory');
 		$form = $this->tpl->getTemplate('form', $settings);
@@ -553,12 +560,8 @@ class ImBackend
 
 
 
-	private function buildFieldEditor()
+	protected function buildFieldEditor()
 	{
-		$result = $this->im->runAction('ImBackendBeforeRenderFieldEditor');
-		if(isset($result['action']) && $result['action'] == 'replace')
-			return !empty($result['value']) ? $result['value'] : '';
-
 		// load fied editor templates
 		$fields = $this->tpl->getTemplates('fields');
 		$form = $this->tpl->getTemplate('form', $fields);
@@ -661,7 +664,7 @@ class ImBackend
 	}
 
 
-	private function buildFieldDetails()
+	protected function buildFieldDetails()
 	{
 		// get fielddetail template templates
 		$fielddetails = $this->tpl->getTemplates('fielddetails');
@@ -694,7 +697,6 @@ class ImBackend
 		$fieldproperties = $FieldType->getConfigFieldtype();
 
 
-
 		//getConfigFieldtype
 		// replace the form placeholders and return
 		return $this->tpl->render($form,  array(
@@ -722,7 +724,7 @@ class ImBackend
 	}
 
 
-	private function buildNumberSwitch($obj)
+	protected function buildNumberSwitch($obj)
 	{
 		// get numberswitch templates
 		$nrswitch = $this->tpl->getTemplates('numberswitch');
@@ -821,12 +823,8 @@ class ImBackend
 
 
 
-	private function buildItemList()
+	protected function buildItemList()
 	{
-		$result = $this->im->runAction('ImBackendBeforeRenderItemList');
-		if(isset($result['action']) && $result['action'] == 'replace')
-			return !empty($result['value']) ? $result['value'] : '';
-
 		// get numberswitch templates
 		$itemlist = $this->tpl->getTemplates('itemlist');
 		$form = $this->tpl->getTemplate('form', $itemlist);
@@ -887,19 +885,13 @@ class ImBackend
 		{
 
 			// build field options for items of current category
-			//$fieldoptions = new Template();
 			$fieldoptions = $this->tpl->render($filteroptiontpl, array(
 					'fieldname' => 'name',
 					'selected' => (!empty($configs->backend->filterbyfield) &&
 							(string) $configs->backend->filterbyfield == 'name') ? 'selected' : '',
 					'fieldlabel' => 'Item name')
 			);
-			/*$fieldoptions->push($this->tpl->render($filteroptiontpl, array(
-					'fieldname' => 'name',
-					'selected' => (!empty($configs->backend->filterbyfield) &&
-							(string) $configs->backend->filterbyfield == 'name') ? 'selected' : '',
-					'fieldlabel' => 'Item name')
-			));*/
+
 			// initialize fields
 			$fc = new ImFields();
 			if($fc->fieldsExists($curcat->get('id')))
@@ -1002,13 +994,8 @@ class ImBackend
 
 
 	// Ajax stuff
-	private function buildItemRows()
+	protected function buildItemRows()
 	{
-
-		$result = $this->im->runAction('ImBackendBeforeRenderItemRows');
-		if(isset($result['action']) && $result['action'] == 'replace')
-			return !empty($result['value']) ? $result['value'] : '';
-
 		$itemlist = $this->tpl->getTemplates('itemlist');
 		$row = $this->tpl->getTemplate('row', $itemlist);
 		$active = $this->tpl->getTemplate('active', $itemlist);
@@ -1073,10 +1060,6 @@ class ImBackend
 
 		if(!empty($this->input['positions']) && !empty($ic->items))
 		{
-			/*$handle = fopen(dirname(__FILE__)."/log.txt", "a");
-			fwrite($handle, print_r($this->input, true));
-			fclose($handle);*/
-
 			foreach($this->input['positions'] as $element)
 			{
 					if(!isset($ic->items[$element['id']]->position) || !isset($element['position']))
@@ -1114,11 +1097,8 @@ class ImBackend
 	}
 
 
-	private function buildItemEditor()
+	protected function buildItemEditor()
 	{
-		$result = $this->im->runAction('ImBackendBeforeRenderItemEditor');
-		if(isset($result['action']) && $result['action'] == 'replace')
-			return !empty($result['value']) ? $result['value'] : '';
 
 		$itemeditor = $this->tpl->getTemplates('itemeditor');
 		$form = $this->tpl->getTemplate('form', $itemeditor);
@@ -1252,7 +1232,7 @@ class ImBackend
 					);
 				} else
 				{
-					$tplfields .= $fieldType->render();
+					$tplfields .= stripslashes($fieldType->render());
 				}
 			}
 		}

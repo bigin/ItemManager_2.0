@@ -21,10 +21,10 @@ class FieldChunk implements Fieldinterface
 		if(is_null($this->name))
 			return false;
 
-		$output = new Template();
+		/*$output = new Template();
 
-		$output->content = $this->value;
-		return  $output;
+		$output->content = $this->value;*/
+		return  $this->value;
 	}
 
 	public function getConfigFieldtype(){}

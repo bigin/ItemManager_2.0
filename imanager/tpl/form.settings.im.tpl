@@ -65,8 +65,7 @@
 
 			<div id="tab2" class="tab">
 				<h3 class="menuglava">[[lang/admin_settings]]</h3>
-				<p>Tab #2 content goes here!</p>
-				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
+				[[lang/backend_settings_tab_text]]
 				<div class="fieldarea">
 					<label for="timeformat">[[lang/date_time_format]]</label>
 					<p><input id="timeformat" class="number-fields-left number" name="timeformat" type="text" value="[[timeformat]]"></p>

@@ -6,4 +6,5 @@ class IManager extends ImModel
 	public $item;
 
 	public function __construct(){parent::__construct();}
+
 }

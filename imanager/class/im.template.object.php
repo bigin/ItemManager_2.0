@@ -16,12 +16,12 @@ class Template
 	protected $member;
 	public $content;
 
-	public function __construct()
+	public function __construct($name='')
 	{
-		$this->name = '';
+		$this->name = $name;
 		$this->file = '';
 		$this->filename = '';
-		$this->content = (string) '';
+		$this->content = '';
 	}
 
 	public function get($name){return $this->$name;}

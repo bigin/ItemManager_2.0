@@ -1,13 +1,7 @@
 <?php
 $i18n = array(
-    'element' => 'Item'
-  , 'elements' => 'Items'
-  , 'delete' => 'Delete field'
-  , 'option-value' => 'Choose category...'
-  , 'save_success' => '<div class="updated">The custom fields have been successfully saved.</div>'
-  , 'select_category_label' => 'Choose category'
-
-  , 'no_category_created' => '<div class="error">Before you can create your items, first create a category to which those items belong.</div>'
+  'delete' => 'Delete field'
+  //, 'option-value' => 'Choose category...'
   , 'undo_failure' => '<div class="error">The custom fields could not be restored.</div>'
   , 'undo_success' => '<div class="updated">The custom fields have been successfully restored.</div>'
   , 'undo' => 'Undo'
@@ -23,7 +17,11 @@ $i18n = array(
   , 'add_new_category' => 'Add new category'
   , 'add_category_submit' => 'Add category'
 
-	//1.0
+	// 2.0
+	, 'select_category_label' => 'Choose category'
+	, 'no_category_created' => '<div class="error">Before you can create your items, first create a category to which those items belong.</div>'
+	, 'elements' => 'Items'
+	, 'element' => 'Item'
 	, 'no_items_yet' => 'No items available'
 	, 'invalid_category' => '<div class="error">You have entered illegal category</div>'
 	, 'category_name' => 'Name'
@@ -35,6 +33,7 @@ $i18n = array(
 	, 'fields_description' => 'This tab provides a number of options that you can use to customize your item structure.'
 	, 'fields_title' => 'Manage fields'
 	, 'fields_usage_description' => 'Below you can configure the custom fields.<br />Drag the rows to reorder the fields.<br />Deleting fields does not remove the field values of the existing item structures.<br /><br />Caution: If you change the field names, that doesn\'t change the names in any items linked to that custom field.<br />If you plan to modify the existing item elements, please use the Rename tool below on this page.'
+	, 'save_success' => '<div class="updated">The custom fields have been successfully saved.</div>'
 	, 'fields_name' => 'Name'
 	, 'fields_label' => 'Label'
 	, 'fields_type' => 'Type'
@@ -55,9 +54,6 @@ $i18n = array(
 	, 'save_failure' => '<div class="error">The custom fields could not be saved.</div>'
 	, 'customfields_add' => 'Confirm'
 
-  , 'category_itemcounter' => 'Items within category'
-  , 'category_delete' => 'Delete category'
-  , 'confirm_delete_category' => 'Are you sure you want to delete this category and all the items assigned to them?'
   , 'edit_item' => 'Edit [[itemmanager-title]]'
   , 'create_item' => 'Create new [[itemmanager-title]]'
   , 'title' => 'Title'
@@ -77,14 +73,15 @@ $i18n = array(
   , 'max_thumb_size' => 'Max Thumbnail size (px)'
   , 'submit_settings' => 'Submit Settings'
   , 'settings' => 'Settings'
-	//1.0
- 	, 'custom_fields'  => 'Fields'
-
-  , 'manage_category' => 'Categories'
-  , 'add_new' => 'Add New'
-  , 'view_all' => 'View All'
-  , 'items_path_exists' => '<h3 class="floated">Item Manager</h3><p>The directory "<em>[[gsdatapath]]imanager</em>" does not exist. It is required for this plugin to function properly. Please create it manually and make sure that it is writable.</p>'
-  , 'upload_path_exists' => '<h3 class="floated">Item Manager</h3><p>The directory "<em>[[end_path]]</em>" does not exist. It is required for this plugin to function properly. Please create it manually and make sure that it is writable.</p><p>You will also need to create a .htaccess document and place it in the "[[end_path]]" folder. The .htaccess file needs to contain the following line of code:<br/>Allow from all</p>'
+	//2.0
+	, 'err_magic_quotes_gpc' => '<div class="error">Error: <strong>magic_quotes_gpc</strong> option<br />Description: magic_quotes_gpc is set to "1" in php.ini. This should be turned off, as it can cause issues with field values. More specifically, unserializing data stored in fileds.</div>'
+	, 'custom_fields'  => 'Fields'
+	, 'confirm_delete_category' => 'Are you sure you want to delete this category and all the items assigned to them?'
+	, 'manage_category' => 'Categories'
+	, 'add_new' => 'Add New'
+	, 'view_all' => 'View All'
+	, 'items_path_exists' => '<h3 class="floated">Item Manager</h3><p>The directory "<em>[[gsdatapath]]imanager</em>" does not exist. It is required for this plugin to function properly. Please create it manually and make sure that it is writable.</p>'
+	, 'upload_path_exists' => '<h3 class="floated">Item Manager</h3><p>The directory "<em>[[end_path]]</em>" does not exist. It is required for this plugin to function properly. Please create it manually and make sure that it is writable.</p><p>You will also need to create a .htaccess document and place it in the "[[end_path]]" folder. The .htaccess file needs to contain the following line of code:<br/>Allow from all</p>'
   , 'other_path_exists' => '<h3 class="floated">[[itemmanager-title]] Manager</h3><p>The file "<em>[[gsdatapath]]items</em>" does not exist. It is required for this plugin to function properly. Please create it manually and make sure that it is writable.</p>'
   , 'directory_succesfull_created' => '<div class="updated">The below directory has been succesfully created:<br/>"<strong>[[end_path]]</strong>"</div>'
   , 'file_succesfull_created' => '<div class="updated">The below file has been succesfully created: "<strong>[[end_path]]</strong>"</div>'
@@ -252,6 +249,7 @@ $i18n = array(
 	, 'i18nsearch_content' => 'Result content'
 	, 'i18nsearch_content_info' => 'Field name for content to appear in the search result'
 	, 'general_settings_tab_text' => '<p>The General Settings let you control how the plugin behaves across the whole application scope.</p>'
+	, 'backend_settings_tab_text' => '<p>Here you can set some preferences and configuration settings for the ItemManager backend interface.</p>'
 	, 'unique_itemname' => 'Unique item names'
 	, 'unique_itemname_info' => '<i class="fa fa-info-circle"></i> Please check this in order for the item names to be unique.'
 	, 'money_field_value' => 'Money field'

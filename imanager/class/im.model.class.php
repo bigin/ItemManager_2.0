@@ -84,21 +84,20 @@ class ImModel
 		}
 
 		// initialise our classes
-		$this->backend = new ImBackend($this);
-
+		//$this->backend =
+		$this->setBackend(new ImBackend($this));
 		global $plugins;
-
-		$actions = array(
+		$actions = array('ImActivated'/*,
 			'ImManagerBeforeMethods',
 			'ImBackendBeforeDisplay',
 			'ImBackendBeforeRenderFieldEditor',
 			'ImBackendBeforeRenderItemRows',
 			'ImBackendBeforeRenderItemList',
 			'ImBackendBeforeRenderItemEditor',
+			'ImBackendBeforeRenderSettings',
 			'ImBeforeItemSave',
-			'ImAfterItemSave',
+			'ImAfterItemSave',*/
 		);
-
 		foreach($plugins as $key => $plugin)
 		{
 			if(in_array($plugin['hook'], $actions))
@@ -106,18 +105,20 @@ class ImModel
 				$plugins[$key]['args']['imanager'] = & $this;
 			}
 		}
-
 		exec_action('ImActivated');
-
 	}
+
+	public function setBackend($backend)
+	{
+		$this->backend = $backend;
+	}
+
+
+
 
 	/* map our classes */
 
-	public function getTemplates($member){return $this->tpl->getTemplates($member);}
-
-	public function getTemplate($name, array $bunch=array()){return $this->tpl->getTemplate($name, $bunch);}
-
-	public function newTemplate(){return new Template();}
+	public function newTemplate($name=''){return new Template($name='');}
 
 	public function getTemplateEngine($path=''){return new ImTplEngine($path);}
 
@@ -534,16 +535,16 @@ class ImModel
 			return false;
 		}
 
-		$currfield->default = !empty($input['default']) ? str_replace('"', '\'', $input['default']) : '';
-		$currfield->info = !empty($input['info']) ? str_replace('"', '\'', $input['info']) : '';
+		$currfield->default = !empty($input['default']) ? str_replace('"', "'", $input['default']) : '';
+		$currfield->info = !empty($input['info']) ? str_replace('"', "'", $input['info']) : '';
 		$currfield->required = (isset($input['required']) && $input['required'] > 0) ? 1 : null;
 		$currfield->minimum = (isset($input['min_field_input']) && intval($input['min_field_input']) > 0)
 			? intval($input['min_field_input']) : null;
 		$currfield->maximum = (isset($input['max_field_input']) && intval($input['max_field_input']) > 0)
 			? intval($input['max_field_input']) : null;
-		$currfield->areaclass = !empty($input['areaclass']) ? str_replace('"', '\'', $input['areaclass']) : '';
-		$currfield->labelclass = !empty($input['labelclass']) ? str_replace('"', '\'', $input['labelclass']) : '';
-		$currfield->fieldclass = !empty($input['fieldclass']) ? str_replace('"', '\'', $input['fieldclass']) : '';
+		$currfield->areaclass = !empty($input['areaclass']) ? str_replace('"', "'", $input['areaclass']) : '';
+		$currfield->labelclass = !empty($input['labelclass']) ? str_replace('"', "'", $input['labelclass']) : '';
+		$currfield->fieldclass = !empty($input['fieldclass']) ? str_replace('"', "'", $input['fieldclass']) : '';
 
 		// process custom Fieldtype settings
 		foreach($input as $key => $value)
@@ -727,8 +728,6 @@ class ImModel
 
 	public function saveItem(&$input)
 	{
-		exec_action('ImBeforeItemSave');
-
 		/* check there the user errors: If the user tried to compromise the script, we'll
 		reset field values to empty and display an error message */
 
@@ -811,7 +810,7 @@ class ImModel
 		foreach($curitem->fields as $fieldname => $fieldvalue)
 		{
 
-			$fieldinput = !empty($input[$fieldname]) ? str_replace('"', '\'', $input[$fieldname]) : '';
+			$fieldinput = !empty($input[$fieldname]) ? str_replace('"', "'", $input[$fieldname]) : '';
 
 			$inputClassName = 'Input'.$fieldvalue->type;
 			$InputType = new $inputClassName($curitem->fields->$fieldname);
@@ -944,7 +943,7 @@ class ImModel
 		ImMsgReporter::setClause('item_successfully_saved', array('name' => safe_slash_html_input(
 			str_replace('"', '\'', $input['name']))));
 
-		exec_action('ImAfterItemSave');
+		//exec_action('ImAfterItemSave');
 		return true;
 	}
 
@@ -1013,7 +1012,7 @@ class ImModel
 	}
 
 
-	protected function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
+	public function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
 
 
 	public function getSiteUrl()
@@ -1118,11 +1117,11 @@ class ImModel
 		return $clean;
 	}
 
-	public function runAction($action)
+	/*public function runAction($action)
 	{
 		exec_action($action);
 		return !empty(self::$action[$action]) ? self::$action[$action] : '';
-	}
+	}*/
 
 }
 

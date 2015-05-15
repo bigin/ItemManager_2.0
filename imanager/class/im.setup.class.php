@@ -47,6 +47,9 @@ class ImSetup
 	{
 		$err = false;
 
+		if(get_magic_quotes_gpc() === 1)
+			ImMsgReporter::setClause('err_magic_quotes_gpc',array());
+
 		if(!$this->createFolderProcedure(ITEMDATA, '.htaccess', 'Deny from all'))
 		{
 			ImMsgReporter::setClause(
@@ -337,6 +340,9 @@ class ImSetup
 
 		//Set max thumb width prop
 		$backend_xml->addChild('thumbwidth', $thumbwidth);
+
+		if (get_magic_quotes_gpc() === 1)
+			ImMsgReporter::setClause('err_magic_quotes_gpc',array());
 
 		// Save XML File
 		if(XMLsave($xml, IM_CONFIG_FILE))

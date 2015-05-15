@@ -48,7 +48,7 @@ define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
 define('IM_SITE_URL', $SITEURL);
 define('IM_LANGUAGE', $LANG);
 
-// bestimmte bereiche im Admin deaktivieren
+// Bestimmte Bereiche im Admin deaktivieren
 //define('IM_HIDE_SETTINGS', 1);
 //define('IM_HIDE_FIELDS', 1 );
 
@@ -60,9 +60,9 @@ register_plugin(
 	$thisfile,
 	'ItemManager',
 	'2.0',
-	'Juri Ehret 10.04.2015',
+	'Juri Ehret',
 	'http://ehret-studio.com',
-	'A simple flat-file Framework',
+	'A simple flat-file Framework for GetSimple-CMS',
 	'imanager',
 	'imanager'
 );
@@ -78,9 +78,9 @@ add_filter('search-display', 'i18nSearchImDisplay');
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
 register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css', GSVERSION, 'screen');
 register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
-queue_style('imstyle', GSBOTH);
+queue_style('imstyle', GSBACK);
 queue_style('imstylefonts', GSBOTH);
-queue_style('blueimp', GSBOTH);
+queue_style('blueimp', GSBACK);
 
 
 // model
@@ -130,7 +130,6 @@ foreach (glob(GSPLUGINPATH.'imanager/class/module/fields/im.field.*.php') as $fi
 /* INPUTS */
 foreach (glob(GSPLUGINPATH.'imanager/class/module/inputs/im.input.*.php') as $filename)
 	{include($filename);}
-
 
 // backend
 function imanager()
