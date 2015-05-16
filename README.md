@@ -42,6 +42,6 @@ You can download the current version of the ItemManager here. Unzip the download
 
 
 **For more information see:**  
-http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-list/  
+http://ehret-studio.com/lab/2015/mai/itemmanager-2.0  
 Support Forum: link  
 
