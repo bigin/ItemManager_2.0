@@ -41,8 +41,7 @@ Traditionally, IM comes without any predefined front-end templates and leaves De
 You can download the current version of the ItemManager here. Unzip the downloaded file and copy its contents to your plugins folder. The required data directories and configurations should be created automatically when you first access the plugin.
 
 
-Here the links for more info:
-http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-list/
-get-simple.info
-etc …
+**For more information see:**  
+http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-list/  
+Support Forum: link  
 
