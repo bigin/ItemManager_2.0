@@ -32,7 +32,7 @@ $i18n = array(
 	, 'category_updated' => 'Updated date'
 	, 'fields_description' => 'This tab provides a number of options that you can use to customize your item structure.'
 	, 'fields_title' => 'Manage fields'
-	, 'fields_usage_description' => 'Below you can configure the custom fields.<br />Drag the rows to reorder the fields.<br />Deleting fields does not remove the field values of the existing item structures.<br /><br />Caution: If you change the field names, that doesn\'t change the names in any items linked to that custom field.<br />If you plan to modify the existing item elements, please use the Rename tool below on this page.'
+	, 'fields_usage_description' => 'Below you can configure the custom fields. The ItemManager comes with a handful of field types baked in, and i’ve made it extremely easy for developers to add new ones.'
 	, 'save_success' => '<div class="updated">The custom fields have been successfully saved.</div>'
 	, 'fields_name' => 'Name'
 	, 'fields_label' => 'Label'
