@@ -19,13 +19,12 @@ XML is an incredibly verbose format, developers who use it to process and handle
 ### Requirements ###
 The included back-end example of the ItemManager 2.0 was made for modern, standards compliant browsers, older browser are not supported (please feel free to change this according to your wishes). The IM plugin has been developed on the basis of PHP 5.5.10 including some additional modules like GD, mod_rewrite (for friendly URLs/.htaccess) etc. The IM has also been tested with 5.4.26 PHP version on an Apache Server under Linux and Mac. In theory the IM will run on lower versions of PHP like 5.3.* as well but this was not tested.
 
-
-*Supported Operating Systems:*  
+**Supported Operating Systems:**  
 Linux x86, x86-64  
 Mac OS X  
 Windows (not tested)  
 
-*Supported Web Servers:*  
+**Supported Web Servers:**  
 Apache 1.3.x - 2.2.x (uses htaccess for Friendly URLs by default)
 
 
