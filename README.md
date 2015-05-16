@@ -38,7 +38,7 @@ Traditionally, IM comes without any predefined front-end templates and leaves De
 
 
 ### Installation ###
-You can download the current version of the ItemManager here. Unzip the downloaded file and copy its contents to your plugins folder. The required data directories and configurations should be created automatically when you first access the plugin.
+You can download the current version of the ItemManager here. Unzip the downloaded file and copy its contents to your plugins folder. The required data directories and configurations should be created automatically when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
 
 
 **For more information see:**  
