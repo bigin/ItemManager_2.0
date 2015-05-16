@@ -11,7 +11,7 @@ The ItemManager 2.0 was not only completely revised, but also totally restructur
 
 
 ### What applications can be realized with the ItemManager ###
-The ItemManager 2.0 is particularly well suited for the development of any software of not excessive complexity and small-sized data volumes, depending on the memory and server performance.
+The ItemManager 2.0 is particularly well suited for the development of any web applications of small-sized data volumes and not excessive complexity, depending on the memory and server performance.
 
 XML is an incredibly verbose format, developers who use it to process and handle large & complicated data structures should take into careful consideration its memory usage requirements. ItemManager 2.0 requires the entire Item, Category and Field objects loaded into memory to be available prior to any processing actions on that. Ok for a 40kb data but when dealing with > 100MB files you will see performance degradation, especially if you have a busy server. 
 
@@ -39,7 +39,7 @@ You can download the current version of the ItemManager here. Unzip the download
 
 
 Here the links for more info:
-ehret-studio.com
+http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-list/
 get-simple.info
 etc …
 
