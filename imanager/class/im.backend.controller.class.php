@@ -736,7 +736,7 @@ class ImBackend
 		$configs = $this->manager->config;
 
 		// there are the default navigation points
-		$defauls = array(10, 20, 30, 40, 50);
+		$defaults = array(10, 20, 30, 40, 50);
 
 
 		if($obj == 'category')
@@ -745,27 +745,27 @@ class ImBackend
 			$maxperpage = empty($configs->backend->maxcatperpage) ? 10 : intval($configs->backend->maxcatperpage);
 
 			// noting entered by user, build standard template
-			if(in_array($maxperpage, $defauls))
+			if(in_array($maxperpage, $defaults))
 			{
-				$tplbuffer[0] = ($maxperpage == $defauls[0]) ?
+				$tplbuffer[0] = ($maxperpage == $defaults[0]) ?
 					$this->tpl->render($active, array('href' => '#', 'number' => $maxperpage), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[0]), true, array(), true);
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[0]), true, array(), true);
 
-				$tplbuffer[1] = ($maxperpage == $defauls[1]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[1]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[1]), true, array(), true);
+				$tplbuffer[1] = ($maxperpage == $defaults[1]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[1]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[1]), true, array(), true);
 
-				$tplbuffer[2] = ($maxperpage == $defauls[2]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[2]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[2]), true, array(), true);
+				$tplbuffer[2] = ($maxperpage == $defaults[2]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[2]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[2]), true, array(), true);
 
-				$tplbuffer[3] = ($maxperpage == $defauls[3]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[3]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[3]), true, array(), true);
+				$tplbuffer[3] = ($maxperpage == $defaults[3]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[3]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[3]), true, array(), true);
 
-				$tplbuffer[4] = ($maxperpage == $defauls[4]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[4]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[4]), true, array(), true);
+				$tplbuffer[4] = ($maxperpage == $defaults[4]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[4]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[4]), true, array(), true);
 
 
 				// replaze tvs with real valies (<li> tags)
@@ -784,27 +784,27 @@ class ImBackend
 			$maxperpage = empty($configs->backend->maxitemperpage) ? 20 : intval($configs->backend->maxitemperpage);
 
 			// noting entered by user, build standard template
-			if(in_array($maxperpage, $defauls))
+			if(in_array($maxperpage, $defaults))
 			{
-				$tplbuffer[0] = ($maxperpage == $defauls[0]) ?
+				$tplbuffer[0] = ($maxperpage == $defaults[0]) ?
 					$this->tpl->render($active, array('href' => '#', 'number' => $maxperpage), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[0]), true, array(), true);
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[0]), true, array(), true);
 
-				$tplbuffer[1] = ($maxperpage == $defauls[1]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[1]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[1]), true, array(), true);
+				$tplbuffer[1] = ($maxperpage == $defaults[1]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[1]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[1]), true, array(), true);
 
-				$tplbuffer[2] = ($maxperpage == $defauls[2]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[2]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[2]), true, array(), true);
+				$tplbuffer[2] = ($maxperpage == $defaults[2]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[2]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[2]), true, array(), true);
 
-				$tplbuffer[3] = ($maxperpage == $defauls[3]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[3]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[3]), true, array(), true);
+				$tplbuffer[3] = ($maxperpage == $defaults[3]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[3]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[3]), true, array(), true);
 
-				$tplbuffer[4] = ($maxperpage == $defauls[4]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[4]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[4]), true, array(), true);
+				$tplbuffer[4] = ($maxperpage == $defaults[4]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[4]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[4]), true, array(), true);
 
 
 				// replaze tvs with real valies (<li> tags)
