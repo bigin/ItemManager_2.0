@@ -43,5 +43,6 @@ You can download the current version of the ItemManager here. Unzip the download
 
 **For more information see:**  
 http://ehret-studio.com/lab/2015/mai/itemmanager-2.0  
-Support Forum: link  
+**Support Forum:** 
+http://get-simple.info/forums/showthread.php?tid=7293  
 
