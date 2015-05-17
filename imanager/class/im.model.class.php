@@ -407,6 +407,14 @@ class ImModel
 
 			if(!empty($input['cf_'.$i.'_key']))
 			{
+				if(!empty($input['cf_'.$i.'_type']) && $input['cf_'.$i.'_type'] == 'imageupload')
+				{
+					if(in_array($input['cf_'.$i.'_type'], $types))
+					{
+						ImMsgReporter::setClause('err_upload_fields_usage', array(), true);
+						continue;
+					}
+				}
 				$ids[] = !empty($input['cf_'.$i.'_id']) ? intval($input['cf_'.$i.'_id']) : null;
 				$names[] = strtolower($input['cf_'.$i.'_key']);
 				$labels[] = !empty($input['cf_'.$i.'_label']) ? $input['cf_'.$i.'_label'] : '';
@@ -437,6 +445,30 @@ class ImModel
 
 			ImMsgReporter::setClause('err_save_fields_unique');
 		}
+
+		/*// show message when duplicate values exist, but save correctly entered names
+		if(count($names) != count(array_unique($names)))
+		{
+			//$names = array_unique($names);
+			// remove duplicate keys in other arrays
+			$dupl = $this->getDuplicate($names);
+			if(!empty($dupl))
+			{
+				foreach($dupl as $val)
+				{
+					unset($ids[$val]);
+					unset($names[$val]);
+					unset($labels[$val]);
+					unset($types[$val]);
+					unset($options[$val]);
+					unset($defaults[$val]);
+				}
+			}
+
+			ImMsgReporter::setClause('err_save_fields_unique');
+		}*/
+
+
 
 		$fc = new ImFields();
 		$fc->init($input['cat']);

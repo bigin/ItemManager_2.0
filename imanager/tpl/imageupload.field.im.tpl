@@ -116,7 +116,7 @@
         </td>
         <td>
             {% if (file.deleteUrl) { %}
-                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}&id=[[item-id]]&categoryid=[[currentcategory]]&timestamp=[[timestamp]]"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}&id=[[item-id]]&categoryid=[[currentcategory]]&fieldid=[[field]]&timestamp=[[timestamp]]"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                     <i class="fa fa-trash"></i>
                 </button>
                 <input type="checkbox" name="delete" value="1" class="toggle">
@@ -173,7 +173,7 @@ $(function () {
     $('#fileupload').fileupload({
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
-        url: '../plugins/imanager/upload/server/php/index.php?id=[[item-id]]&categoryid=[[currentcategory]]&timestamp=[[timestamp]]'
+        url: '../plugins/imanager/upload/server/php/index.php?id=[[item-id]]&categoryid=[[currentcategory]]&fieldid=[[field]]&timestamp=[[timestamp]]'
     });
 
     // Enable iframe cross-domain access via redirect option:

@@ -43,13 +43,15 @@ class UploadHandler
     function __construct($options = null, $initialize = true, $error_messages = null) {
 
 		/*$handle = fopen("log.txt", "a");
-		fwrite($handle, print_r('test', true));
+		fwrite($handle, print_r($_REQUEST, true));
 		fclose($handle);*/
 
-		if(empty($_REQUEST['categoryid']) || !is_numeric($_REQUEST['categoryid']))
+		if(empty($_REQUEST['categoryid']) || !is_numeric($_REQUEST['categoryid']) ||
+			empty($_REQUEST['fieldid']) || !is_numeric($_REQUEST['fieldid']))
 			return false;
 
 		$categoryid = intval($_REQUEST['categoryid']);
+		$fieldid = intval($_REQUEST['fieldid']);
 
 		if(empty($_REQUEST['id']) || !is_numeric($_REQUEST['id']))
 		{

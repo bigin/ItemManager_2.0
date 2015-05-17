@@ -39,8 +39,9 @@ class ImTplEngine
 	/**
 	 * Initializes all the templates and made them available in ImTplEngine::$templates
 	 */
-	public function init()
+	public function init($path='')
 	{
+		$this->tplpath = !empty($path) ? $path : $this->tplpath;
 		$templates = array();
 		foreach (glob($this->tplpath . '*' . IM_TEMPLATE_FILE_SUFFIX) as $file)
 		{

@@ -10,6 +10,7 @@ class FieldImageupload implements Fieldinterface
 		$this->name = null;
 		$this->class = null;
 		$this->id = null;
+		$this->realid = null;
 		$this->value = null;
 		$this->categoryid = null;
 		$this->itemid = null;
@@ -34,6 +35,7 @@ class FieldImageupload implements Fieldinterface
 				'scriptdir' => IM_SITE_URL,
 				'item-id' => $this->itemid,
 				'currentcategory' => $this->categoryid,
+				'field' => $this->realid,
 				'timestamp' => $this->timestamp,
 			), true, array()
 		);

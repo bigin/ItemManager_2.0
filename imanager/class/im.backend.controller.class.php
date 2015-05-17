@@ -24,15 +24,15 @@
  */
 class ImBackend
 {
-	protected $im;
+	protected $manager;
 	protected $input;
 	protected $tpl;
 	public $break;
 
-	public function __construct(ImModel &$im)
+	public function __construct(ImModel &$manager)
 	{
-		if(!$im->is_admin_panel) return false;
-		$this->im = $im;
+		if(!$manager->is_admin_panel) return false;
+		$this->manager = $manager;
 	}
 
 	/*  */
@@ -45,12 +45,12 @@ class ImBackend
 
 		// first check if the category and select one to be current
 		if(isset($this->input['reloader']) && isset($this->input['post-category']))
-			$this->im->cp->setCategory($this->input['post-category']);
+			$this->manager->cp->setCategory($this->input['post-category']);
 		elseif(!empty($this->input['catsender']) && !empty($this->input['cat']))
-			$this->im->cp->setCategory($this->input['cat']);
+			$this->manager->cp->setCategory($this->input['cat']);
 
 		// Initialize templates now, we'll need them to build our backend
-		$this->tpl = $this->im->getTemplateEngine();
+		$this->tpl = $this->manager->getTemplateEngine();
 		$this->tpl->init();
 
 
@@ -73,7 +73,7 @@ class ImBackend
 				}
 			}
 			// show item editor
-			if($this->im->cp->is_cat_exist)
+			if($this->manager->cp->is_cat_exist)
 				$o['content'] = $this->buildItemEditor();
 		}
 
@@ -92,7 +92,7 @@ class ImBackend
 		// update_category
 		elseif(isset($this->input['categoryupdate']))
 		{
-			//if($this->im->updateCategory($this->input, true))
+			//if($this->manager->updateCategory($this->input, true))
 			if($this->callModelMethod('updateCategory', array($this->input, true)))
 				$o['content'] = $this->buildCategoryEditor();
 			else
@@ -101,7 +101,7 @@ class ImBackend
 		// delete category
 		elseif (isset($this->input['deletecategory']))
 		{
-			//$this->im->deleteCategory($this->input['deletecategory'], true);
+			//$this->manager->deleteCategory($this->input['deletecategory'], true);
 			$this->callModelMethod('deleteCategory', array($this->input['deletecategory'], true));
 			$o['content'] = $this->buildCategoryEditor();
 		}
@@ -118,7 +118,7 @@ class ImBackend
 		elseif (isset($this->input['settings_edit']))
 		{
 			// todo: do it dynamically
-			$this->im->config->setupConfig($this->input);
+			$this->manager->config->setupConfig($this->input);
 			$o['content'] = $this->buildSettingsSection();
 		}
 		elseif (isset($this->input['settings']))
@@ -161,7 +161,7 @@ class ImBackend
 			// delete item
 			elseif (isset($this->input['delete']))
 			{
-				$this->callModelMethod('deleteItem', array($this->input['delete'], $this->im->cp->currentCategory()));
+				$this->callModelMethod('deleteItem', array($this->input['delete'], $this->manager->cp->currentCategory()));
 			}
 
 			$o['content'] = $this->buildItemList();
@@ -184,9 +184,9 @@ class ImBackend
 		if($method == 'deleteItem' || $method == 'deleteCategory' || $method == 'updateCategory' ||
 			$method == 'createCategoryByName')
 		{
-			return $this->im->{$method}($args[0], $args[1]);
+			return $this->manager->{$method}($args[0], $args[1]);
 		}
-		return $this->im->{$method}($args);
+		return $this->manager->{$method}($args);
 	}
 
 	/**
@@ -233,7 +233,7 @@ class ImBackend
 		// get the copy of the option template
 		$option = $this->tpl->getTemplate('option');
 
-		$category = $this->im->category;
+		$category = $this->manager->category;
 
 		$category->categories = $category->filterCategories('position', 'ASC');
 
@@ -244,7 +244,7 @@ class ImBackend
 		// render option template
 		foreach($category->categories as $key => $cat)
 		{
-			$tag = ($this->im->cp->currentCategory() == $cat->get('id')) ? 'selected' : '';
+			$tag = ($this->manager->cp->currentCategory() == $cat->get('id')) ? 'selected' : '';
 			$tploption = $this->tpl->render($option, array('selected' => $tag, 'value' => $cat->get('id'), 'name' => $cat->name));
 			$tvs .= $tploption;
 		}
@@ -280,12 +280,12 @@ class ImBackend
 		$row = $this->tpl->getTemplate('row', $categorylist);
 		$filter = $this->tpl->getTemplate('filter', $categorylist);
 
-		$category = $this->im->category;
+		$category = $this->manager->category;
 
-		$catcount = $this->im->category->countCategories($category->categories);
+		$catcount = $this->manager->category->countCategories($category->categories);
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		if(!$category->countCategories())
 			return $this->tpl->render($form,  array(
@@ -357,7 +357,7 @@ class ImBackend
 		$params['limit'] = $configs->backend->maxcatperpage;
 		$params['pageurl'] = 'load.php?id=imanager&category&page=';
 
-		$pagination = $this->im->buildPagination($tpls, $params);
+		$pagination = $this->manager->buildPagination($tpls, $params);
 
 		return $this->tpl->render($form,  array(
 			'filter' => ((int) $configs->backend->catfilter == 1) ? $filter : '',
@@ -374,12 +374,12 @@ class ImBackend
 		$categorylist = $this->tpl->getTemplates('categorylist');
 		$row = $this->tpl->getTemplate('row', $categorylist);
 
-		$category = $this->im->category;
+		$category = $this->manager->category;
 		if(!$category->countCategories())
 			return false;
 
 		// get config
-		$config = $this->im->config;
+		$config = $this->manager->config;
 
 		$option = !empty($this->input['option']) ? safe_slash_html_input($this->input['option']) : 'ASC';
 		$filterby = !empty($this->input['filterby']) ? safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
@@ -444,7 +444,7 @@ class ImBackend
 		$form = $this->tpl->getTemplate('form', $settings);
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		// category
 		$attribut = isset($configs->backend->catorderby) ?
@@ -528,7 +528,7 @@ class ImBackend
 		if(!$id) $id = isset($this->input['id']) ? $this->input['id'] : false;
 		if(!$id) return false;
 
-		$cat = $this->im->category->getCategory($id);
+		$cat = $this->manager->category->getCategory($id);
 
 		if(!$cat)
 		{
@@ -544,7 +544,7 @@ class ImBackend
 		$position = !empty($position) ? $position : $cat->get('id');
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		return $this->tpl->render($form,  array('catid' => $id,
 				'catname' => $name,
@@ -571,17 +571,17 @@ class ImBackend
 		$details = $this->tpl->getTemplate('details', $fields);
 
 		// check is the current category valid
-		if(!$this->im->cp->isCategoryValid()) return;
+		if(!$this->manager->cp->isCategoryValid()) return;
 
 		// field file already exist
 		$cf = new ImFields();
 
-		if(!$cf->fieldsExists($this->im->cp->currentCategory()))
-			if(!$cf->createFields($this->im->cp->currentCategory()))
+		if(!$cf->fieldsExists($this->manager->cp->currentCategory()))
+			if(!$cf->createFields($this->manager->cp->currentCategory()))
 				return false;
 
 		/* initialize all the fields of the current category */
-		$cf->init($this->im->cp->currentCategory());
+		$cf->init($this->manager->cp->currentCategory());
 
 		// order fields by position
 		$cf->fields = $cf->filterFields('position', 'ASC');
@@ -609,7 +609,7 @@ class ImBackend
 			);
 			// replace the form placeholders and return
 			return $this->tpl->render($form,  array('catselector' => $catselector, 'categorie_items' => $tplrow,
-					'cat' => $this->im->cp->currentCategory()), true, array(), true
+					'cat' => $this->manager->cp->currentCategory()), true, array(), true
 			);
 		}
 
@@ -659,7 +659,7 @@ class ImBackend
 		return $this->tpl->render($form,  array(
 				'catselector' => $catselector,
 				'categorie_items' => $tplrow,
-				'cat' => $this->im->cp->currentCategory()), true, array(), true
+				'cat' => $this->manager->cp->currentCategory()), true, array(), true
 		);
 	}
 
@@ -671,7 +671,7 @@ class ImBackend
 		$form = $this->tpl->getTemplate('form', $fielddetails);
 
 		$cf = new ImFields();
-		$cf->init($this->im->cp->currentCategory());
+		$cf->init($this->manager->cp->currentCategory());
 		// get current field by id
 		$currfield = $cf->getField(intval($this->input['field']));
 
@@ -733,7 +733,7 @@ class ImBackend
 		$active = $this->tpl->getTemplate('active', $nrswitch);
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		// there are the default navigation points
 		$defauls = array(10, 20, 30, 40, 50);
@@ -836,18 +836,18 @@ class ImBackend
 		$filteroptiontpl = $this->tpl->getTemplate('filteroption', $itemlist);
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		// get categories
-		$cat = $this->im->category->categories;
+		$cat = $this->manager->category->categories;
 		// check if object exist
 		if(!$cat) return false;
 		// get curren category object
-		$curcat = $cat[$this->im->cp->currentCategory()];
+		$curcat = $cat[$this->manager->cp->currentCategory()];
 
 		// Initialize items of current category
 		$ic = new ImItem();
-		$ic->init($this->im->cp->currentCategory());
+		$ic->init($this->manager->cp->currentCategory());
 
 		$count = $ic->countItems();
 
@@ -976,7 +976,7 @@ class ImBackend
 		$params['items'] = $count;
 		$params['pageurl'] = 'load.php?id=imanager&page=';
 
-		$pagination = $this->im->buildPagination($tpls, $params);
+		$pagination = $this->manager->buildPagination($tpls, $params);
 
 
 
@@ -1002,11 +1002,11 @@ class ImBackend
 		$inactive = $this->tpl->getTemplate('inactive', $itemlist);
 
 		// get settings
-		$configs = $this->im->config;
+		$configs = $this->manager->config;
 
 		// Initialize items of current category
 		$ic = new ImItem();
-		$ic->init($this->im->cp->currentCategory());
+		$ic->init($this->manager->cp->currentCategory());
 
 		$count = $ic->countItems();
 
@@ -1034,9 +1034,9 @@ class ImBackend
 		$start = (($page -1) * $maxitemperpage +1);
 
 		$fc = new ImFields();
-		if($fc->fieldsExists($this->im->cp->currentCategory()))
+		if($fc->fieldsExists($this->manager->cp->currentCategory()))
 		{
-			$fc->init($this->im->cp->currentCategory());
+			$fc->init($this->manager->cp->currentCategory());
 
 			if(!empty($configs->backend->filterbyfield) && ($fc->fieldNameExists((string) $configs->backend->filterbyfield)
 				|| $configs->backend->filterbyfield == 'name') &&
@@ -1112,7 +1112,7 @@ class ImBackend
 		if(ImMsgReporter::isError())
 			$id = !empty($this->input['id']) ? intval($this->input['id']) : null;
 
-		$categoryid = $this->im->cp->currentCategory();
+		$categoryid = $this->manager->cp->currentCategory();
 
 		// try to get the current page for our back link
 		$backpage = !empty($this->input['page']) ? intval($this->input['page']) : 1;
@@ -1121,21 +1121,21 @@ class ImBackend
 
 		// Initialize items of current category
 		$ic = new ImItem();
-		$ic->init($this->im->cp->currentCategory());
+		$ic->init($this->manager->cp->currentCategory());
 
 		$curitem = $ic->getItem($id);
 
 		// new item
 		if(!$curitem)
 		{
-			$curitem = new Item($this->im->cp->currentCategory());
-			$active = $this->im->config->backend->itemactive;
+			$curitem = new Item($this->manager->cp->currentCategory());
+			$active = $this->manager->config->backend->itemactive;
 		} else
 			$active = $curitem->active;
 
 		// Initialize fields
 		$fc = new ImFields();
-		$fc->init($this->im->cp->currentCategory());
+		$fc->init($this->manager->cp->currentCategory());
 
 		$fields = $fc->filterFields('position', 'asc');
 
@@ -1175,8 +1175,9 @@ class ImBackend
 				// image upload
 				if($field->type == 'imageupload')
 				{
-					$fieldType->categoryid = $this->im->cp->currentCategory();
+					$fieldType->categoryid = $this->manager->cp->currentCategory();
 					$fieldType->itemid = $id;
+					$fieldType->realid = $field->get('id');
 					$fieldType->timestamp = $stamp;
 				}
 
@@ -1243,13 +1244,13 @@ class ImBackend
 				'checked' => ($active > 0) ? ' checked ' : '',
 				'back-page' => $backpage,
 				'timestamp' => $stamp,
-				'currentcategory' => $this->im->cp->currentCategory(),
+				'currentcategory' => $this->manager->cp->currentCategory(),
 				'itemname' => !empty($curitem->name) ? $curitem->name : '',
 				'custom-fields' => $tplfields,
 				'created' => ((int) $curitem->created > 0) ?
-						date((string) $this->im->config->backend->timeformat, (int) $curitem->created) : '',
+						date((string) $this->manager->config->backend->timeformat, (int) $curitem->created) : '',
 				'updated' => ($curitem->updated > 0) ?
-						date((string) $this->im->config->backend->timeformat, (int) $curitem->updated) : ''
+						date((string) $this->manager->config->backend->timeformat, (int) $curitem->updated) : ''
 			), true, array(), true
 		);
 	}

@@ -126,6 +126,7 @@ $i18n = array(
 	, 'err_category_position' => '<div class="error">Only digits are allowed for category position specifications.</div>'
 	, 'err_save_fields_unique' => '<div class="error">The field names must be unique. The duplicates have been removed.</div>'
 	, 'err_save_fields_maxlength' => '<div class="error">Error saving fields: The field names are limited to a maximum of [[count]] characters.</div>'
+	, 'err_upload_fields_usage' => '<div class="error">The image upload field can only be used once per item.</div>'
 	, 'create_cat_backups' => 'Automatic category backup'
 	, 'create_field_backups' => 'Automatic fields backup before changing'
 	, 'cat_backups_dir' => 'Backup directory for categories'

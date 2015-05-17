@@ -17,10 +17,10 @@ class InputImageupload implements Inputinterface
 		$this->values->imageurl = array();
 		$this->values->imagefullurl = array();
 
-		$this->values->thumbpath = array();
+		/*$this->values->thumbpath = array();
 		$this->values->thumbfullpath = array();
 		$this->values->thumburl = array();
-		$this->values->thumbfullurl = array();
+		$this->values->thumbfullurl = array();*/
 
 		$this->positions = array();
 	}
@@ -64,10 +64,10 @@ class InputImageupload implements Inputinterface
 			$temp_arr[$i]->imageurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/';
 			$temp_arr[$i]->imagefullurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/'.$base;
 
-			$temp_arr[$i]->thumbpath = $value.'thumbnail/';
+			/*$temp_arr[$i]->thumbpath = $value.'thumbnail/';
 			$temp_arr[$i]->thumbfullpath = $value.'thumbnail/'.$base;
 			$temp_arr[$i]->thumburl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/thumbnail/'.$base;
-			$temp_arr[$i]->thumbfullurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/thumbnail/'.$base;
+			$temp_arr[$i]->thumbfullurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/thumbnail/'.$base;*/
 
 			$i++;
 		}
@@ -84,10 +84,10 @@ class InputImageupload implements Inputinterface
 			$this->values->imageurl[] = $temp_arr[$key]->imageurl;
 			$this->values->imagefullurl[] = $temp_arr[$key]->imagefullurl;
 
-			$this->values->thumbpath[] = $temp_arr[$key]->thumbpath;
+			/*$this->values->thumbpath[] = $temp_arr[$key]->thumbpath;
 			$this->values->thumbfullpath[] = $temp_arr[$key]->thumbfullpath;
 			$this->values->thumburl[] = $temp_arr[$key]->thumburl;
-			$this->values->thumbfullurl[] = $temp_arr[$key]->thumbfullurl;
+			$this->values->thumbfullurl[] = $temp_arr[$key]->thumbfullurl;*/
 
 		}
 
