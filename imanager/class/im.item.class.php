@@ -655,7 +655,6 @@ class ImItem
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
 
-
 			$num = substr_count($val, '%');
 
 			$pat = false;

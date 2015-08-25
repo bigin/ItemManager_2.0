@@ -67,7 +67,7 @@ class ImBackend
 			// save item
 			if(isset($this->input['submit']) && !empty($this->input['categoryid']))
 			{
-				if(!empty($this->input['timestamp']) || !empty($this->input['id']))
+				if(!empty($this->input['timestamp']) || !empty($this->input['iid']))
 				{
 					$this->callModelMethod('saveItem', $this->input);
 				}
@@ -293,11 +293,12 @@ class ImBackend
 			);
 
 		$order = ($configs->backend->catorder == 'acs') ? 'ASC' : 'DESC';
-		$attribut = isset($configs->backend->catorderby) ?
-			safe_slash_html_input($configs->backend->catorderby) : 'position';
+		$attribut = (isset($configs->backend->catorderby) && (string) $configs->backend->catorderby != 'undefined') ?
+			(string) safe_slash_html_input($configs->backend->catorderby) : 'position';
+
 		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
 		$perpage = !empty($this->input['getcatlist']) ? intval($this->input['getcatlist']) :
-			$configs->backend->maxcatperpage;
+			(int) $configs->backend->maxcatperpage;
 
 		// start item
 		$start = (($page -1) * $perpage +1);
@@ -353,8 +354,9 @@ class ImBackend
 
 		$params['page'] = $page;
 		$params['items'] = $catcount;
-		$params['lastpage'] = ($catcount / $configs->backend->maxcatperpage);
-		$params['limit'] = $configs->backend->maxcatperpage;
+
+		//$params['lastpage'] = ($catcount / $perpage);
+		$params['limit'] = $perpage;//$configs->backend->maxcatperpage;
 		$params['pageurl'] = 'load.php?id=imanager&category&page=';
 
 		$pagination = $this->manager->buildPagination($tpls, $params);
@@ -371,6 +373,7 @@ class ImBackend
 	// Ajax stuff
 	protected function buildCategoryList()
 	{
+
 		$categorylist = $this->tpl->getTemplates('categorylist');
 		$row = $this->tpl->getTemplate('row', $categorylist);
 
@@ -382,8 +385,12 @@ class ImBackend
 		$config = $this->manager->config;
 
 		$option = !empty($this->input['option']) ? safe_slash_html_input($this->input['option']) : 'ASC';
-		$filterby = !empty($this->input['filterby']) ? safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
-		$perpage = !empty($this->input['getcatlist']) ? intval($this->input['getcatlist']) : $config->backend->maxcatperpage;
+		//$filterby = !empty($this->input['filterby']) ? safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
+
+		$filterby = (isset($this->input['filterby']) && (string) $this->input['filterby'] != 'undefined') ?
+			(string) safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
+
+		$perpage = !empty((int) $this->input['getcatlist']) ? intval($this->input['getcatlist']) : $config->backend->maxcatperpage;
 		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
 
 		// change config properties
@@ -401,6 +408,7 @@ class ImBackend
 
 		if(empty($category->categories))
 			return false;
+
 
 		if(!empty($this->input['positions']))
 		{
@@ -736,7 +744,7 @@ class ImBackend
 		$configs = $this->manager->config;
 
 		// there are the default navigation points
-		$defauls = array(10, 20, 30, 40, 50);
+		$defaults = array(10, 20, 30, 40, 50);
 
 
 		if($obj == 'category')
@@ -745,27 +753,27 @@ class ImBackend
 			$maxperpage = empty($configs->backend->maxcatperpage) ? 10 : intval($configs->backend->maxcatperpage);
 
 			// noting entered by user, build standard template
-			if(in_array($maxperpage, $defauls))
+			if(in_array($maxperpage, $defaults))
 			{
-				$tplbuffer[0] = ($maxperpage == $defauls[0]) ?
+				$tplbuffer[0] = ($maxperpage == $defaults[0]) ?
 					$this->tpl->render($active, array('href' => '#', 'number' => $maxperpage), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[0]), true, array(), true);
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[0]), true, array(), true);
 
-				$tplbuffer[1] = ($maxperpage == $defauls[1]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[1]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[1]), true, array(), true);
+				$tplbuffer[1] = ($maxperpage == $defaults[1]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[1]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[1]), true, array(), true);
 
-				$tplbuffer[2] = ($maxperpage == $defauls[2]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[2]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[2]), true, array(), true);
+				$tplbuffer[2] = ($maxperpage == $defaults[2]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[2]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[2]), true, array(), true);
 
-				$tplbuffer[3] = ($maxperpage == $defauls[3]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[3]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[3]), true, array(), true);
+				$tplbuffer[3] = ($maxperpage == $defaults[3]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[3]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[3]), true, array(), true);
 
-				$tplbuffer[4] = ($maxperpage == $defauls[4]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[4]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[4]), true, array(), true);
+				$tplbuffer[4] = ($maxperpage == $defaults[4]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[4]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[4]), true, array(), true);
 
 
 				// replaze tvs with real valies (<li> tags)
@@ -784,27 +792,27 @@ class ImBackend
 			$maxperpage = empty($configs->backend->maxitemperpage) ? 20 : intval($configs->backend->maxitemperpage);
 
 			// noting entered by user, build standard template
-			if(in_array($maxperpage, $defauls))
+			if(in_array($maxperpage, $defaults))
 			{
-				$tplbuffer[0] = ($maxperpage == $defauls[0]) ?
+				$tplbuffer[0] = ($maxperpage == $defaults[0]) ?
 					$this->tpl->render($active, array('href' => '#', 'number' => $maxperpage), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[0]), true, array(), true);
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[0]), true, array(), true);
 
-				$tplbuffer[1] = ($maxperpage == $defauls[1]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[1]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[1]), true, array(), true);
+				$tplbuffer[1] = ($maxperpage == $defaults[1]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[1]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[1]), true, array(), true);
 
-				$tplbuffer[2] = ($maxperpage == $defauls[2]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[2]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[2]), true, array(), true);
+				$tplbuffer[2] = ($maxperpage == $defaults[2]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[2]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[2]), true, array(), true);
 
-				$tplbuffer[3] = ($maxperpage == $defauls[3]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[3]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[3]), true, array(), true);
+				$tplbuffer[3] = ($maxperpage == $defaults[3]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[3]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[3]), true, array(), true);
 
-				$tplbuffer[4] = ($maxperpage == $defauls[4]) ?
-					$this->tpl->render($active, array('href' => '#', 'number' => $defauls[4]), true, array(), true) :
-					$this->tpl->render($inactive, array('href' => '#', 'number' => $defauls[4]), true, array(), true);
+				$tplbuffer[4] = ($maxperpage == $defaults[4]) ?
+					$this->tpl->render($active, array('href' => '#', 'number' => $defaults[4]), true, array(), true) :
+					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[4]), true, array(), true);
 
 
 				// replaze tvs with real valies (<li> tags)
@@ -1099,7 +1107,6 @@ class ImBackend
 
 	protected function buildItemEditor()
 	{
-
 		$itemeditor = $this->tpl->getTemplates('itemeditor');
 		$form = $this->tpl->getTemplate('form', $itemeditor);
 		$fieldarea = $this->tpl->getTemplate('fieldarea', $itemeditor);
@@ -1108,9 +1115,9 @@ class ImBackend
 
 		$id = !empty($this->input['edit']) ? intval($this->input['edit']) : null;
 		if(is_null($id))
-			$id = !empty($this->input['id']) ? intval($this->input['id']) : null;
+			$id = !empty($this->input['iid']) ? intval($this->input['iid']) : null;
 		if(ImMsgReporter::isError())
-			$id = !empty($this->input['id']) ? intval($this->input['id']) : null;
+			$id = !empty($this->input['iid']) ? intval($this->input['iid']) : null;
 
 		$categoryid = $this->manager->cp->currentCategory();
 
@@ -1131,8 +1138,9 @@ class ImBackend
 			$curitem = new Item($this->manager->cp->currentCategory());
 			$active = $this->manager->config->backend->itemactive;
 		} else
+		{
 			$active = $curitem->active;
-
+		}
 		// Initialize fields
 		$fc = new ImFields();
 		$fc->init($this->manager->cp->currentCategory());

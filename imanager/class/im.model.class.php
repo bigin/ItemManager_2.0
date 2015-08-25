@@ -25,7 +25,6 @@ class ImModel
 	public static $action = array();
 	//use ImObserver;
 
-
 	public function __construct()
 	{
 
@@ -41,8 +40,6 @@ class ImModel
 
 		// field
 		$field = new ImFields();
-
-
 
 		// initialize settup class
 		$this->config = new ImSetup();
@@ -764,7 +761,7 @@ class ImModel
 		reset field values to empty and display an error message */
 
 		// timestamp or item id required
-		if(empty($input['timestamp']) && empty($input['id']))
+		if(empty($input['timestamp']) && empty($input['iid']))
 		{
 			ImMsgReporter::setClause('err_save_item_timestamp_id', array(), true);
 			return false;
@@ -780,7 +777,11 @@ class ImModel
 			}
 		}
 
-		$id = !empty($input['id']) ? intval($input['id']) : null;
+		$id = !empty($input['iid']) ? intval($input['iid']) : null;
+
+
+
+
 		$categoryid = !empty($input['categoryid']) ? intval($input['categoryid']) : null;
 
 		// is category valid?
@@ -853,7 +854,7 @@ class ImModel
 			if($fieldvalue->type == 'imageupload')
 			{
 				// new item
-				if(empty($input['id']) && !empty($input['timestamp']))
+				if(empty($input['iid']) && !empty($input['timestamp']))
 				{
 					// pass temporary image directory
 					$tmp_image_dir = IM_IMAGE_UPLOAD_DIR.'tmp_'.$input['timestamp'].'_'.$categoryid.'/';
@@ -861,31 +862,40 @@ class ImModel
 				} else
 				{
 					// pass image directory
-					$fieldinput = IM_IMAGE_UPLOAD_DIR.intval($input['id']).'.'.$categoryid.'/';
+					$fieldinput = IM_IMAGE_UPLOAD_DIR.intval($input['iid']).'.'.$categoryid.'/';
 				}
 
 				// position is send
 				if(isset($input['position']) && is_array($input['position']))
 				{
 					$InputType->positions = $input['position'];
+					$InputType->titles = $input['title'];
 
 					if(!file_exists($fieldinput.'config.xml'))
 					{
 						$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><params></params>');
+						$i = 0;
 						foreach($InputType->positions as $filepos => $filename)
 						{
-							$xml->image[$filepos]->name = $filename;
-							$xml->image[$filepos]->position = $filepos;
+							$xml->image[$i]->name = $filename;
+							$xml->image[$i]->position = $filepos;
+							$xml->image[$i]->title = !empty($InputType->titles[$filepos])
+								? $InputType->titles[$filepos] : '';
+							$i++;
 						}
 
 					} else
 					{
 						$xml = simplexml_load_file($fieldinput.'config.xml');
 						unset($xml->image);
+						$i = 0;
 						foreach($InputType->positions as $filepos => $filename)
 						{
-							$xml->image[$filepos]->name = $filename;
-							$xml->image[$filepos]->position = $filepos;
+							$xml->image[$i]->name = $filename;
+							$xml->image[$i]->position = $filepos;
+							$xml->image[$i]->title = !empty($InputType->titles[$filepos])
+								? $InputType->titles[$filepos] : '';
+							$i++;
 						}
 					}
 					$xml->asXml($fieldinput.'config.xml');
@@ -950,7 +960,7 @@ class ImModel
 			return false;
 		}
 
-		$input['id'] = $curitem->get('id');
+		$this->backend->input['iid'] = $curitem->get('id');
 
 		/* Congratulation, we have just came through some checkpoints well.
 		   Item has been successfully saved, now we still have to take several
@@ -1136,12 +1146,36 @@ class ImModel
 	}
 
 
-	public static function toAscii($str, $replace = array(), $delimiter = '-')
+	public static function toAscii($s, $replace = array(), $delimiter = '-')
 	{
 		if(!empty($replace))
-			$str = str_replace((array)$replace, ' ', $str);
+			$s = str_replace((array)$replace, ' ', $s);
 
-		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+/*
+		$len = strlen($s);
+		$out = "";
+		$curr_char = "";
+		for($i=0; $i < $len; $i++) {
+			$curr_char .= $s[$i];
+			if( ( ord($s[$i]) & (128+64) ) == 128) {
+				//character end found
+				if ( strlen($curr_char) == 2) {
+					// 2-byte character check for it is greek one and convert
+					if      (ord($curr_char[0])==205) $out .= chr( ord($curr_char[1])+16 );
+					else if (ord($curr_char[0])==206) $out .= chr( ord($curr_char[1])+48 );
+					else if (ord($curr_char[0])==207) $out .= chr( ord($curr_char[1])+112 );
+					else ; // non greek 2-byte character, discard character
+				} else ;// n-byte character, n>2, discard character
+				$curr_char = "";
+			} else if (ord($s[$i]) < 128) {
+				// character is one byte (ascii)
+				$out .= $curr_char;
+				$curr_char = "";
+			}
+		}
+		return $out;*/
+
+		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', utf8_encode($s));
 		$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
 		$clean = strtolower(trim($clean, '-'));
 		$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);

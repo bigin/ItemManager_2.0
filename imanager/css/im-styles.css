@@ -720,6 +720,14 @@ li.active a {
 }
 
 /* image upload */
+
+.progress {
+	border: none !important;
+}
+.ui-progressbar-value {
+	border: none !important;
+}
+
 .text-danger {
 	display: none;
 }

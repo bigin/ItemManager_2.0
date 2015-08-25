@@ -39,6 +39,8 @@ class UploadHandler
     );
 
     protected $image_objects = array();
+	protected $positions = array();
+	protected $titles = array();
 
     function __construct($options = null, $initialize = true, $error_messages = null) {
 
@@ -77,6 +79,9 @@ class UploadHandler
 			$upload_url = $this->get_full_upload_url().intval($_REQUEST['id']).'.'.$categoryid.'/';
 
 		}
+
+		$this->positions = !empty($_REQUEST['position']) ? $_REQUEST['position'] : array();
+		$this->titles = !empty($_REQUEST['title']) ? $_REQUEST['title'] : array();
 
         $this->response = array();
         $this->options = array(
@@ -317,13 +322,41 @@ class UploadHandler
 		if(file_exists($this->get_upload_path().'config.xml'))
 		{
 			$xml = simplexml_load_file($this->get_upload_path().'config.xml');
-			for($i = 0; $i < count($xml->image); $i++)
+
+			// build new titles array
+			if(empty($this->positions))
 			{
-				if($file->name == (string) $xml->image[$i]->name)
+				for($i = 0; $i < count($xml->image); $i++)
 				{
-					$file->position = (int) $xml->image[$i]->position;
-					break;
+					$this->positions[(int) $xml->image[$i]->position] = (string) $xml->image[$i]->name;
+					if(empty($this->titles[(int) $xml->image[$i]->position]))
+					{
+						$this->titles[(int) $xml->image[$i]->position] = (string) $xml->image[$i]->title;
+					}
 				}
+			}
+			// initialise image title and position
+			if(in_array($file->name, $this->positions))
+			{
+				foreach($this->positions as $pos => $name)
+				{
+					if($file->name == $name)
+					{
+						$file->position = (int) $pos;
+						$file->title = !empty($this->titles[$pos]) ? $this->titles[$pos] : '';
+						break;
+					}
+				}
+			} else
+			{
+				$handle = fopen("log.txt", "a");
+				fwrite($handle, print_r($file->name, true));
+				fclose($handle);
+				/*$file->position = (max($this->sortarray) + 1);
+				$this->sortarray[] = $file->position;
+				$this->inamesarray[] = $file->name;
+				$file->title = '';*/
+
 			}
 		}
 
@@ -380,9 +413,6 @@ class UploadHandler
             }
 
             $this->set_additional_file_properties($file);
-			/*$handle = fopen("log.txt", "a");
-			fwrite($handle, print_r($file, true));
-			fclose($handle);*/
             return $file;
         }
         return null;
@@ -393,13 +423,12 @@ class UploadHandler
         if (!is_dir($upload_dir)) {
             return array();
         }
-
 		$arr = array_values(array_filter(array_map(
 			array($this, $iteration_method),
 			array_diff(scandir($upload_dir), array('config.xml'))
 		)));
-		if(is_array($arr) && !empty($arr[0]->position))
-			usort($arr, array($this, 'sortObjects'));
+
+		usort($arr, array($this, 'sortObjects'));
 		return $arr;
     }
 
@@ -408,12 +437,17 @@ class UploadHandler
 	{
 		$a = $a->position;
 		$b = $b->position;
-
-		if($a == $b) {return 0;}
+		if($a == $b) {
+			return 0;
+		}
 		else
 		{
-			if($b > $a) {return -1;}
-			else {return 1;}
+			if($b > $a) {
+				return -1;
+			}
+			else {
+				return 1;
+			}
 		}
 	}
 
@@ -548,7 +582,7 @@ class UploadHandler
             $name = $this->upcount_name($name);
         }
         // Keep an existing filename if this is part of a chunked upload:
-        $uploaded_bytes = $this->fix_integer_overflow((int)$content_range[1]);
+        $uploaded_bytes = $this->fix_integer_overflow((int) $content_range[1]);
         while(is_file($this->get_upload_path($name))) {
             if ($uploaded_bytes === $this->get_file_size(
                     $this->get_upload_path($name))) {
@@ -1183,7 +1217,7 @@ class UploadHandler
             }
             $this->set_additional_file_properties($file);
         }
-        return $file;
+		return $file;
     }
 
     protected function readfile($file_path) {
@@ -1416,7 +1450,7 @@ class UploadHandler
                         $size ? $size : $upload['size'][$index],
                         $upload['type'][$index],
                         $upload['error'][$index],
-                        $index,
+						$index,
                         $content_range
                     );
                 }

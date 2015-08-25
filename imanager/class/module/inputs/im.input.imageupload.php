@@ -16,6 +16,7 @@ class InputImageupload implements Inputinterface
 		$this->values->imagefullpath = array();
 		$this->values->imageurl = array();
 		$this->values->imagefullurl = array();
+		$this->values->imagetitle = array();
 
 		/*$this->values->thumbpath = array();
 		$this->values->thumbfullpath = array();
@@ -23,6 +24,7 @@ class InputImageupload implements Inputinterface
 		$this->values->thumbfullurl = array();*/
 
 		$this->positions = array();
+		$this->titles = array();
 	}
 
 
@@ -40,9 +42,9 @@ class InputImageupload implements Inputinterface
 			for($i = 0; $i < count($xml->image); $i++)
 			{
 				$this->positions[(int) $xml->image[$i]->position] = (string) $xml->image[$i]->name;
+				$this->titles[(int) $xml->image[$i]->position] = (string) $xml->image[$i]->titles;
 			}
 		}
-
 		$i = 0;
 		foreach(glob($value.'*') as $file)
 		{
@@ -52,17 +54,25 @@ class InputImageupload implements Inputinterface
 			$basedir = basename($value);
 
 			$poskey = $i;
+			$title = '';
 			if(!empty($this->positions))
+			{
 				$poskey = array_search($base, $this->positions);
+
+				//if(array_key_exists($i, $this->titles))
+				$title = $this->titles[$poskey];
+			}
+
 
 			$temp_arr[$i] = new stdClass();
 
 			$temp_arr[$i]->imagename = $base;
-			$temp_arr[$i]->position = intval($poskey);
+			$temp_arr[$i]->position = (int) $poskey;
 			$temp_arr[$i]->imagepath = $value;
 			$temp_arr[$i]->imagefullpath = $value.$base;
 			$temp_arr[$i]->imageurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/';
 			$temp_arr[$i]->imagefullurl = $this->getFullUrl().'/data/uploads/imanager/'.$basedir.'/'.$base;
+			$temp_arr[$i]->imagetitle = $title;
 
 			/*$temp_arr[$i]->thumbpath = $value.'thumbnail/';
 			$temp_arr[$i]->thumbfullpath = $value.'thumbnail/'.$base;
@@ -83,6 +93,7 @@ class InputImageupload implements Inputinterface
 			$this->values->imagefullpath[] = $temp_arr[$key]->imagefullpath;
 			$this->values->imageurl[] = $temp_arr[$key]->imageurl;
 			$this->values->imagefullurl[] = $temp_arr[$key]->imagefullurl;
+			$this->values->imagetitle[] = $temp_arr[$key]->imagetitle;
 
 			/*$this->values->thumbpath[] = $temp_arr[$key]->thumbpath;
 			$this->values->thumbfullpath[] = $temp_arr[$key]->thumbfullpath;
@@ -90,6 +101,8 @@ class InputImageupload implements Inputinterface
 			$this->values->thumbfullurl[] = $temp_arr[$key]->thumbfullurl;*/
 
 		}
+		// delete empty config file
+		if($i <= 0 && file_exists($value.'config.xml')) {unlink($value.'config.xml');}
 
 		return $this->values;
 	}

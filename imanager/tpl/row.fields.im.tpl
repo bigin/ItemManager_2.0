@@ -23,6 +23,7 @@
             <option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
             <option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>
             <option value="chunk"[[selected-chunk]]>[[lang/chunk_field_value]]</option>
+			<option value="datepicker"[[selected-datepicker]]>Datepicker</option>
             <option value="money"[[selected-money]]>[[lang/money_field_value]]</option>
         </select>
         <textarea class="text" style="[[area-display]]" rows="3" name="cf_[[i]]_options">[[area-options]]</textarea>

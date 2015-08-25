@@ -254,5 +254,6 @@ $i18n = array(
 	, 'unique_itemname' => 'Unique item names'
 	, 'unique_itemname_info' => '<i class="fa fa-info-circle"></i> Please check this in order for the item names to be unique.'
 	, 'money_field_value' => 'Money field'
+	, 'imagetitle_placeholder' => 'Title'
 
 );

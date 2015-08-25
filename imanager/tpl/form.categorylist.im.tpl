@@ -55,7 +55,7 @@
 
 		$.post("load.php?id=imanager&category&getcatlist="+num+"&filterby="+ftr+"&option="+opt,
 				{ page: [[page]],positions: jsonObj },
-				function(data, status){
+				function(data, status) {
 					if(status = 'success' && data) $('#im-catlist-body').html(data);
 				});
 	}

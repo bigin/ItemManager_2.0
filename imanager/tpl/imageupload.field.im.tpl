@@ -2,7 +2,7 @@
 	<!-- The file upload form used as target for the file upload widget -->
 	<div id="fileupload" action="../plugins/imanager/upload/server/php/">
 		<!-- Redirect browsers with JavaScript disabled to the origin page -->
-		<noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>
+		<noscript>JavaScript disabled</noscript>
 		<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 		<div class="row fileupload-buttonbar">
 			<div class="col-lg-7">
@@ -57,6 +57,7 @@
 	{% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-upload fade">
     	<td>
+    		<input class="pos" type="hidden" name="position[{%=file.position%}]" value="{%=file.name%}">
     	</td>
         <td>
             <span class="preview"></span>
@@ -90,7 +91,7 @@
     <tr class="template-download fade sortable">
     	<td>
     		<i class="fa fa-hand-o-up"></i>
-    		<input type="hidden" name="position[{%=i%}]" value="{%=file.name%}">
+    		<input class="pos" type="hidden" name="position[{%=file.position%}]" value="{%=file.name%}">
     	</td>
         <td>
             <span class="preview">
@@ -106,6 +107,8 @@
                 {% } else { %}
                     <span>{%=file.name%}</span>
                 {% } %}
+                <br />
+                <input class="tit" type="text" placeholder="[[lang/imagetitle_placeholder]]" name="title[{%=file.position%}]" value="{%=file.title%}">
             </p>
             {% if (file.error) { %}
                 <div><span class="label label-danger">Error</span> {%=file.error%}</div>
@@ -129,19 +132,22 @@
     </tr>
 {% } %}
 </script>
-<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
 <script src="../plugins/imanager/upload/js/vendor/jquery.ui.widget.js"></script>
 <!-- The Templates plugin is included to render the upload/download listings -->
-<script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+<!-- <script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script> -->
+<script src="../plugins/imanager/upload/js/tmpl.min.js"></script>
 <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+<!-- <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script> -->
+<script src="../plugins/imanager/upload/js/load-image.all.min.js"></script>
 <!-- The Canvas to Blob plugin is included for image resizing functionality -->
 <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
 <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+<script src="../plugins/imanager/upload/js/bootstrap.min.js"></script>
 <!-- blueimp Gallery script -->
-<script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+<!-- <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script> -->
+<script src="../plugins/imanager/upload/js/jquery.blueimp-gallery.min.js"></script>
 <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
 <script src="../plugins/imanager/upload/js/jquery.iframe-transport.js"></script>
 <!-- The basic File Upload plugin -->
@@ -166,6 +172,14 @@
 <script src="../plugins/imanager/upload/js/cors/jquery.xdr-transport.js"></script>
 <![endif]-->
 <script>
+function renumberImages(g) {
+	$('.table tbody tr').each(function(i,tr) {
+		$(tr).find('input').each(function(k,elem) {
+			var name = $(elem).attr('name').replace(/[ \d+]/, (i));
+			$(elem).attr('name', name);
+		});
+	});
+}
 $(function () {
     'use strict';
 
@@ -186,58 +200,24 @@ $(function () {
         )
     );
 
-    if (window.location.hostname === 'blueimp.github.io') {
-        // Demo settings:
-        $('#fileupload').fileupload('option', {
-            url: '//jquery-file-upload.appspot.com/',
-            // Enable image resizing, except for Android and Opera,
-            // which actually support image resizing, but fail to
-            // send Blob objects via XHR requests:
-            disableImageResize: /Android(?!.*Chrome)|Opera/
-                .test(window.navigator.userAgent),
-            maxFileSize: 5000000,
-            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
-        });
-        // Upload server status check for browsers with CORS support:
-        if ($.support.cors) {
-            $.ajax({
-                url: '//jquery-file-upload.appspot.com/',
-                type: 'HEAD'
-            }).fail(function () {
-                $('<div class="alert alert-danger"/>')
-                    .text('Upload server currently unavailable - ' +
-                            new Date())
-                    .appendTo('#fileupload');
-            });
-        }
-    } else {
-        // Load existing files:
-        $('#fileupload').addClass('fileupload-processing');
+	// Load existing files:
+	$('#fileupload').addClass('fileupload-processing');
 
-        $.ajax({
-            // Uncomment the following to send cross-domain cookies:
-            //xhrFields: {withCredentials: true},
+	$.ajax({
+		// Uncomment the following to send cross-domain cookies:
+		//xhrFields: {withCredentials: true},
 
-            url: $('#fileupload').fileupload('option', 'url'),
-            dataType: 'json',
-            context: $('#fileupload')[0]
-        }).always(function () {
-            $(this).removeClass('fileupload-processing');
-        }).done(function (result) {
-            $(this).fileupload('option', 'done')
-                .call(this, $.Event('done'), {result: result});
-        });
-    }
-
-});
-function renumberImages() {
-	$('.table tbody tr').each(function(i,tr) {
-		$(tr).find('input').each(function(k,elem) {
-			var name = $(elem).attr('name').replace(/[\d+]/, (i));
-			$(elem).attr('name', name);
-		});
+		url: $('#fileupload').fileupload('option', 'url'),
+		dataType: 'json',
+		context: $('#fileupload')[0]
+	}).always(function () {
+		$(this).removeClass('fileupload-processing');
+	}).done(function (result) {
+		$(this).fileupload('option', 'done')
+			.call(this, $.Event('done'), {result: result});
 	});
-}
+});
+
 
 $('.table tbody').sortable({
 	items:"tr.sortable", handle:'td',
