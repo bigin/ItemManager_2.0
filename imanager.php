@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ItemManager
  * Description: A simple flat-file Framework.
- * Version: 2.0
+ * Version: 2.*
  * Author: Juri Ehret
  * Author URL: http://ehret-studio.com
  *
@@ -59,7 +59,7 @@ define('IMTITLE', 'ItemManager');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.0',
+	'2.1',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',

@@ -807,6 +807,7 @@ class ImModel
 			ImMsgReporter::setClause('err_by_empty_field', array(
 				'field' => ImMsgReporter::getClause('title', array())), true
 			);
+			$this->delTree(IM_IMAGE_UPLOAD_DIR.'tmp_'.$input['timestamp'].'_'.$categoryid.'/');
 			return false;
 		}
 
@@ -828,6 +829,7 @@ class ImModel
 		{
 			ImMsgReporter::setClause('err_item_name_length', array('count' =>
 				intval($this->config->common->maxitemname)));
+			$this->delTree(IM_IMAGE_UPLOAD_DIR.'tmp_'.$input['timestamp'].'_'.$categoryid.'/');
 			return false;
 		}
 

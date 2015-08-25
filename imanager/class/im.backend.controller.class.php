@@ -390,7 +390,7 @@ class ImBackend
 		$filterby = (isset($this->input['filterby']) && (string) $this->input['filterby'] != 'undefined') ?
 			(string) safe_slash_html_input(strtolower($this->input['filterby'])) : 'position';
 
-		$perpage = !empty((int) $this->input['getcatlist']) ? intval($this->input['getcatlist']) : $config->backend->maxcatperpage;
+		$perpage = !empty($this->input['getcatlist']) ? intval($this->input['getcatlist']) : $config->backend->maxcatperpage;
 		$page = !empty($this->input['page']) ? $this->input['page'] : 1;
 
 		// change config properties
