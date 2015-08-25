@@ -62,7 +62,7 @@ register_plugin(
 	'2.0',
 	'Juri Ehret',
 	'http://ehret-studio.com',
-	'A simple flat-file Framework for GetSimple-CMS',
+	'A simple flat-file framework for GetSimple-CMS',
 	'imanager',
 	'imanager'
 );
