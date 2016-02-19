@@ -124,83 +124,86 @@ class ImItem
 	}
 
 
-	public function limitedInit($catid, $from, $too)
+	public function limitedInit($catid, $from, $too=null)
 	{
 		// nitialize the fields class
 		$fc = new ImFields();
 		$fc->init($catid);
 		$this->items = array();
 
+		if(is_null($too)){$too = ($from+1);}
+
+
 		for($i = $from; $i < $too; $i++)
 		{
-			foreach(glob(IM_ITEM_DIR.$i.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT) as $file)
+			$res = glob(IM_ITEM_DIR.$i.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT);
+			if(empty($res)) return false;
+			$file = $res[0];
+
+			$base = basename($file, IM_ITEM_FILE_SUFFIX);
+			$strp = strpos($base, '.');
+			$id = substr($base, 0, $strp);
+			$category = substr($base, $strp+1);
+
+			$xml = getXML($file);
+
+			$item = new Item($category);
+
+			$item->set('categoryid', $category);
+			$item->set('id', $id);
+			$item->set('file', $file);
+			$item->set('filename',$base.IM_ITEM_FILE_SUFFIX);
+
+			$item->name = (string) $xml->name;
+			$item->label = (string) $xml->label;
+			$item->position = (int) $xml->position;
+			$item->active = (int) $xml->active;
+
+			$item->created = (int) $xml->created;
+			$item->updated = (int) $xml->updated;
+
+			$this->items[$item->get('id')] = $item;
+
+			foreach($fc->fields as $name => $obj)
 			{
+				$new_field = new Field($category);
+				// clone object because otherwise we'll lose the value data
+				$new_field = clone $obj;
 
-				$base = basename($file, IM_ITEM_FILE_SUFFIX);
-				$strp = strpos($base, '.');
-				$id = substr($base, 0, $strp);
-				$category = substr($base, $strp+1);
-
-				$xml = getXML($file);
-
-				$item = new Item($category);
-
-				$item->set('categoryid', $category);
-				$item->set('id', $id);
-				$item->set('file', $file);
-				$item->set('filename',$base.IM_ITEM_FILE_SUFFIX);
-
-				$item->name = (string) $xml->name;
-				$item->label = (string) $xml->label;
-				$item->position = (int) $xml->position;
-				$item->active = (int) $xml->active;
-
-				$item->created = (int) $xml->created;
-				$item->updated = (int) $xml->updated;
-
-				$this->items[$item->get('id')] = $item;
-
-				foreach($fc->fields as $name => $obj)
+				foreach($xml->field as $fieldkey => $field)
 				{
-					$new_field = new Field($category);
-					// clone object because otherwise we'll lose the value data
-					$new_field = clone $obj;
-
-					foreach($xml->field as $fieldkey => $field)
+					if( $new_field->get('id') == $field->id)
 					{
-						if( $new_field->get('id') == $field->id)
-						{
-							$inputClassName = 'Input'.$new_field->type;
-							$InputType = new $inputClassName($fc->fields[$name]);
-							$output = $InputType->prepareOutput();
+						$inputClassName = 'Input'.$new_field->type;
+						$InputType = new $inputClassName($fc->fields[$name]);
+						$output = $InputType->prepareOutput();
 
-							foreach($output as $outputkey => $outputvalue)
+						foreach($output as $outputkey => $outputvalue)
+						{
+							if(is_array($outputvalue))
 							{
-								if(is_array($outputvalue))
+								$new_field->$outputkey = array();
+								$counter = 0;
+								foreach($field->$outputkey as $arrkey => $arrval)
 								{
-									$new_field->$outputkey = array();
-									$counter = 0;
-									foreach($field->$outputkey as $arrkey => $arrval)
-									{
-										$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
-										$counter++;
-									}
-								} else
-								{
-									$new_field->$outputkey = '';
-									$new_field->$outputkey = (string) $field->$outputkey;
+									$new_field->{$outputkey}[] = (string) $field->{$outputkey}[$counter];
+									$counter++;
 								}
-							}
-							if(empty($new_field->value) && !empty($new_field->default))
+							} else
 							{
-								$new_field->value = (string) $new_field->default;
+								$new_field->$outputkey = '';
+								$new_field->$outputkey = (string) $field->$outputkey;
 							}
 						}
+						if(empty($new_field->value) && !empty($new_field->default))
+						{
+							$new_field->value = (string) $new_field->default;
+						}
 					}
-					$item->fields->$name = $new_field;
 				}
-				$this->items[$item->get('id')] = $item;
+				$item->fields->$name = $new_field;
 			}
+			$this->items[$item->get('id')] = $item;
 		}
 	}
 

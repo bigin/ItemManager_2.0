@@ -36,6 +36,7 @@ define('IM_CATEGORY_DIR', ITEMDATA.'categories/');
 define('IM_ITEM_DIR', ITEMDATA.'items/');
 define('IM_SETTINGS_DIR', ITEMDATA.'settings/');
 define('IM_FIELDS_DIR', ITEMDATA.'fields/');
+define('IM_SECTIONS_CACHE_DIR', ITEMDATA.'cache/sections/');
 define('IM_UPLOAD_DIR', GSDATAUPLOADPATH.'imanager/');
 define('IM_TEMPLATE_DIR', GSPLUGINPATH.'imanager/tpl/');
 define('IM_IMAGE_UPLOAD_DIR', GSDATAPATH.'uploads/imanager/');
@@ -48,10 +49,6 @@ define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
 define('IM_SITE_URL', $SITEURL);
 define('IM_LANGUAGE', $LANG);
 
-// Bestimmte Bereiche im Admin deaktivieren
-//define('IM_HIDE_SETTINGS', 1);
-//define('IM_HIDE_FIELDS', 1 );
-
 
 // Initialize software name
 define('IMTITLE', 'ItemManager');
@@ -59,7 +56,7 @@ define('IMTITLE', 'ItemManager');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.1',
+	'2.2',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',
@@ -99,6 +96,8 @@ include(GSPLUGINPATH.'imanager/class/im.category.class.php');
 include(GSPLUGINPATH.'imanager/class/im.category.object.php');
 // category processor
 include(GSPLUGINPATH.'imanager/class/im.category.processor.class.php');
+// markup/section cache
+include(GSPLUGINPATH.'imanager/class/im.section.cache.php');
 
 // template object type
 include(GSPLUGINPATH.'imanager/class/im.template.object.php');

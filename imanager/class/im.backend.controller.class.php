@@ -292,7 +292,7 @@ class ImBackend
 						'value' => ''), true, array(), true
 			);
 
-		$order = ($configs->backend->catorder == 'acs') ? 'ASC' : 'DESC';
+		$order = ($configs->backend->catorder == 'asc') ? 'ASC' : 'DESC';
 		$attribut = (isset($configs->backend->catorderby) && (string) $configs->backend->catorderby != 'undefined') ?
 			(string) safe_slash_html_input($configs->backend->catorderby) : 'position';
 
@@ -776,7 +776,7 @@ class ImBackend
 					$this->tpl->render($inactive, array('href' => '#', 'number' => $defaults[4]), true, array(), true);
 
 
-				// replaze tvs with real valies (<li> tags)
+				// replaze tvs with real values (<li> tags)
 				return $this->tpl->render($container, array(
 						'1' => $tplbuffer[0],
 						'2' => $tplbuffer[1],

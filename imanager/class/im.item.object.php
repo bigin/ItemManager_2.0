@@ -280,6 +280,26 @@ class Item
 		return false;
 	}
 
+	public function join($catids)
+	{
+		$imapper = new ImItem();
+		if(!is_array($catids))
+		{
+			$imapper->limitedInit($catids, $this->id);
+			$this->linked_categoryids[] = (int) $catids;
+			$this->linked_fields[(int) $catids] = (!empty($imapper->items[$this->id]->fields) ?
+				$imapper->items[$this->id]->fields : null);
+		} else
+		{
+			foreach($catids as $catid)
+			{
+				$imapper->limitedInit($catid, $this->id);
+				$this->linked_categoryids[] = (int) $catid;
+				$this->linked_fields[(int) $catid] = $imapper->items[$this->id]->fields;
+			}
+		}
+	}
+
 	// todo: Wird die hier noch verwendet?
 	public function getFieldValue($fieldid)
 	{

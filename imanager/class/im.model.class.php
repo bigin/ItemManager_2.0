@@ -134,6 +134,8 @@ class ImModel
 
 	public function newItem($catid){return new Item($catid);}
 
+	public function getSectionCache(){return new ImSectionCache();}
+
 
 
 
