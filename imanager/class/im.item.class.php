@@ -896,5 +896,13 @@ class ImItem
 		return $result;
 	}
 
+	/**
+	 * Used to check if max number of item files for a category is exceeded
+	 * We don't want to fill up the disk
+	 */
+	public function maxItemsExceeded($catid, $max_files = 800)
+	{
+		return ((count(glob(IM_ITEM_DIR.'*.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT))) > $max_files ? false : true);
+	}
 
 }

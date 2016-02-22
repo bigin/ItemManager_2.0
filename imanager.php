@@ -56,7 +56,7 @@ define('IMTITLE', 'ItemManager');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.2',
+	'2.3',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',

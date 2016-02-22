@@ -28,7 +28,7 @@ class ImSectionCache {
 	protected $noExpire = 0;
 
 	/**
-	 * Initialize the module and add a hook after Pages::save
+	 * Initialize the module
 	 *
 	 */
 	public function __construct() {
@@ -68,19 +68,17 @@ class ImSectionCache {
 	}
 
 	/**
-	 * Expire the cache, automatically hooked to every $pages->save() call
+	 * Expire the cache, can be automatically hooked to every $item->save() call
 	 *
 	 */
-	public function expire($event = null) {
+	public function expire() {
 		/*
-		 * If already cleared during this session, don't do it again
-		 * that way if we're saving 100+ pages, we aren't clearing the cache 100+ times
-		 *
+		 * If already cleared during this session
 		 */
 		if($this->cleared) return;
 
 		if($this->cache) $cache = $this->cache;
-		else $cache = new CacheFile($this->path, '', 0);
+		else $cache = new ImCacheFile($this->path, '', 0);
 		$cache->expireAll();
 		$this->cleared = true;
 	}
@@ -124,7 +122,7 @@ class ImCacheFile
 	const globalExpireFilename = 'last';
 
 	/**
-	 * Max secondaryID cache files that will be allowed in a directory before it starts removing them.
+	 * Max cache files that will be allowed in a directory before it starts removing them.
 	 *
 	 */
 	const maxCacheFiles = 999;
@@ -204,14 +202,14 @@ class ImCacheFile
 	}
 
 	/**
-	 * Removes just the given file, as opposed to remove() which removes the entire cache for primaryID
+	 * Removes just the given file, as opposed to remove() which removes the entire cache
 	 *
 	 */
 	protected function removeFilename($filename){@unlink($filename);}
 
 
 	/**
-	 * Get the contents of the cache based on the primary or secondary ID
+	 * Get the contents of the cache based on the primary ID
 	 *
 	 * @return string
 	 *
@@ -264,5 +262,17 @@ class ImCacheFile
 		$result = file_put_contents($filename, $data);
 		@chmod($filename, $this->chmodFile);
 		return $result;
+	}
+
+	/**
+	 * Causes all cache files in this type to be immediately expired
+	 *
+	 * Note it does not remove any files, only places a globalExpireFile with an mtime newer than the cache files
+	 *
+	 */
+	public function expireAll() {
+		$note = "The modification time of this file represents the time of the last usable cache file. " .
+			"Cache files older than this file are considered expired. " . date('m.d.Y H:i:s');
+		@file_put_contents($this->globalExpireFile, $note, LOCK_EX);
 	}
 }
