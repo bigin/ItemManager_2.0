@@ -1,72 +1,28 @@
 <?php
-/**
- * Plugin Name: ItemManager
- * Description: A simple flat-file Framework.
- * Version: 2.*
- * Author: Juri Ehret
- * Author URL: http://ehret-studio.com
- *
- * This file is part of ItemManager.
- *
- * ItemManager is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or any
- * later version.
- *
- * ItemManager is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with ItemManager.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-// php 5.4.x
-#if(session_status() == PHP_SESSION_NONE) {session_start();}
+
 if(!isset($_SESSION)){session_start();}
 if(!isset($_SESSION['cat']) || is_null($_SESSION['cat'])) $_SESSION['cat'] = null;
 
-# get correct id for plugin
+// get correct id for plugin
 $thisfile = basename(__FILE__, '.php');
-
-# path & file constants definitions
-define('ITEMDATA', GSDATAPATH.'imanager/'); // wird verwendet
-define('IM_CATEGORY_DIR', ITEMDATA.'categories/');
-define('IM_ITEM_DIR', ITEMDATA.'items/');
-define('IM_SETTINGS_DIR', ITEMDATA.'settings/');
-define('IM_FIELDS_DIR', ITEMDATA.'fields/');
-define('IM_SECTIONS_CACHE_DIR', ITEMDATA.'cache/sections/');
-define('IM_UPLOAD_DIR', GSDATAUPLOADPATH.'imanager/');
-define('IM_TEMPLATE_DIR', GSPLUGINPATH.'imanager/tpl/');
-define('IM_IMAGE_UPLOAD_DIR', GSDATAPATH.'uploads/imanager/');
-define('IM_BACKUP_DIR', GSBACKUPSPATH.'other/imanager/');
-define('IM_CONFIG_FILE', IM_SETTINGS_DIR.'config.im.xml');
-define('IM_FIELDS_FILE_SUFFIX', '.im.fields.xml');
-define('IM_CATEGORY_FILE_SUFFIX', '.im.cat.xml');
-define('IM_TEMPLATE_FILE_SUFFIX', '.im.tpl');
-define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
-define('IM_SITE_URL', $SITEURL);
-define('IM_LANGUAGE', $LANG);
-
-
-// Initialize software name
-define('IMTITLE', 'ItemManager');
+// paths & file constants definitions
+include($thisfile.'/lib/inc/_def.php');
 
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3',
+	'2.3.3',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',
 	'imanager',
-	'imanager'
+	'im_render_backend'
 );
 
 // activate actions
 add_action('admin-pre-header', 'ajaxGetLists');
-add_action('nav-tab', 'createNavTab', array('imanager', $thisfile, IMTITLE, 'view'));
+add_action('nav-tab', 'createNavTab', array($thisfile, $thisfile, 'Manager'));
+//add_action($thisfile.'-sidebar', 'im_render_backend', array('sidebar'));
 /* i18n search stuff */
 add_action('search-index', 'i18nSearchImIndex');
 add_filter('search-item', 'i18nSearchImItem');
@@ -81,176 +37,73 @@ queue_style('imstyle', GSBACK);
 queue_style('imstylefonts', GSBOTH);
 queue_style('blueimp', GSBACK);
 
-
 // model
-include(GSPLUGINPATH.'imanager/class/im.model.class.php');
-// settup
-include(GSPLUGINPATH.'imanager/class/im.setup.class.php');
+include(GSPLUGINPATH.'imanager/lib/Model.php');
 // manager
-include(GSPLUGINPATH.'imanager/class/im.class.php');
-// backend controller
-include(GSPLUGINPATH.'imanager/class/im.backend.controller.class.php');
-// category
-include(GSPLUGINPATH.'imanager/class/im.category.class.php');
-// category object type
-include(GSPLUGINPATH.'imanager/class/im.category.object.php');
-// category processor
-include(GSPLUGINPATH.'imanager/class/im.category.processor.class.php');
-// markup/section cache
-include(GSPLUGINPATH.'imanager/class/im.section.cache.php');
+include(GSPLUGINPATH.'imanager/lib/ItemManager.php');
 
-// template object type
-include(GSPLUGINPATH.'imanager/class/im.template.object.php');
-// item object type
-include(GSPLUGINPATH.'imanager/class/im.item.object.php');
-// item class type
-include(GSPLUGINPATH.'imanager/class/im.item.class.php');
-// output
-include(GSPLUGINPATH.'imanager/class/im.template.class.php');
-// reporter
-include(GSPLUGINPATH.'imanager/class/im.msg.reporter.class.php');
-
-// fields controller
-include(GSPLUGINPATH.'imanager/class/im.fields.class.php');
-// fields object type
-include(GSPLUGINPATH.'imanager/class/im.field.object.php');
-
-
-/* INTERFACES */
-
-// input interface
-include(GSPLUGINPATH.'imanager/class/im.input.interface.php');
-// field interface
-include(GSPLUGINPATH.'imanager/class/im.field.interface.php');
-
-
-/* FIELDS */
-foreach (glob(GSPLUGINPATH.'imanager/class/module/fields/im.field.*.php') as $filename)
-	{include($filename);}
-/* INPUTS */
-foreach (glob(GSPLUGINPATH.'imanager/class/module/inputs/im.input.*.php') as $filename)
-	{include($filename);}
-
-// backend
-function imanager()
+/**
+ * Core ItemManager's function, we use it to create an ItemManager instance
+ *
+ * @param string $name
+ *
+ * @return Im\ItemManager instance
+ */
+function imanager($name='')
 {
-	$request = array_merge($_GET, $_POST);
-	$manager = new IManager();
-	// run
-	$backend = $manager->backend->display($request);
-	echo $backend;
+	global $im;
+	if($im === null) $im = new ItemManager();
+	return !empty($name) ? $im->$name : $im;
+}
+
+/**
+ * Loads ItemManager's backend, executed in admin panel only
+ */
+function im_render_backend($arg=null)
+{
+	global $im;
+	if(is_null($arg))
+	{
+		// check whether the user inside admin panel
+		(!defined('IN_GS') && empty($_GET['id']) && $_GET['id'] != IM_NAME) or define('IS_ADMIN_PANEL', true);
+		if($im === null) $im = imanager();
+		if(defined('IS_ADMIN_PANEL'))
+		{
+			(!$im->config->injectActions) or $im->setActions();
+			$im->admin->init();
+			echo $im->admin->display();
+		}
+	} else
+	{
+		if(defined('IS_ADMIN_PANEL')) echo $im->admin->display($arg);
+	}
 }
 
 function ajaxGetLists()
 {
-	if(isset($_GET['getcatlist']))
+	global $im;
+	if(isset($_GET['getcatlist']) || isset($_GET['getitemlist']))
 	{
-		$request = array_merge($_GET, $_POST);
-		$manager = new IManager();
-		if($manager->is_admin_panel)
-			echo $manager->backend->display($request);
-		exit();
-	} elseif (isset($_GET['getitemlist']))
-	{
-		$request = array_merge($_GET, $_POST);
-		$manager = new IManager();
-		if($manager->is_admin_panel)
-			echo $manager->backend->display($request);
-		exit();
-	}
-}
-
-function i18nSearchImIndex()
-{
-
-	$manager = new IManager();
-	$manager->item->initAll();
-	$items = $manager->item->items;
-
-	// get the array excludes
-	$excludes = array_map('trim', explode(',', $manager->config->common->i18nsearchexcludes));
-	$sfield = $manager->config->common->i18nsearchfield;
-	$fc = new ImFields();
-
-	foreach($items as $categoryid => $items)
-	{
-		if(in_array($categoryid, $excludes)) continue;
-		if(!$fc->fieldsExists($categoryid)) continue;
-
-		foreach($items as $itemid => $itemdata)
+		(!defined('IN_GS') && empty($_GET['id']) && $_GET['id'] != IM_NAME) or define('IS_ADMIN_PANEL', true);
+		if($im === null) $im = imanager();
+		if(defined('IS_ADMIN_PANEL'))
 		{
-			if(empty($itemdata->fields->$sfield->value)) continue;
-			$id = $itemid .'.'. $categoryid;
-			$title = strip_tags($itemdata->name);
-			$content = html_entity_decode(strip_tags(htmlspecialchars_decode($itemdata->fields->$sfield->value)), ENT_QUOTES, 'UTF-8');
-			i18n_search_index_item('im:'.$id, null, $itemdata->created, $itemdata->created, null, $title, $content);
+			(!$im->config->injectActions) or $im->setActions();
+			$im->admin->init();
+			echo $im->admin->display();
+			exit();
 		}
+
 	}
 }
 
-function i18nSearchImItem($id, $language, $creDate, $pubDate, $score)
-{
-	if (!class_exists('I18nSearchImResult'))
-	{
-		global $manager;
-		$manager = new IManager();
-		$manager->item->initAll();
+/**
+ * Deprecated ItemManager's call, just for backward compatibility
+ */
+class IManager extends ItemManager {
 
-		class I18nSearchImResult extends I18nSearchResultItem
-		{
-			protected $data = null;
-
-			protected function get($input)
-			{
-				if (!$this->data)
-				{
-					// really ugly solution
-					global $manager;
-
-					$strp = strpos($this->id, '.');
-					$item_id = str_replace('im:', '', substr($this->id, 0, $strp));
-
-					$category = substr($this->id, $strp+1);
-					//$manager->item->init($category);
-					$item = $manager->item->getItem($item_id, $manager->item->items[$category]);
-					$raw_url = $manager->config->common->i18nsearch_url;
-
-					$fieldname = !empty($manager->config->common->i18nsearch_segment) ?
-						$manager->config->common->i18nsearch_segment : '';
-					$slug = !empty($item->fields->$fieldname->value) ? $item->fields->$fieldname->value : $item->name;
-					$url  = $manager->getSiteUrl().$raw_url.$slug;
-
-					$fieldname = !empty($manager->config->common->i18nsearch_content) ?
-						$manager->config->common->i18nsearch_content : '';
-					$content = !empty($item->fields->$fieldname->value) ?
-						htmlspecialchars($item->fields->$fieldname->value) : '';
-				}
-				switch ($input)
-				{
-					case 'title': return $item->name;
-					case 'content': return $content;
-					case 'link':  return $url;
-					default: return $item->name;
-				}
-			}
-		}
+	public function __construct() {
+		parent::__construct();
 	}
-
-	if(substr($id,0,3) == 'im:')
-	{
-		return new I18nSearchImResult($id, $language, $creDate, $pubDate, $score);
-	}
-	return null;
-}
-
-function i18nSearchImDisplay($item, $showLanguage, $showDate, $dateFormat, $numWords)
-{
-	if (substr($item->id, 0, 3) == 'im:')
-	{
-		echo '<h3><a href="'.$item->link.'" >'.htmlspecialchars($item->title). '</a></h3>';
-		echo '<p>'.htmlspecialchars($item->content) . '</p>';
-		return true;
-	}
-	return false;
 }
 ?>
