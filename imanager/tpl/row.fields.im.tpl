@@ -20,6 +20,7 @@
             <option value="editor"[[selected-editor]] >[[lang/editor_field_value]]</option>
             <option value="hidden"[[selected-hidden]]>[[lang/hidden_field_value]]</option>
             <option value="imageupload"[[selected-imageupload]]>[[lang/file_field_value]]</option>
+			<option value="fileupload"[[selected-fileupload]]>[[lang/datafile_field_value]]</option>
             <option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
             <option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>
             <option value="chunk"[[selected-chunk]]>[[lang/chunk_field_value]]</option>

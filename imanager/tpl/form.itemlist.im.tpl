@@ -34,7 +34,7 @@
 
 		$(document).ready(function() {
 
-			$('select').on('change', function() {
+			$('#filterarea select').on('change', function() {
 				var num = $('.active').children().attr('id');
 				$.getList(num);
 				return false;

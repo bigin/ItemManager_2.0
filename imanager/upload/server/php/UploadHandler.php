@@ -12,9 +12,7 @@
 
 class UploadHandler
 {
-
     protected $options;
-
     // PHP File Upload error message codes:
     // http://php.net/manual/en/features.file-upload.errors.php
     protected $error_messages = array(
@@ -43,7 +41,6 @@ class UploadHandler
 	protected $titles = array();
 
     function __construct($options = null, $initialize = true, $error_messages = null) {
-
 		/*$handle = fopen("log.txt", "a");
 		fwrite($handle, print_r($_REQUEST, true));
 		fclose($handle);*/
@@ -52,8 +49,14 @@ class UploadHandler
 			empty($_REQUEST['fieldid']) || !is_numeric($_REQUEST['fieldid']))
 			return false;
 
-		$categoryid = intval($_REQUEST['categoryid']);
-		$fieldid = intval($_REQUEST['fieldid']);
+		$categoryid = (int) $_REQUEST['categoryid'];
+		$fieldid = (int) $_REQUEST['fieldid'];
+		ob_start();
+		$imanager = new ItemManager(); //imanager();
+		ob_end_clean();
+		$fieldsMapper = new FieldMapper();//$imanager->getFieldsClass();
+		$fieldsMapper->init($categoryid);
+		$field = $fieldsMapper->getField($fieldid);
 
 		if(empty($_REQUEST['id']) || !is_numeric($_REQUEST['id']))
 		{
@@ -64,19 +67,20 @@ class UploadHandler
 				return false;
 			}
 
-			$timestamp = intval($_REQUEST['timestamp']);
+			$timestamp = (int) $_REQUEST['timestamp'];
 
-			$upload_dir = dirname($this->get_server_var('SCRIPT_FILENAME'))
-				.'/../../../../../data/uploads/imanager/tmp_'.$timestamp.'_'.$categoryid.'/';
+			$upload_dir = dirname(dirname(dirname(dirname(dirname(dirname($this->get_server_var('SCRIPT_FILENAME')))))))
+				.'/data/uploads/imanager/tmp_'.$timestamp.'_'.$categoryid.'/';
 
 			$upload_url = $this->get_full_upload_url().'tmp_'.$timestamp.'_'.$categoryid.'/';
 
 		} else
 		{
-			$upload_dir = dirname($this->get_server_var('SCRIPT_FILENAME'))
-				.'/../../../../../data/uploads/imanager/'.intval($_REQUEST['id']).'.'.$categoryid.'/';
+			// Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/9.18/
+			$upload_dir = dirname(dirname(dirname(dirname(dirname(dirname($this->get_server_var('SCRIPT_FILENAME')))))))
+				.'/data/uploads/imanager/'.(int) $_REQUEST['id'].'.'.$categoryid.'/';
 
-			$upload_url = $this->get_full_upload_url().intval($_REQUEST['id']).'.'.$categoryid.'/';
+			$upload_url = $this->get_full_upload_url().(int)$_REQUEST['id'].'.'.$categoryid.'/';
 
 		}
 
@@ -123,7 +127,8 @@ class UploadHandler
             // Defines which files can be displayed inline when downloaded:
             'inline_file_types' => '/\.(gif|jpe?g|png)$/i',
             // Defines which files (based on their names) are accepted for upload:
-            'accept_file_types' => '/.(gif|jpe?g|png)$/i', //'/.+$/i',
+            'accept_file_types' => '/\.('.(!empty($field->configs->accept_types)
+					? $field->configs->accept_types : 'gif|jpe?g|png').')$/i', //'/.+$/i',
             // The php.ini settings upload_max_filesize and post_max_size
             // take precedence over the following max_file_size setting:
             'max_file_size' => null,
@@ -349,9 +354,9 @@ class UploadHandler
 				}
 			} else
 			{
-				$handle = fopen("log.txt", "a");
+				/*$handle = fopen("log.txt", "a");
 				fwrite($handle, print_r($file->name, true));
-				fclose($handle);
+				fclose($handle);*/
 				/*$file->position = (max($this->sortarray) + 1);
 				$this->sortarray[] = $file->position;
 				$this->inamesarray[] = $file->name;
@@ -387,6 +392,10 @@ class UploadHandler
 
     protected function is_valid_file_object($file_name) {
         $file_path = $this->get_upload_path($file_name);
+		// 1. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/.
+		// 2. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/..
+		// 3. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/stock-vector-woman-face-102496163.jpg
+		// 4. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/thumbnail
         if (is_file($file_path) && $file_name[0] !== '.') {
             return true;
         }

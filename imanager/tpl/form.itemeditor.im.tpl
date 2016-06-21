@@ -1,6 +1,6 @@
 <div class="manager-wrapper">
 	<h3 class="menuglava">[[lang/item-menu-titel]]</h3>
-	<form class="largeform" action="load.php?id=imanager&edit" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+	<form class="largeform" action="load.php?id=imanager&edit=[[action_edit]]&page=[[action_page]]" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 	<input name="iid" type="hidden" value="[[item-id]]" >
 	<input name="page" type="hidden" value="[[back-page]]" >
 	<input name="categoryid" type="hidden" value="[[currentcategory]]">

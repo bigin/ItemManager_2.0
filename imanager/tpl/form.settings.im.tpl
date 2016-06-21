@@ -4,8 +4,6 @@
 		<ul class="tab-links">
 			<li class="active"><a href="#tab1">[[lang/general_settings]]</a></li>
 			<li><a href="#tab2">[[lang/admin_settings]]</a></li>
-			<li><a href="#tab3">Tab #3</a></li>
-			<li><a href="#tab4">Tab #4</a></li>
 		</ul>
 
 		<div class="tab-content">

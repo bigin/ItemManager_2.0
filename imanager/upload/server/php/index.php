@@ -9,9 +9,16 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-
 error_reporting(E_ALL | E_STRICT);
 require_once('../../../../../admin/inc/common.php');
+
+// plugin bootstrap
+include(GSPLUGINPATH.'imanager/lib/inc/_def.php');
+// model
+include(GSPLUGINPATH.'imanager/lib/Model.php');
+// manager
+include(GSPLUGINPATH.'imanager/lib/ItemManager.php');
+
 if(!get_cookie('GS_ADMIN_USERNAME')) {die();}
 require('UploadHandler.php');
 $upload_handler = new UploadHandler();

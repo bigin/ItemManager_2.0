@@ -135,18 +135,13 @@
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
 <script src="../plugins/imanager/upload/js/vendor/jquery.ui.widget.js"></script>
 <!-- The Templates plugin is included to render the upload/download listings -->
-<!-- <script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script> -->
 <script src="../plugins/imanager/upload/js/tmpl.min.js"></script>
 <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<!-- <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script> -->
 <script src="../plugins/imanager/upload/js/load-image.all.min.js"></script>
 <!-- The Canvas to Blob plugin is included for image resizing functionality -->
 <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
-<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
 <script src="../plugins/imanager/upload/js/bootstrap.min.js"></script>
 <!-- blueimp Gallery script -->
-<!-- <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script> -->
 <script src="../plugins/imanager/upload/js/jquery.blueimp-gallery.min.js"></script>
 <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
 <script src="../plugins/imanager/upload/js/jquery.iframe-transport.js"></script>
@@ -165,8 +160,6 @@
 <!-- The File Upload user interface plugin -->
 <script src="../plugins/imanager/upload/js/jquery.fileupload-ui.js"></script>
 <script src="../plugins/imanager/upload/js/jquery.fileupload-jquery-ui.js"></script>
-<!-- The main application script -->
-<!--<script src="../plugins/imanager/upload/js/main.js"></script>-->
 <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
 <!--[if (gte IE 8)&(lt IE 10)]>
 <script src="../plugins/imanager/upload/js/cors/jquery.xdr-transport.js"></script>
@@ -176,14 +169,13 @@ function renumberImages(g) {
 	$('.table tbody tr').each(function(i,tr) {
 		$(tr).find('input').each(function(k,elem) {
 			var name = $(elem).attr('name').replace(/\d+/, (i));
-			//var name = $(elem).attr('name').replace(/[ \d+]/, (i));
 			$(elem).attr('name', name);
 		});
 	});
 }
+
 $(function () {
     'use strict';
-
     // Initialize the jQuery File Upload widget:
     $('#fileupload').fileupload({
         // Uncomment the following to send cross-domain cookies:
@@ -211,18 +203,21 @@ $(function () {
 		url: $('#fileupload').fileupload('option', 'url'),
 		dataType: 'json',
 		context: $('#fileupload')[0]
-	}).always(function () {
+	}).always(function (result) {
+		//console.log(result.responseText);
 		$(this).removeClass('fileupload-processing');
 	}).done(function (result) {
 		$(this).fileupload('option', 'done')
 			.call(this, $.Event('done'), {result: result});
 	});
-	$('.table tbody').sortable({
-		items:"tr.sortable", handle:'td',
-		update:function(e,ui) {
-			renumberImages();
-		}
-	});
-	renumberImages();
+
+$('.table tbody').sortable({
+	items:"tr.sortable", handle:'td',
+	update:function(e,ui) {
+		renumberImages();
+	}
 });
+renumberImages();
+});
+
 </script>
