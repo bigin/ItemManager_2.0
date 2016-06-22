@@ -1191,6 +1191,7 @@ class Admin
 				if(!empty($field->required) && $field->required == 1)
 					$tplrequired = $this->tpl->render($required, array());
 
+
 				if($field->type != 'chunk')
 				{
 					$tplfields .= $this->tpl->render($fieldarea, array(
@@ -1206,7 +1207,7 @@ class Admin
 					);
 				} else
 				{
-					$tplfields .= stripslashes($fieldType->render());
+					$tplfields .= $fieldType->render();
 				}
 			}
 		}
@@ -1219,6 +1220,7 @@ class Admin
 				'checked' => ($active > 0) ? ' checked ' : '',
 				'back-page' => $backpage,
 				'timestamp' => $stamp,
+				'infotext' => '',
 				'currentcategory' => $this->manager->cp->currentCategory(),
 				'itemname' => !empty($curitem->name) ? $curitem->name : '',
 				'custom-fields' => $tplfields,
@@ -1226,7 +1228,7 @@ class Admin
 						date((string) $this->manager->config->backend->timeformat, (int) $curitem->created) : '',
 				'updated' => ($curitem->updated > 0) ?
 						date((string) $this->manager->config->backend->timeformat, (int) $curitem->updated) : ''
-			), true, array(), true
+			), true, array()
 		);
 	}
 

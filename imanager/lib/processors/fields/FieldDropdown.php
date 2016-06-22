@@ -31,7 +31,7 @@ class FieldDropdown implements FieldInterface
 			foreach($this->options as $option)
 			{
 				$tplbuffer .= $this->tpl->render($tploption, array(
-					'option' => !$sanitize ? $this->sanitize($option) : $option,
+					'option' => !empty($sanitize) ? $this->sanitize($option) : $option,
 					'selected' => (!empty($this->value) && ($option == $this->value)) ? 'selected' : ''
 					), true
 				);

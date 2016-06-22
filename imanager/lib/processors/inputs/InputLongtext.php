@@ -14,7 +14,7 @@ class InputLongtext implements InputInterface
 	/* Kontrolliert den Input beim speichern des Wertes  */
 	public function prepareInput($value, $sanitize=false)
 	{
-		$this->values->value = !$sanitize ? $value : $this->sanitize($value);
+		$this->values->value = !empty($sanitize) ? $this->sanitize($value) : $value;
 		// check input required
 		if(!empty($this->field->required) && $this->field->required == 1)
 		{

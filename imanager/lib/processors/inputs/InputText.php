@@ -15,7 +15,7 @@ class InputText implements InputInterface
 	/* */
 	public function prepareInput($value, $sanitize=false)
 	{
-		$this->values->value = !$sanitize ? $value : $this->sanitize($value);
+		$this->values->value = empty($sanitize) ? $value : $this->sanitize($value);
 
 		// check input required
 		if(!empty($this->field->required) && $this->field->required == 1)

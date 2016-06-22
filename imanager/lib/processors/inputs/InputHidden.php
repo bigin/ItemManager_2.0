@@ -14,7 +14,7 @@ class InputHidden implements InputInterface
 	/* Kontrolliert den Input beim speichern des Wertes  */
 	public function prepareInput($value, $sanitize=false)
 	{
-		$this->values->value = !$sanitize ? $value : $this->sanitize($value);
+		$this->values->value = empty($sanitize) ? $value : $this->sanitize($value);
 		return $this->values;
 	}
 

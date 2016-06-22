@@ -13,7 +13,8 @@ class InputEditor implements InputInterface
 
 	public function prepareInput($value, $sanitize=false)
 	{
-		$this->values->value = $value;
+		// Todo: include HTML purifier
+		$this->values->value = empty($sanitize) ? $value : $value;
 		// check input required
 		if(!empty($this->field->required) && $this->field->required == 1)
 		{

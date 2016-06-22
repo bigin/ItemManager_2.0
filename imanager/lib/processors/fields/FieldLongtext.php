@@ -26,7 +26,7 @@ class FieldLongtext implements FieldInterface
 				'name' => $this->name,
 				'class' => $this->class,
 				'id' => $this->id,
-				'value' => isset($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
+				'value' => !empty($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 		return $output;
 	}

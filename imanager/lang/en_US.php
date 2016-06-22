@@ -74,6 +74,7 @@ $i18n = array(
   , 'max_thumb_size' => 'Max Thumbnail size (px)'
   , 'submit_settings' => 'Submit Settings'
   , 'settings' => 'Settings'
+	, 'item-menu-titel' => 'Create / Edit Item'
 	//2.0
 	, 'err_magic_quotes_gpc' => '<div >Error: <strong>magic_quotes_gpc</strong> option<br />Description: magic_quotes_gpc is set to "1" in php.ini. This should be turned off, as it can cause issues with field values. More specifically, unserializing data stored in fileds.</div>'
 	, 'custom_fields'  => 'Fields'

@@ -176,17 +176,26 @@ class TemplateEngine
 	 * Renders template by replacing $tvs and optionally language $lvs by setting the $lflag to true.
 	 * You can use $clean flag to delete the tvs left in template
 	 *
-	 * @param Template object $tpl
+	 * @param $template (object | string)
 	 * @param array $tvs
 	 * @param bool $lflag
 	 * @param array $lvs
 	 * @param bool $clean
 	 * @return Template object
 	 */
-	public function render(Template $template, array $tvs=array(),
-						   $lflag=false, array $lvs=array(), $clean=false)
-	{
-		$tpl = clone $template;
+	public function render($template, array $tvs=array(),
+						   $lflag=false, array $lvs=array(), $clean=false
+	){
+
+		if($template instanceof Template)
+		{
+			$tpl = clone $template;
+		} else {
+			$customTemptate = new Template('custom');
+			$customTemptate->content = $template;
+			$tpl = clone $customTemptate;
+		}
+
 		if($lflag) $tpl->content = $this->renderLvs($tpl->content, $lvs);
 
 		if(!empty($tvs))

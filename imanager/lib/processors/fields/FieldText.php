@@ -28,7 +28,7 @@ class FieldText implements FieldInterface
 				'class' => $this->class,
 				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
 				'id' => $this->id,
-				'value' => !$sanitize ? $this->value : $this->sanitize($this->value)), true, array()
+				'value' => !empty($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 		return $output;
 	}
