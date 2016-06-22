@@ -23,10 +23,10 @@ register_plugin(
 add_action('admin-pre-header', 'ajaxGetLists');
 add_action('nav-tab', 'createNavTab', array($thisfile, $thisfile, 'Manager'));
 //add_action($thisfile.'-sidebar', 'im_render_backend', array('sidebar'));
-/* i18n search stuff */
+/* i18n search stuff, not currently in use
 add_action('search-index', 'i18nSearchImIndex');
 add_filter('search-item', 'i18nSearchImItem');
-add_filter('search-display', 'i18nSearchImDisplay');
+add_filter('search-display', 'i18nSearchImDisplay'); */
 /* include your own CSS for beautiful manager style */
 register_style('jqui', IM_SITE_URL.'plugins/'.$thisfile.'/upload/js/jquery-ui/jquery-ui.css',  GSVERSION, 'screen');
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
