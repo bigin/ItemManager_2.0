@@ -10,6 +10,7 @@
  * http://www.opensource.org/licenses/MIT
  */
 error_reporting(E_ALL | E_STRICT);
+require_once('../../../../../gsconfig.php');
 $gsadmindir = (defined('GSADMIN') ? GSADMIN : 'admin');
 require_once('../../../../../'.$gsadmindir.'/inc/common.php');
 
