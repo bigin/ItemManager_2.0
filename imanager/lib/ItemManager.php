@@ -100,6 +100,7 @@ class ItemManager extends Model
 			self::$categoryMapper = $this->getCategoryMapper();
 			$tarCat = self::$categoryMapper->getCategory($cat);
 			self::$itemMapper->init((int) $tarCat->id);
+			//if(empty($stat)) return self::$itemMapper->items;
 			return self::$itemMapper->getItems($stat, $offset, $length, $items);
 		}
 	}

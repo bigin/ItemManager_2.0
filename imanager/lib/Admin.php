@@ -823,12 +823,6 @@ class Admin
 		$curcatid = $this->manager->cp->currentCategory();
 		$curcat = $cat[$curcatid];
 
-		// Initialize items of current category
-
-		$ic = $this->manager->getItemMapper();
-		$ic->init($curcatid);
-
-		$count = $ic->countItems();
 
 		$filterby = !empty($configs->backend->itemorderby) ? $configs->backend->itemorderby : 'position';
 		$filteroption = !empty($configs->backend->itemorder) ? $configs->backend->itemorder : 'desc';
@@ -837,8 +831,18 @@ class Admin
 
 		// start item
 		$start = (($page -1) * $maxitemperpage +1);
+
+		// Initialize items of current category
+		$ic = $this->manager->getItemMapper();
+		$ic->init($curcatid);
+		//$ic->quickInit($curcatid, array('id', 'name', 'position', 'created', 'updated'), ($start-1), (($start-1) * $maxitemperpage));
+
+		$count = $ic->countItems();
+		//$count = $ic->total;
+
 		// order items
 		$ic->filterItems($filterby, $filteroption, $start, $maxitemperpage);
+		//$ic->filterItems($filterby, $filteroption);
 
 		// define template buffers
 		$catselector = '';
@@ -928,8 +932,8 @@ class Admin
 					'item-id' => $itemkey,
 					'item-position' => !empty($itemvalue->position) ? $itemvalue->position : $itemkey,
 					'item-name' => !empty($itemvalue->name) ? $itemvalue->name : '',
-					'item-created' =>  !empty($itemvalue->created)?date((string) $configs->backend->timeformat, (int) $itemvalue->created):'',
-					'item-updated' =>  !empty($itemvalue->updated)?date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
+					'item-created' =>  !empty($itemvalue->created) ? date((string) $configs->backend->timeformat, (int) $itemvalue->created):'',
+					'item-updated' =>  !empty($itemvalue->updated) ? date((string) $configs->backend->timeformat, (int) $itemvalue->updated):'',
 					'item-checkuncheck' => ($itemvalue->active == 1) ? $active->content : $inactive->content
 				), true);
 			}

@@ -23,31 +23,22 @@ class FieldMapper
 
 		if(!$xml) return $this->fields;
 
-		$fieldid = 0;
+		$i = 0;
 		foreach($xml->field as $field)
 		{
 			$f = new Field($id);
 			$f->options = array();
-			$fieldname = '';
-
+			$f->confirmed = false;
 			foreach($field as $key => $val)
 			{
-				if(is_numeric($val))
-					$f->$key = (int) $val;
-				elseif($key == 'option')
-					$f->options[] = (string) $val;
-				elseif($key == 'configs')
-					$f->configs = $val;
-				else
-					$f->$key = (string) $val;
-
-				$f->confirmed = false;
-
-				if($key == 'name') $fieldname = (string) $val;
+				if(is_numeric($val)) $f->$key = (int) $val;
+				elseif($key == 'option') $f->options[] = (string) $val;
+				elseif($key == 'configs') $f->configs = $val;
+				else $f->$key = (string) $val;
 			}
-			$fieldid++;
+			$i++;
 
-			$this->fields[$fieldname] = $f;
+			$this->fields[$f->name] = $f;
 		}
 	}
 
@@ -154,8 +145,6 @@ class FieldMapper
 
 	/**
 	 * Checks fields file exist on the basis of category id and create them if they don't
-	 *
-	 *
 	 */
 	public function createFields($id)
 	{

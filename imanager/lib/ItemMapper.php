@@ -20,15 +20,18 @@ class ItemMapper
 	public function __construct(){$this->items = array();}
 
 
-	public function quickInit($catid, $fields=array(), $bulk=false, $pat='*')
+	public function quickInit($catid, $fields=array(), $start=0, $bulk=false, $pat='*')
 	{
 		// nitialize the fields class
 		$fc = new FieldMapper();
 		$fc->init($catid);
 		$this->items = array();
 		$i=0;
-		foreach(glob(IM_ITEM_DIR.$pat.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT) as $file)
+		$fl = glob(IM_ITEM_DIR.$pat.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT);
+		$this->total = count($fl);
+		foreach($fl as $file)
 		{
+			if($i < $start) {$i++; continue;}
 
 			$base = basename($file, IM_ITEM_FILE_SUFFIX);
 			$strp = strpos($base, '.');
@@ -891,7 +894,7 @@ class ItemMapper
 		return ((count(glob(IM_ITEM_DIR.'*.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT))) > $max_files ? false : true);
 	}
 
-	public function pagination(array $params, $argtpls = array())
+	public function pagination(array $params = array(), $argtpls = array())
 	{
 
 		$tpl = imanager()->getTemplateEngine();
@@ -914,13 +917,13 @@ class ItemMapper
 		$page = (!empty($params['page']) ? $params['page'] : (isset($_GET['page']) ? (int) $_GET['page'] : 1));
 		$params['items'] = !empty($params['count']) ? $params['count'] : $this->total;
 		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : 'page=';
-		$start = !empty($params['start']) ? $params['start'] : 1;
+		$start = !empty($params['start']) ? $params['start'] : 1; // todo: remove it
 
 		$maxitemperpage = ((int) $config->backend->maxitemperpage > 0) ?
 			$config->backend->maxitemperpage : 20;
 		$limit = !empty($params['limit']) ? $params['limit'] : $config->backend->maxitemperpage;
 		$adjacents = !empty($params['adjacents']) ? $params['adjacents'] : 3;
-		$lastpage = !empty($params['lastpage']) ? $params['lastpage'] : ceil($params['items'] / $maxitemperpage);
+		$lastpage = !empty($params['lastpage']) ? $params['lastpage'] : ceil($params['items'] / $limit);
 
 		$next = ($page+1);
 		$prev = ($page-1);

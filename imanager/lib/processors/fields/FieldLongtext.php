@@ -30,7 +30,7 @@ class FieldLongtext implements FieldInterface
 		);
 		return $output;
 	}
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
+	protected function sanitize($value){return imanager('sanitizer')->textarea($value);}
 
 	public function getConfigFieldtype(){}
 }

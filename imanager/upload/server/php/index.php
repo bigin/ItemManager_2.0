@@ -10,7 +10,8 @@
  * http://www.opensource.org/licenses/MIT
  */
 error_reporting(E_ALL | E_STRICT);
-require_once('../../../../../admin/inc/common.php');
+$gsadmindir = (defined('GSADMIN') ? GSADMIN : 'admin');
+require_once('../../../../../'.$gsadmindir.'/inc/common.php');
 
 // plugin bootstrap
 include(GSPLUGINPATH.'imanager/lib/inc/_def.php');

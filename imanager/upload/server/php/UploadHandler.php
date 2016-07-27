@@ -192,8 +192,10 @@ class UploadHandler
                     // Uncomment the following to force the max
                     // dimensions and e.g. create square thumbnails:
                     //'crop' => true,
-                    'max_width' => 80,
-                    'max_height' => 80
+                    'max_width' => (!empty($imanager->config->backend->thumbwidth) ?
+							$imanager->config->backend->thumbwidth : 100),
+                    'max_height' => (!empty($imanager->config->backend->thumbheight) ?
+							$imanager->config->backend->thumbheight : 100)
                 )
             ),
             'print_response' => true

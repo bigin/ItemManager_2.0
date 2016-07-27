@@ -2,8 +2,7 @@
 
 class Model
 {
-	protected static $db;
-	// todo: I'm not sure we're need it in model?
+	// todo: I'm not sure we need it in model?
 	protected static $categoryMapper = null;
 	protected static $itemMapper = null;
 	protected static $templateEngine = null;
@@ -25,7 +24,7 @@ class Model
 		self::$installed = false;
 		// initialize settup class
 		$this->config = new Setup();
-		// deprecated check if user inside admin panel (not really for security reasons, just to avoid the backend loading)
+		// Deprecated check if the user inside admin panel (not really for security reasons, just to avoid the backend loading)
 		$this->is_admin_panel = false;
 		// start SETUP Procedure
 		if(!file_exists(ITEMDATA))
