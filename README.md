@@ -31,7 +31,6 @@ plugins:
 - Substitutions for small database replication
 - etc
 
-huge amount of data
 
 **Usage**
 
@@ -70,28 +69,28 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 **IM 2.3.3**
 
-Slightly API modifications have been made in order to ease the use even for non-programming developers.
+Slightly API modifications have been made in order to ease the use even for non-programming developers.  
 More infos: `http://get-simple.info/forums/showthread.php?tid=7293`
 
 **IM 2.3.0**
 
 BUGFIX: Small cache bug fixed
-NEW: Expire cache method, can be used to automatically hooked to every `$item->save()` call
-NEW: Simple method to count the number of items, can be used to limiting files on the disk
+NEW: Expire cache method, can be used to automatically hooked to every `$item->save()` call  
+NEW: Simple method to count the number of items, can be used to limiting files on the disk  
 
-**IM 2.2.0**
+**IM 2.2.0**  
 
-BUGFIX: Category order in admin
-NEW: MarkupSectionCache
-NEW: Category Joins
+BUGFIX: Category order in admin  
+NEW: MarkupSectionCache  
+NEW: Category Joins  
 
 **IM 2.1.0**
 
-BUGFIX: upload file order
-BUGFIX: category listing markup
-NEW: Field title for uploaded images
-NEW: Field money
-NEW: Field datepicker
+BUGFIX: upload file order  
+BUGFIX: category listing markup  
+NEW: Field title for uploaded images  
+NEW: Field money  
+NEW: Field datepicker  
 
 For more information see: `http://ehret-studio.com/lab/2015/mai/itemmanager-2.0`
 
