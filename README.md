@@ -45,13 +45,11 @@ $imanager = imanager();
 **Install Instructions:**  
 
 Installing ItemManager 2.* from the ZIP file:  
-
 You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
 contents to your plugins folder. The required data directories and configurations should be created automatically
 when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
 
 **Upgrading ItemManager 2.* from the ZIP file:**  
-
 ItemManager upgrades are easy because everything important to your site is contained under the `/data/imanager/` and
 `/data/uploads/imanager/` directory. You should delete everything else in `/plugins/` directory that belongs to the
 ItemManager and leave the both directories above as it is.
@@ -62,10 +60,10 @@ Download the latest version of ItemManager GitHub
 Extract the ZIP file somewhere temporary.  
 Delete the following file from your `/plugins/` directory:  
 
-Delete: `/plugins/imanager` folder
-Delete: `/plugins/imanager.php` file
-Upload the new version imanager folder to `/plugins/` directory
-Upload the new version `imanager.php` to `/plugins/` directory
+Delete: `/plugins/imanager` folder  
+Delete: `/plugins/imanager.php` file  
+Upload the new version imanager folder to `/plugins/` directory  
+Upload the new version `imanager.php` to `/plugins/` directory  
 
 > NOTE: Backup any files you replace or delete!
 
