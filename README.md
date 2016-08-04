@@ -42,26 +42,30 @@ current ItemManager class instance:
 $imanager = imanager();
 ```
 
-**Install Instructions:**
-Installing ItemManager 2.* from the ZIP file:
+**Install Instructions:**  
+
+Installing ItemManager 2.* from the ZIP file:  
+
 You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
 contents to your plugins folder. The required data directories and configurations should be created automatically
 when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
 
-**Upgrading ItemManager 2.* from the ZIP file:**
+**Upgrading ItemManager 2.* from the ZIP file:**  
+
 ItemManager upgrades are easy because everything important to your site is contained under the `/data/imanager/` and
 `/data/uploads/imanager/` directory. You should delete everything else in `/plugins/` directory that belongs to the
 ItemManager and leave the both directories above as it is.
 
-**Upgrading ItemManager 2.* to 2.3.3:**
-Download the latest version of ItemManager GitHub
-Extract the ZIP file somewhere temporary.
-Delete the following file from your `/plugins/` directory:
+**Upgrading ItemManager 2.* to 2.3.3:**  
 
-Delete: /plugins/imanager folder
-Delete: /plugins/imanager.php  file
-Upload the new version imanager folder to /plugins/ directory
-Upload the new version imanager.php to /plugins/ directory
+Download the latest version of ItemManager GitHub  
+Extract the ZIP file somewhere temporary.  
+Delete the following file from your `/plugins/` directory:  
+
+Delete: `/plugins/imanager` folder
+Delete: `/plugins/imanager.php` file
+Upload the new version imanager folder to `/plugins/` directory
+Upload the new version `imanager.php` to `/plugins/` directory
 
 > NOTE: Backup any files you replace or delete!
 
@@ -69,7 +73,7 @@ Upload the new version imanager.php to /plugins/ directory
 **IM 2.3.3**
 
 Slightly API modifications have been made in order to ease the use even for non-programming developers.
-More infos: http://get-simple.info/forums/showthread.php?tid=7293
+More infos: `http://get-simple.info/forums/showthread.php?tid=7293`
 
 **IM 2.3.0**
 
@@ -91,7 +95,6 @@ NEW: Field title for uploaded images
 NEW: Field money
 NEW: Field datepicker
 
-For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
-
+For more information see: `http://ehret-studio.com/lab/2015/mai/itemmanager-2.0`
 
 
