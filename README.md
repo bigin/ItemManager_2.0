@@ -1,59 +1,97 @@
 ###ItemManager 2###
 
-ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely customisable PHP applications bundled with GetSimple-CMS.
+ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely customisable
+PHP applications bundled with GetSimple-CMS.
 
-ItemManager offers you a XML data management in just as straightforward a manner as if you were working with a real database. ItemManager’s powerful API is very easy and enjoyable.
+ItemManager offers you a XML data management in just as straightforward a manner as if you were working with a real
+database. ItemManager’s powerful API is very easy and enjoyable.
 
-Design any type of product lists (items), search and filter through the items lists by using flexible API functions. You can create a random set of categories and fields, each category is assigned any number of fields and each item is assigned one category that represent the underlying data structure, which allows a countless design combinations of the data.
+Design any type of product lists (items), search and filter through the items lists by using flexible API functions.
+You can create a random set of categories and fields, each category is assigned any number of fields and each item is
+assigned one category that represent the underlying data structure, which allows a countless design combinations of the
+data.
 
-**Version 2.3.3**
 
-Slightly API modifications have been made in order to ease the use even for non-programming developers.
 
-More infos: http://get-simple.info/forums/showthread.php?tid=7293
+**What can be achieved with ItemManager?**
 
-**Version 2.3**
+The use of ItemManager allows a extrem variable field of application, ItemManager can be used to create tools and
+plugins:
 
-BUGFIX: Small cache bug fixed
+- Product -lists, -catalogs
+- eCommerce plugins
+- Image galleries
+- Blog
+- User management tools
+- Varios data storage
+- Basic data structures for applications and plugins
+- Settings and data storages for other plugins
+- Depiction of complex Informations in Tables
+- Masks, Search-Forms
+- Substitutions for small database replication
+- etc
 
-NEW: Expire cache method, can be used to automatically hooked to every $item->save() call
-NEW: Simple method to count the number of items, can be used to limiting files on the disk
+huge amount of data
 
-**Version 2.2**
+**Usage**
 
-BUGFIX: Category order in admin
+Here’s a simple ItemManager call, that you can use anywhere in your template files or in your own plugins to get a
+current ItemManager class instance:
 
-NEW: MarkupSectionCache
-NEW: Category Joins
-
-**Version 2.1**
-
-BUGFIX: upload file order
-BUGFIX: category listing markup
-
-NEW: Field title for uploaded images
-NEW: Field money
-NEW: Field datepicker
+```php
+$imanager = imanager();
+```
 
 **Install Instructions:**
-
 Installing ItemManager 2.* from the ZIP file:
-You can download the current version of the ItemManager here or GitHub. Unzip the downloaded file and copy its contents to your plugins folder. The required data directories and configurations should be created automatically when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
+You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
+contents to your plugins folder. The required data directories and configurations should be created automatically
+when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
 
 **Upgrading ItemManager 2.* from the ZIP file:**
-ItemManager upgrades are easy because everything important to your site is contained under the /data/imanager/ and /data/uploads/imanager/ directory. You should delete everything else in /plugins/ directory that belongs to the ItemManager and leave the both directories above as it is.
+ItemManager upgrades are easy because everything important to your site is contained under the `/data/imanager/` and
+`/data/uploads/imanager/` directory. You should delete everything else in `/plugins/` directory that belongs to the
+ItemManager and leave the both directories above as it is.
 
 **Upgrading ItemManager 2.* to 2.3.3:**
-Download the latest version of ItemManager here or GitHub
+Download the latest version of ItemManager GitHub
 Extract the ZIP file somewhere temporary.
-Delete the following file from your /plugins/ directory:
+Delete the following file from your `/plugins/` directory:
 
 Delete: /plugins/imanager folder
 Delete: /plugins/imanager.php  file
 Upload the new version imanager folder to /plugins/ directory
 Upload the new version imanager.php to /plugins/ directory
 
-> NOTE: Backup any files you replace or delete! 
+> NOTE: Backup any files you replace or delete!
 
-For more information see: ehret-studio.com/lab/2015/mai/itemmanager-2.0
+
+**IM 2.3.3**
+
+Slightly API modifications have been made in order to ease the use even for non-programming developers.
+More infos: http://get-simple.info/forums/showthread.php?tid=7293
+
+**IM 2.3.0**
+
+BUGFIX: Small cache bug fixed
+NEW: Expire cache method, can be used to automatically hooked to every `$item->save()` call
+NEW: Simple method to count the number of items, can be used to limiting files on the disk
+
+**IM 2.2.0**
+
+BUGFIX: Category order in admin
+NEW: MarkupSectionCache
+NEW: Category Joins
+
+**IM 2.1.0**
+
+BUGFIX: upload file order
+BUGFIX: category listing markup
+NEW: Field title for uploaded images
+NEW: Field money
+NEW: Field datepicker
+
+For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
+
+
 
