@@ -66,6 +66,7 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 > NOTE: Backup any files you replace or delete!
 
+##Changelog
 
 **IM 2.3.3**
 
@@ -92,6 +93,6 @@ NEW: Field title for uploaded images
 NEW: Field money  
 NEW: Field datepicker  
 
-For more information see: `http://ehret-studio.com/lab/2015/mai/itemmanager-2.0`
+For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
 
 
