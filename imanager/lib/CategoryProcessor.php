@@ -52,8 +52,8 @@ class CategoryProcessor
 	public function isCategoryValid($cq='')
 	{
 		if(isset($cq) && !empty($cq))
-			if($this->category->categories[(int)$cq]->get('id'))
-				return true;
+			if(!empty($this->category->categories[(int)$cq])) return true;
+			else return false;
 
 		if(!isset($_SESSION['cat']) || empty($_SESSION['cat']))
 			return false;

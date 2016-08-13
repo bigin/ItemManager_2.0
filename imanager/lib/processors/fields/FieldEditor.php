@@ -25,7 +25,8 @@ class FieldEditor implements FieldInterface
 
 		$edprop = array();
 		$edprop = $this->editorproperties();
-
+		//echo json_encode($this->id); exit();
+		// $this->customize_ckeditor($this->name)
 		$output = $this->tpl->render($field, array(
 				'name' => $this->name,
 				'class' => $this->class,
@@ -37,7 +38,7 @@ class FieldEditor implements FieldInterface
 				'siteurl' => IM_SITE_URL,
 				'toolbar' => $edprop['toolbar'],
 				'edoptions' => $edprop['edoptions'],
-				'setup-editor' => $this->customize_ckeditor('editor_1')
+				'setup-editor' => ''
 			), true, array()
 		);
 		return $output;
@@ -46,7 +47,7 @@ class FieldEditor implements FieldInterface
 
 	function customize_ckeditor($editorvar)
 	{
-		$res = "
+		return "
 		// modify existing Link dialog
 		CKEDITOR.on( 'dialogDefinition', function( ev ) {
 			if ((ev.editor != " . $editorvar . ") || (ev.data.name != 'link')) return;
@@ -65,7 +66,7 @@ class FieldEditor implements FieldInterface
 			// Overrides linkType definition.
 			var infoTab = definition.getContents('info');
 			var content = getById(infoTab.elements, 'linkType');
-
+			// items: " . $this->list_pages_json() . ",
 			content.items.unshift(['Link to local page', 'localPage']);
 			content['default'] = 'localPage';
 			infoTab.elements.push({
@@ -76,7 +77,6 @@ class FieldEditor implements FieldInterface
 					id: 'localPage_path',
 					label: 'Select page:',
 					required: true,
-					items: " . $this->list_pages_json() . ",
 					setup: function(data) {
 						if ( data.localPage )
 							this.setValue( data.localPage );
@@ -131,7 +131,7 @@ class FieldEditor implements FieldInterface
 
 	private function list_pages_json()
 	{
-		if (function_exists('find_i18n_url') && class_exists('I18nNavigationFrontend')) {
+		if(function_exists('find_i18n_url') && class_exists('I18nNavigationFrontend')) {
 			$slug = isset($_GET['id']) ? $_GET['id'] : (isset($_GET['newid']) ? $_GET['newid'] : '');
 			$pos = strpos($slug, '_');
 			$lang = $pos !== false ? substr($slug, $pos+1) : null;

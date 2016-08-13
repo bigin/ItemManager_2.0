@@ -1,5 +1,4 @@
 <?php
-
 if(!isset($_SESSION)){session_start();}
 if(!isset($_SESSION['cat']) || is_null($_SESSION['cat'])) $_SESSION['cat'] = null;
 
@@ -11,7 +10,7 @@ include($thisfile.'/lib/inc/_def.php');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3.3',
+	'2.3.4',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',

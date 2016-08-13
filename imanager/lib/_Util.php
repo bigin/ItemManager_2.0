@@ -1,5 +1,5 @@
 <?php
-namespace Imanager;
+//namespace Imanager;
 
 class Util
 {
@@ -38,5 +38,24 @@ class Util
 			}
 		}
 		return ;
+	}
+
+	public static function dataLog($data, $file = '')
+	{
+		$filename = empty($file) ? GSDATAOTHERPATH.'logs/imlog_'.date('Ym').'.txt' : GSDATAOTHERPATH.'logs/'.$file.'.txt';
+		if (!$handle = fopen($filename, 'a+'))
+		{
+			return;
+		}
+		$datum = date('d.m.Y - H:i:s', time());
+		if (!fwrite($handle, '[ '.$datum.' ]'. ' ' . print_r($data, true) . "\n\n")) {
+			return;
+		}
+		fclose($handle);
+	}
+
+	public static function preformat($data)
+	{
+		echo '<pre>'.print_r($data, true).'</pre>';
 	}
 }

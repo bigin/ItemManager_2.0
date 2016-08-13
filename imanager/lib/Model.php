@@ -86,9 +86,11 @@ class Model
 
 	public function __call($method, $args)
 	{
-		if($this->actionsProcessor === null)
-			$this->actionsProcessor = new ActionsProcessor();
-		return $this->actionsProcessor->{$method}($args);
+		//if($this->actionsProcessor === null)
+			//$this->actionsProcessor = new ActionsProcessor();
+		//return $this->actionsProcessor->{$method}($args);
+
+		//return $this->{$method}($args);
 	}
 
 	public function ProcessCategory()
@@ -878,7 +880,7 @@ class Model
 	}
 
 
-	protected function renameTmpDir($item)
+	public function renameTmpDir($item)
 	{
 		$err = false;
 		foreach($item->fields as $fieldname => $fieldvalue)
@@ -910,7 +912,7 @@ class Model
 	}
 
 
-	private function cleanUpTempContainers($datatyp)
+	public function cleanUpTempContainers($datatyp)
 	{
 		if($datatyp == 'imageupload' || $datatyp == 'fileupload')
 		{

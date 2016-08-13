@@ -1,7 +1,7 @@
 <textarea id="[[id]]" class="[[class]]" name="[[name]]" >[[value]]</textarea>
 <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 <script type="text/javascript">			
-	var editor = CKEDITOR.replace( '[[name]]', {
+	var [[name]] = CKEDITOR.replace( '[[name]]', {
 		skin : 'getsimple',
 		forcePasteAsPlainText : true,
 		language : '[[edlanguage]]',
@@ -11,9 +11,9 @@
 		uiColor : '#FFFFFF',
 		height: '[[edheight]]',
 		baseHref : '[[siteurl]]',
-		toolbar : 
+		toolbar :
 		[ [[toolbar]] ],
-		[[edoptions]]					
+		[[edoptions]]
 		tabSpaces:10,
 		filebrowserBrowseUrl : 'filebrowser.php?type=all',
 		filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
