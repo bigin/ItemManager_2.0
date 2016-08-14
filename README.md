@@ -68,6 +68,12 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 ##Changelog
 
+**Version 2.3.4** 
+
+Offers new features, that simplify the usage the plugin in combination with GetSimple native pages
+
+See IM Extra Pages plugin: [http://get-simple.info/extend/plugin/im-extra-fields/1053/](http://get-simple.info/extend/plugin/im-extra-fields/1053/)
+
 **IM 2.3.3**
 
 Slightly API modifications have been made in order to ease the use even for non-programming developers.  
