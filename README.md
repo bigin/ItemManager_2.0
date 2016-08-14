@@ -68,30 +68,30 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 ##Changelog
 
-**Version 2.3.4** 
+**2.3.4** 
 
 Offers new features, that simplify the usage the plugin in combination with GetSimple native pages
 
 See IM Extra Pages plugin: [http://get-simple.info/extend/plugin/im-extra-fields/1053/](http://get-simple.info/extend/plugin/im-extra-fields/1053/)
 
-**IM 2.3.3**
+**2.3.3**
 
 Slightly API modifications have been made in order to ease the use even for non-programming developers.  
 More infos: `http://get-simple.info/forums/showthread.php?tid=7293`
 
-**IM 2.3.0**
+**2.3.0**
 
 BUGFIX: Small cache bug fixed
 NEW: Expire cache method, can be used to automatically hooked to every `$item->save()` call  
 NEW: Simple method to count the number of items, can be used to limiting files on the disk  
 
-**IM 2.2.0**  
+**2.2.0**  
 
 BUGFIX: Category order in admin  
 NEW: MarkupSectionCache  
 NEW: Category Joins  
 
-**IM 2.1.0**
+**2.1.0**
 
 BUGFIX: upload file order  
 BUGFIX: category listing markup  
