@@ -19,7 +19,15 @@ class ItemMapper
 
 	public function __construct(){$this->items = array();}
 
-
+	/**
+	 * Just another forced init method
+	 *
+	 * @param $catid        - Category ID to be searched through
+	 * @param array $fields - Define custom fields that item objects should load (default: all)
+	 * @param int $start    - Define start index for the loop
+	 * @param bool $bulk    - Define max number of items in selected array
+	 * @param string $pat   - Define a pattern (optional)
+	 */
 	public function quickInit($catid, $fields=array(), $start=0, $bulk=false, $pat='*')
 	{
 		// nitialize the fields class
@@ -106,7 +114,13 @@ class ItemMapper
 		}
 	}
 
-
+	/**
+	 * A limited init method is very useful when you wish to select only one or a few items
+	 *
+	 * @param integer $catid  - Category ID to be searched through
+	 * @param integer $from   - Define start index for the loop
+	 * @param integer $too    - Define max number of items in selected array
+	 */
 	public function limitedInit($catid, $from, $too=null)
 	{
 		// nitialize the fields class
@@ -274,6 +288,7 @@ class ItemMapper
 		$this->total = count($this->items);
 	}
 
+
 	/**
 	 * Initializes all items and made them available in ImItem::$items array
 	 */
@@ -434,15 +449,10 @@ class ItemMapper
 		$locitems = !empty($items) ? $items : $this->items;
 
 		// nothing to select
-		if(empty($items))
-		{
-			if(!$this->countItems() || $this->countItems() <= 0)
-				return false;
-		}
+		if(empty($items)) if(!$this->countItems() || $this->countItems() <= 0) return false;
 
 		// just id was entered
-		if(is_numeric($stat))
-			return !empty($locitems[(int) $stat]) ? $locitems[(int) $stat] : false;
+		if(is_numeric($stat)) return !empty($locitems[(int) $stat]) ? $locitems[(int) $stat] : false;
 
 
 		// all parameter have to match the data
@@ -519,7 +529,7 @@ class ItemMapper
 				}
 			}
 
-			// run this if $stat contains just one command
+		// run this if $stat contains just one command
 		} else
 		{
 			$arr = $this->separateItems($locitems, $stat);
@@ -532,7 +542,6 @@ class ItemMapper
 			}
 
 			return $arr;
-
 		}
 		return false;
 	}
@@ -540,7 +549,7 @@ class ItemMapper
 
 	/**
 	 * Returns the array of objects of the type Item, sorted by any node your choice
-	 * NOTE: However if no $items argument is passed to the function, the fields
+	 * NOTE: If no $items argument is passed to the function, the fields
 	 * must already be in the buffer: ImItem::$items. Call the ImItem::init($category_id)
 	 * method before to assign the fields to the buffer.
 	 *
@@ -619,7 +628,7 @@ class ItemMapper
 
 
 	/**
-	 * Deletes an Item
+	 * Deletes an item
 	 *
 	 * @param Item $item
 	 * @param reinitialize flag $re
@@ -702,7 +711,6 @@ class ItemMapper
 	protected function separateItems(array $items, $stat)
 	{
 		$res = array();
-
 		$pattern = array(0 => '>=', 1 => '<=', 2 => '!=', 3 => '>', 4 => '<', 5 => '=');
 
 		foreach($pattern as $pkey => $pval)
