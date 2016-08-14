@@ -141,10 +141,7 @@ class Setup
 		}
 
 		// Create backup directory
-		if(!file_exists(IM_BACKUP_DIR) && !$this->createFolderProcedure(
-				IM_BACKUP_DIR, 'config.xml',
-				'<?xml version="1.0" encoding="UTF-8"?>
-				<backups><categories></categories><fields></fields><items></items></backups>'))
+		if(!file_exists(IM_BACKUP_DIR) && !$this->createFolderProcedure(IM_BACKUP_DIR))
 		{
 			MsgReporter::setClause(
 				'items_path_exists',
