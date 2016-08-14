@@ -58,6 +58,7 @@
 }
 
 .manager-wrapper input[type="submit"] {
+	margin-top: 20px;
 	border-color: #c0c0c0 #b8b8b8 #b8b8b8 #c0c0c0 !important;
 }
 
@@ -555,7 +556,7 @@ form a.deletefield:hover {
 }
 
 .fieldarea {
-	margin-bottom: 20px;
+	margin-bottom: 2px;
 	border: solid 1px;
 	border-color: #dcdcdc !important;
 	background-color: #f7f7f7;

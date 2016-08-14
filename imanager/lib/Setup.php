@@ -274,12 +274,7 @@ class Setup
 		$min_itembackup_days = !isset($input['min_itembackup_days']) ? 10 : intval($input['min_itembackup_days']);
 		// Item Enabled
 		$itemactive = !isset($input['itemactive']) ? 0 : intval($input['itemactive']);
-
 		$unique_itemname = !isset($input['uniqueitemname']) ? 0 : intval($input['uniqueitemname']);
-
-
-
-
 
 		// store values
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8" ?><settings></settings>');
@@ -367,97 +362,58 @@ class Setup
 
 	public function createBackup($path, $file, $suffix)
 	{
-		if(!file_exists($path.$file.$suffix))
-			return false;
-
+		if(!file_exists($path.$file.$suffix)) return false;
 		$stamp = time();
+		if(!copy($path.$file.$suffix, IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix)) return false;
+		$this->deleteOutdatedBackups($suffix);
+		return true;
+	}
 
-		$type = '';
-		// name token
-		$token = '';
 
-		$xml = false;
+
+	public function deleteOutdatedBackups($suffix)
+	{
 		switch ($suffix)
 		{
 			case '.im.fields.xml':
-				$type = 'fields';
 				$token = 'field';
-				$xml = simplexml_load_file($this->backend->fieldbackupdir.'config.xml');
 				break;
 			case '.im.cat.xml':
-				$type = 'categories';
 				$token = 'cat';
-				$xml = simplexml_load_file($this->backend->catbackupdir.'config.xml');
 				break;
 			case '.im.item.xml':
-				$type = 'items';
 				$token = 'item';
-				$xml = simplexml_load_file($this->backend->itembackupdir.'config.xml');
 				break;
 			default:
 				return false;
 		}
-
-		if(!$xml) return false;
-
-		if(!copy($path.$file.$suffix, IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix))
-			return false;
-
-		if(!$xml->$type)
-		{
-			$backup = $xml->{$type}->addChild('backup');
-			$backup->file = IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix;
-			$backup->origfile = $file.$suffix;
-			$backup->time = $stamp;
-		} else
-		{
-			$backup = $xml->{$type}->addChild('backup');
-			$backup->file = IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix;
-			$backup->origfile = $file.$suffix;
-			$backup->time = $stamp;
+		$min_days = (int)$this->backend->{'min_'.$token.'backup_days'};
+		foreach(glob(IM_BACKUP_DIR.'backup_*_*'.$suffix) as $file) {
+			if($this->isCacheFileExpired($file, $min_days)) { $this->removeFilename($file);}
 		}
-
-		if(!count($xml->{$type}->backup)) return false;
-
-		/* loop over the config data to determine files that
-		have been deleted and outdated files to remove them */
-		$nodes = array();
-		$i = 0;
-		foreach($xml->$type->backup as $val)
-		{
-			$min_days = intval($this->backend->{'min_'.$token.'backup_days'});
-			$storagetime =  time() - (60 * 60 * 24 * $min_days);
-
-			if(((int) $val->time < $storagetime) && $storagetime > 0)
-				if(file_exists((string) $val->file))
-					unlink((string) $val->file);
-
-			// exclude itself, because the file is not created yet
-			if((IM_BACKUP_DIR.'backup_'.$stamp.'_'.$file.$suffix == (string) $val->file) ||
-				file_exists((string) $val->file))
-			{
-				$nodes[$i]['file'] = (string) $val->file;
-				$nodes[$i]['origfile'] = (string) $val->origfile;
-				$nodes[$i]['time'] = (int) $val->time;
-			}
-			$i++;
-		}
-
-		if(count($nodes) > 0)
-		{
-			unset($xml->$type->backup);
-			foreach($nodes as $node)
-			{
-				$backup = $xml->{$type}->addChild('backup');
-				foreach($node as $key => $value)
-					$backup->$key = $value;
-			}
-		}
-		// Todo: backup of the image directory
-
-		return 	$xml->asXml(IM_BACKUP_DIR.'config.xml');
 	}
 
+	/**
+	 * Is the given backup filename expired?
+	 *
+	 * @param string $filename
+	 * @return bool
+	 *
+	 */
+	protected function isCacheFileExpired($filename, $min_days)
+	{
+		if(!$mtime = @filemtime($filename)) return false;
+		if(($mtime + (60 * 60 * 24 * $min_days)) < time()) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Removes just the given file
+	 */
+	protected function removeFilename($filename){@unlink($filename);}
 
 }
 ?>
