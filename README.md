@@ -95,10 +95,10 @@ $category = $imanager->getCategory('position=2');
 // ...
 ```
 
-More infos about ItemManager's items: [Working with Categories](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-categories/)
+More infos about ItemManager's categories: [Working with Categories](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-categories/)
 
 
-For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
+For more information how to use ItemManager see also: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
 
 
 ##ItemManager extensions and plugins:
