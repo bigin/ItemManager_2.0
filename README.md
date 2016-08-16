@@ -67,7 +67,11 @@ $imanager = imanager();
 ##ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
-[Gallery example](http://ehret-studio.com/gallery/)
+([Gallery example](http://ehret-studio.com/gallery/))
+- [IM Simple Forun theme](http://get-simple.info/extend/theme/simpleforum/1016/)
+([Example](http://im.ehret-studio.com/forum/))
+- [Frontainer User Management plugin](http://get-simple.info/extend/plugin/frontainer/1015/)
+([Frontend Register / Login / Logout / Password recovery](http://im.ehret-studio.com/login/))
 
 ##Changelog:
 
