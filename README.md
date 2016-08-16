@@ -1,4 +1,4 @@
-###ItemManager 2###
+#ItemManager 2#
 
 ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely customisable
 PHP applications bundled with GetSimple-CMS.
@@ -21,29 +21,19 @@ plugins:
 - Product -lists, -catalogs
 - eCommerce plugins
 - Image galleries
-- Blog
+- Blogs
 - User management tools
 - Varios data storage
 - Basic data structures for applications and plugins
 - Settings and data storages for other plugins
 - Depiction of complex Informations in Tables
-- Masks, Search-Forms
-- Substitutions for small database replication
+- Masks, search functions
+- Substitutions for small databases
 - etc
 
+##Install Instructions:
 
-**Usage**
-
-Here’s a simple ItemManager call, that you can use anywhere in your template files or in your own plugins to get a
-current ItemManager class instance:
-
-```php
-$imanager = imanager();
-```
-
-**Install Instructions:**  
-
-Installing ItemManager 2.* from the ZIP file:  
+**Installing ItemManager 2.* from the ZIP file:**
 You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
 contents to your plugins folder. The required data directories and configurations should be created automatically
 when you first access the plugin. Make sure that PHP-process has enough security permissions to access these files.
@@ -53,8 +43,7 @@ ItemManager upgrades are easy because everything important to your site is conta
 `/data/uploads/imanager/` directory. You should delete everything else in `/plugins/` directory that belongs to the
 ItemManager and leave the both directories above as it is.
 
-**Upgrading ItemManager 2.* to 2.3.3:**  
-
+**Upgrading ItemManager 2.* to 2.3.4:**  
 Download the latest version of ItemManager GitHub  
 Extract the ZIP file somewhere temporary.  
 Delete the following file from your `/plugins/` directory:  
@@ -66,13 +55,27 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 > NOTE: Backup any files you replace or delete!
 
-##Changelog
+##Usage:
+
+Here’s a simple ItemManager call, that you can use anywhere in your template files or in your own plugins to get a
+current ItemManager class instance:
+
+```php
+$imanager = imanager();
+```
+
+##ItemManager extensions and plugins:
+- [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
+- [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
+[Gallery example](http://ehret-studio.com/gallery/)
+
+##Changelog:
 
 **2.3.4** 
 
 Offers new features, that simplify the usage the plugin in combination with GetSimple native pages
 
-See IM Extra Fields plugin: [http://get-simple.info/extend/plugin/im-extra-fields/1053/](http://get-simple.info/extend/plugin/im-extra-fields/1053/)
+See IM Extra Fields plugin: [https://github.com/bigin/ImExtraFields](https://github.com/bigin/ImExtraFields)
 
 **2.3.3**
 
