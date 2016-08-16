@@ -31,7 +31,7 @@ plugins:
 - Substitutions for small databases
 - etc
 
-##Install Instructions:
+##Installation Instructions:
 
 **Installing ItemManager 2.* from the ZIP file:**
 You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
