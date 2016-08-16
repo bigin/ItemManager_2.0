@@ -64,6 +64,23 @@ current ItemManager class instance:
 $imanager = imanager();
 ```
 
+The most quickest way to get a specific item is by using the item ID and category ID, there is an example: 
+
+```php
+$item = $imanager->getItem(1, 2)
+where the first parameter is the category ID and the second an item ID.
+```
+
+To get a specific item via the field name you could do: 
+```php
+$item = $imanager->getItem('slug=category-slug', 'fieldname=item_field_name');
+```
+
+More infos about ItemManager's items: [Working with Items](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-items/)
+
+For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
+
+
 ##ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
@@ -71,7 +88,7 @@ $imanager = imanager();
 - [IM Simple Forun theme](http://get-simple.info/extend/theme/simpleforum/1016/)
 ([Example](http://im.ehret-studio.com/forum/))
 - [Frontainer User Management plugin](http://get-simple.info/extend/plugin/frontainer/1015/)
-([Frontend Register / Login / Logout / Password recovery](http://im.ehret-studio.com/login/))
+([Sign up / Login / Logout / Password recovery](http://im.ehret-studio.com/login/))
 
 ##Changelog:
 
@@ -105,7 +122,3 @@ BUGFIX: category listing markup
 NEW: Field title for uploaded images  
 NEW: Field money  
 NEW: Field datepicker  
-
-For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
-
-
