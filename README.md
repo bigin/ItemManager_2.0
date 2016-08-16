@@ -68,8 +68,8 @@ The most quickest way to get a specific item is by using the item ID and categor
 
 ```php
 $item = $imanager->getItem(1, 2)
-where the first parameter is the category ID and the second an item ID.
 ```
+where the first parameter is the category ID and the second an item ID.
 
 To get a specific item via the field name you could do: 
 ```php
@@ -77,6 +77,26 @@ $item = $imanager->getItem('slug=category-slug', 'fieldname=item_field_name');
 ```
 
 More infos about ItemManager's items: [Working with Items](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-items/)
+
+
+Access a category:
+```php
+$category = $imanager->getCategory(1);
+```
+
+If you want to find one category on a specific attributes like id, name, slug, position, created, updated, do following
+```php
+// via the category slug
+$category = $imanager->getCategory('slug=my-category-slug');
+// category name 
+$category = $imanager->getCategory('name=My Category Name');
+// position
+$category = $imanager->getCategory('position=2');
+// ...
+```
+
+More infos about ItemManager's items: [Working with Categories](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-categories/)
+
 
 For more information see: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
 
