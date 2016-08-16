@@ -15,7 +15,7 @@ data.
 
 **What can be achieved with ItemManager?**
 
-The use of ItemManager allows a extrem variable field of application, ItemManager can be used to create tools and
+The use of ItemManager allows a very variable field of application, ItemManager can be used to create tools and
 plugins:
 
 - Product -lists, -catalogs
