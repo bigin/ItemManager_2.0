@@ -458,6 +458,34 @@ class ItemMapper
 		// all parameter have to match the data
 		$treads = array();
 
+
+		// ***** ACHTUNG HIER FÄNGT DIE TEST-AREA AN *****
+
+//		if(false !== strpos($stat, '||') || false !== strpos($stat, '&&'))
+//		{
+//			$parts = preg_split('/\s*(&&|\|\|)\s*/', $stat);
+//			$strop = preg_replace('/[^\|\|&&]/', '', $stat);
+//			$strops = str_split($strop, 2);
+//
+//		} else { $parts[] = $stat; }
+//
+//		$i = 0;
+//		//$arr = array();
+//		$sepitems = array();
+//		foreach($parts as $part) {
+//			$buff = $this->separateItems($locitems, $part);
+//			if(!empty($buff)) {
+//				//array_map('serialize', $buff);
+//				$sepitems[] = array_map('serialize', $buff);
+//			}
+//		}
+//		call_user_func_array('array_intersect', $sepitems);
+//		$ret = array_map('unserialize', end($sepitems));
+//		Util::preformat($ret);
+
+		// ***** ACHTUNG HIER ENDET DIE TEST-AREA *****
+
+
 		if(false !== strpos($stat, '&&'))
 		{
 			$treads = explode('&&', $stat, 2);
@@ -659,26 +687,20 @@ class ItemMapper
 			$num = substr_count($val, '%');
 
 			$pat = false;
-			if($num == 1)
-			{
+			if($num == 1) {
 				$pos = strpos($val, '%');
-				if($pos == 0)
-				{
+				if($pos == 0) {
 					$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'$/';
-				} elseif($pos == strlen($val))
-				{
+				} elseif($pos == strlen($val)) {
 					$pat = '/^'.strtolower(trim(str_replace('%', '', $val))).'/';
 				}
-
-			} elseif($num == 2)
-			{
+			} elseif($num == 2) {
 				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
 			}
 
-			if(false !== strpos($key, ' '))
-				return false;
+			if(false !== strpos($key, ' ')) return false;
 
-			// searching for the name and other simple attributs
+			// Searching for the name and other simple attributs
 			if($key == 'id' || $key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
 				|| $key == 'created' || $key == 'updated')
 			{
@@ -725,18 +747,14 @@ class ItemMapper
 
 				$num = substr_count($val, '%');
 				$pat = false;
-				if($num == 1)
-				{
+				if($num == 1) {
 					$pos = strpos($val, '%');
-					if($pos == 0)
-					{
+					if($pos == 0) {
 						$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'$/';
-					} elseif($pos == (strlen($val)-1))
-					{
+					} elseif($pos == (strlen($val)-1)) {
 						$pat = '/^'.strtolower(trim(str_replace('%', '', $val))).'/';
 					}
-				} elseif($num == 2)
-				{
+				} elseif($num == 2) {
 					$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
 
 				}
@@ -779,7 +797,7 @@ class ItemMapper
 						$res[$item->get('id')] = $item;
 					}
 
-					// searching for fields in complex value types
+				// Searching for fields in complex value types
 				} else
 				{
 					foreach($items as $itemkey => $item)

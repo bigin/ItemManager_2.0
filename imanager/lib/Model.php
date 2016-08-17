@@ -44,7 +44,7 @@ class Model
 		}
 
 		// Admin only aktions
-		if(defined('IS_ADMIN_PANEL')) {
+		if(defined('IS_ADMIN_PANEL') && !$this->config->hiddeAdmin) {
 			$this->is_admin_panel = !empty(self::$installed) ? true : false;
 			// Initialize Admin
 			$this->setAdmin(new Admin());

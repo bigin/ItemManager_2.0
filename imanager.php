@@ -69,8 +69,13 @@ function im_render_backend($arg=null)
 		if(defined('IS_ADMIN_PANEL'))
 		{
 			(!$im->config->injectActions) or $im->setActions();
-			$im->admin->init();
-			echo $im->admin->display();
+			if($im->config->hiddeAdmin) {
+				echo $im->config->adminDisabledMsg;
+			} else
+			{
+				$im->admin->init();
+				echo $im->admin->display();
+			}
 		}
 	} else
 	{
