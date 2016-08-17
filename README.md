@@ -12,7 +12,7 @@ assigned to one category, that represent the underlying data structure of ItemMa
 combinations.
 
 Hey Developer, if you are going to create a new GetSimple plugin, no matter whether with complicated processing logics
-like a blog, shopping cart, user management or just a simple scripts, take it for granted that ItemManager helps you
+like a blog, shopping cart, user management or just a simple script, be sure that ItemManager helps you
 with the realization of your ideas! Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
 may continue to focus on more important things. So should you want to save your data in order to be able to use it again
