@@ -1,4 +1,4 @@
-#ItemManager 2#
+#ItemManager 2
 
 ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely customisable
 PHP applications bundled with GetSimple-CMS.
@@ -8,9 +8,29 @@ database. ItemManager’s powerful API is very easy and enjoyable.
 
 Design any type of product lists (items), search and filter through the items lists by using flexible API functions.
 You can create a random set of categories and fields, each category is assigned any number of fields and each item is
-assigned one category that represent the underlying data structure, which allows a countless design combinations of the
-data.
+assigned to one category, that represent the underlying data structure of ItemManager, which allows a countless design
+combinations.
 
+Hey Developer, if you are going to create a new GetSimple plugin, no matter whether with complicated processing logics
+like a blog, shopping cart, user management or just a simple scripts, take it for granted that ItemManager helps you
+with the realization of your ideas! Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
+basic data management, getter, setter methods and any XML data storage processes for your plugin properties. So should
+you want to save your data in order to be able to use it again later on, just do:
+
+```php
+$item = new Item(1);
+$item->name = 'My item name';
+$item->fields->data->value = 'Hello world';
+$item->save();
+```
+
+In order to bring the data into display again do:
+
+```php
+$item = imanager()->getItem(1, 'name=My item name');
+echo $item->fields->data->value; // Outputs: Hello world
+```
+It's really so complicated?
 
 
 **What can be achieved with ItemManager?**
