@@ -15,8 +15,8 @@ Hey Developer, if you are going to create a new GetSimple plugin, no matter whet
 a blog, shopping cart, user management or just a simple script, be sure that ItemManager helps you with the realization
 of your projects. Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
-may continue to focus on more important things. So should you want to save your data in order to be able to use it again
-later on, just do:
+may continue to focus on more important things. Here's an example, should you want to save your data in order to be able
+to use it again later on, just do:
 
 ```php
 $item = new Item(1);
