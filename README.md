@@ -16,7 +16,7 @@ a blog, shopping cart, user management or just a simple script, be sure that Ite
 of your projects. Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
 may continue to focus on more important things. Here's an example, should you want to save your data in order to be able
-to use it again later on, just do:
+to use it again later on, just do this:
 
 ```php
 $item = new Item(1);
@@ -25,7 +25,7 @@ $item->fields->data->value = 'Hello world';
 $item->save();
 ```
 
-In order to bring the data into display again do:
+In order to bring the data into display again do this:
 
 ```php
 $item = imanager()->getItem(1, 'name=My item name');
