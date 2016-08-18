@@ -441,7 +441,7 @@ class ItemMapper
 	/**
 	 * Find matching item - Finds an item belonging to one category (returns exactly one result)
 	 *
-	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param $stat – A search selector: (name=Item Name) for example
 	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
 	 *                           to specific categories (NOTE: The specifying category id's could speed up the
 	 *                           searsh process!)
@@ -475,7 +475,7 @@ class ItemMapper
 	/**
 	 * Find matching items - Finds all items belonging to one category (returns matching items of a category)
 	 *
-	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param $stat – A search selector: (name=Item Name) for example
 	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
 	 *                           to specific categories (NOTE: The specifying category id's could speed up the
 	 *                           searsh process!)
@@ -507,7 +507,7 @@ class ItemMapper
 	/**
 	 * Find all matching items - Finds all items of all categories (returns matching items of all categories)
 	 *
-	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param $stat – A search selector: (name=Item Name) for example
 	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
 	 *                           to specific categories (NOTE: The specifying category id's could speed up the
 	 *                           searsh process!)
