@@ -2,11 +2,11 @@
 $i18n = array(
   'delete' => 'Delete field'
   //, 'option-value' => 'Choose category...'
-  , 'undo_failure' => '<div >The custom fields could not be restored.</div>'
-  , 'undo_success' => '<div >The custom fields have been successfully restored.</div>'
+  //, 'undo_failure' => '<div >The custom fields could not be restored.</div>'
+  //, 'undo_success' => '<div >The custom fields have been successfully restored.</div>'
   , 'undo' => 'Undo'
 
-  , 'no_fields_created' => '<div >No custom fields created for this category.</div>'
+  //, 'no_fields_created' => '<div >No custom fields created for this category.</div>'
   , 'relad_page' => 'Reload...'
   , 'FILTER' => 'Filter'
   , 'no_items' => '<div >No items available for this category</div>'
@@ -55,8 +55,8 @@ $i18n = array(
 	, 'save_failure' => '<div >The custom fields could not be saved.</div>'
 	, 'customfields_add' => 'Confirm'
 
-  , 'edit_item' => 'Edit [[itemmanager-title]]'
-  , 'create_item' => 'Create new [[itemmanager-title]]'
+  //, 'edit_item' => 'Edit [[itemmanager-title]]'
+  //, 'create_item' => 'Create new [[itemmanager-title]]'
   , 'title' => 'Title'
   , 'category' => 'Category'
   , 'category_exchange' => 'Change category'

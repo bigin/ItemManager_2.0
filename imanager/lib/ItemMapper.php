@@ -438,6 +438,106 @@ class ItemMapper
 	}
 
 
+	/**
+	 * Find matching item - Finds an item belonging to one category (returns exactly one result)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @param array $limit_ids
+	 *
+	 * @return bool|mixed
+	 */
+	public function findItem($stat, array $limit_ids = array())
+	{
+		$mapper = imanager()->getCategoryMapper();
+		if(!empty($limit_ids))
+		{
+			foreach($limit_ids as $catid) {
+				$this->init($mapper->categories[(int)$catid]->id);
+				$item = $this->getItem($stat);
+				if(!empty($item)) return $item;
+			}
+			return false;
+		}
+		foreach($mapper->categories as $category)
+		{
+			$this->init($category->id);
+			$item = $this->getItem($stat);
+			if(!empty($item)) return $item;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Find matching items - Finds all items belonging to one category (returns matching items of a category)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @return array|bool
+	 */
+	public function findItems($stat, array $limit_ids = array())
+	{
+		$mapper = imanager()->getCategoryMapper();
+		if(!empty($limit_ids))
+		{
+			foreach($limit_ids as $catid) {
+				$this->init($mapper->categories[(int)$catid]->id);
+				$items = $this->getItems($stat);
+				if(!empty($items)) return $items;
+			}
+			return false;
+		}
+		foreach($mapper->categories as $category)
+		{
+			$this->init($category->id);
+			$items = $this->getItems($stat);
+			if(!empty($items)) return $items;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Find all matching items - Finds all items of all categories (returns matching items of all categories)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) fpr example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @return array|bool
+	 */
+	public function findAll($stat, array $limit_ids = array())
+	{
+		$allItems = array();
+		$mapper = imanager()->getCategoryMapper();
+		if(!empty($limit_ids))
+		{
+			foreach($limit_ids as $catid) {
+				$this->init($mapper->categories[(int)$catid]->id);
+				$items = $this->getItems($stat);
+				if(!empty($items)) $allItems[] = $items;
+			}
+			return (!empty($allItems) ? $allItems : false);
+		}
+		foreach($mapper->categories as $category)
+		{
+			$this->init($category->id);
+			$items = $this->getItems($stat);
+			if(!empty($items)) $allItems[] = $items;
+		}
+		return (!empty($allItems) ? $allItems : false);
+	}
+
+
+
 	public function getItems($stat, $offset=0, $length=0, array $items=array())
 	{
 		// reset offset
@@ -459,7 +559,7 @@ class ItemMapper
 		$treads = array();
 
 
-		// ***** ACHTUNG HIER FÄNGT DIE TEST-AREA AN *****
+		// ***** HIER FÄNGT DER TESTBEREICH AN *****
 
 //		if(false !== strpos($stat, '||') || false !== strpos($stat, '&&'))
 //		{
@@ -483,7 +583,7 @@ class ItemMapper
 //		$ret = array_map('unserialize', end($sepitems));
 //		Util::preformat($ret);
 
-		// ***** ACHTUNG HIER ENDET DIE TEST-AREA *****
+		// ***** HIER ENDET DER TESTBEREICH *****
 
 
 		if(false !== strpos($stat, '&&'))
