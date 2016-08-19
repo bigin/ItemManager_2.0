@@ -572,7 +572,7 @@ class Admin
 		// render category selector template
 		$catselector = $this->buildCategorySelector();
 
-		// Ok, there are no fields available for this category, so just show the hidden stuff
+		// Ok, there are no fields available for this category, so just do show the hidden stuff
 		if(!$cf->fields)
 		{
 			// render row template
@@ -618,7 +618,7 @@ class Admin
 					'key' => isset($f->name) ? $f->name : '',
 					'label' => isset($f->label) ? $f->label : '',
 					'area-display' => !$isdropdown ? 'display:none' : '',
-					'text-options' => isset($f->default) ? $f->default : '',
+					'text-options' => isset($f->default) ? htmlentities($f->default) : '',
 					'area-options' => $options), true
 			);
 		}
@@ -674,14 +674,21 @@ class Admin
 		$fieldproperties = $FieldType->getConfigFieldtype();
 
 
-		//getConfigFieldtype
+		$default = '';
+		$default_tpl = $this->tpl->getTemplate('default', $fielddetails);
+		$default = $this->tpl->render($default_tpl,  array(
+			'fielddefault' => !empty($currfield->default) ? htmlentities($currfield->default) : '',
+			)
+		);
+
 		// replace the form placeholders and return
 		return $this->tpl->render($form,  array(
 				'field-id' => $currfield->get('id'),
 				'field_name' => !empty($currfield->name) ? $currfield->name : '',
 				'field_label' => !empty($currfield->label) ? $currfield->label : '',
 				'field_type' => !empty($currfield->type) ? $currfield->type : '',
-				'fielddefault' => !empty($currfield->default) ? $currfield->default : '',
+				'default' => $default,
+
 				'fieldinfo' => !empty($currfield->info) ? $currfield->info : '',
 				'fieldrequired' => ($currfield->required == 1) ? 'checked' : '',
 				'min_field_input' => !empty($currfield->minimum) ? intval($currfield->minimum) : '',
@@ -1129,7 +1136,6 @@ class Admin
 						$fieldType->configs->$key = $val;
 					}
 				}
-
 
 				// hidden
 				if($field->type == 'hidden')

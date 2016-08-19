@@ -2,7 +2,6 @@
 
 class Model
 {
-	// todo: I'm not sure we need it in model?
 	protected static $categoryMapper = null;
 	protected static $itemMapper = null;
 	protected static $templateEngine = null;
@@ -93,10 +92,8 @@ class Model
 		//return $this->{$method}($args);
 	}
 
-	public function ProcessCategory()
-	{
-		$this->cp = new CategoryProcessor(self::$categoryMapper);
-	}
+
+	public function ProcessCategory() {$this->cp = new CategoryProcessor(self::$categoryMapper);}
 
 	/**
 	 * Deletes the category and ther fields and items
@@ -377,7 +374,7 @@ class Model
 			}
 		}
 
-		// show message when duplicate values exist, but save correctly entered names
+		// Show message when duplicate values exist, but save correctly entered names
 		if(count($names) != count(array_unique($names)))
 		{
 			//$names = array_unique($names);
@@ -432,7 +429,13 @@ class Model
 				$field->label = str_replace('"', '\'', $labels[$key]);
 				$field->type = $this->sanitizer->pageName($types[$key]);
 				$field->position = $key+1;
-				$field->default = str_replace('"', '\'', $defaults[$key]);
+				// Handle chunk field default value
+				if($field->type == 'chunk') {
+					// Do not allow to save default for the chunk field
+					//$field->default = !empty($defaults[$key]) ? $defaults[$key] : '';
+				} else {
+					$field->default = str_replace('"', '\'', $defaults[$key]);
+				}
 				$field->options = array();
 				if(!empty($options[$key]))
 				{
@@ -441,7 +444,7 @@ class Model
 						$field->options[] = $option;
 				}
 
-				// field does not exist, create new field
+			// field does not exist, create new field
 			} else
 			{
 				$field = new Field($input['cat']);
@@ -449,7 +452,13 @@ class Model
 				$field->label = str_replace('"', '\'', $labels[$key]);
 				$field->type = $this->sanitizer->pageName($types[$key]);
 				$field->position = $key+1;
-				$field->default = str_replace('"', '\'', $defaults[$key]);
+				// Handle chunk field default value
+				if($field->type == 'chunk') {
+					// Do not allow to save default for the chunk field
+					//$field->default = !empty($defaults[$key]) ? $defaults[$key] : '';
+				} else {
+					$field->default = str_replace('"', '\'', $defaults[$key]);
+				}
 				$field->options = array();
 				if(!empty($options[$key]))
 				{
@@ -498,7 +507,15 @@ class Model
 			return false;
 		}
 
-		$currfield->default = !empty($input['default']) ? str_replace('"', "'", $input['default']) : '';
+		// Handle chunk field
+		if($currfield->type == 'chunk') {
+			$currfield->default = !empty($input['default']) ? $input['default'] : '';
+		} else {
+			$currfield->default = !empty($input['default']) ? str_replace('"', "'", $input['default']) : '';
+		}
+
+		// <div><p>Das ist ein test 3</p><textarea name="bla">Mla</textarea></div>
+
 		$currfield->info = !empty($input['info']) ? str_replace('"', "'", $input['info']) : '';
 		$currfield->required = (isset($input['required']) && $input['required'] > 0) ? 1 : null;
 		$currfield->minimum = (isset($input['min_field_input']) && intval($input['min_field_input']) > 0)
