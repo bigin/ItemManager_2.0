@@ -590,8 +590,8 @@ form a.deletefield:hover {
 	box-sizing: border-box;
 }
 
-.fieldarea div {
-	padding: 20px 10px 0;
+.fieldarea div.field-wrapper {
+	padding: 10px;
 	box-sizing: border-box;
 }
 

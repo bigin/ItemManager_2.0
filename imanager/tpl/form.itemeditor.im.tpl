@@ -12,28 +12,28 @@
 		</div>
 		<div class="fieldarea">
 			<label for="title">[[lang/title]]</label>
-			<p><input id="title" class="im-title" name="name" type="text" value="[[itemname]]" placeholder="[[lang/fill_me]]" /></p>
+			<div class="field-wrapper"><input id="title" class="im-title" name="name" type="text" value="[[itemname]]" placeholder="[[lang/fill_me]]" /></div>
 		</div>
 		<div class="fieldarea">
 			<label for="position">[[lang/position]]</label>
-			<p><input id="position" name="position" type="number" value="[[position]]" /></p>
+			<div class="field-wrapper"><input id="position" name="position" type="number" value="[[position]]" /></div>
 		</div>
 		<div class="fieldarea">
 			<label for="active">[[lang/enabled]]</label>
-			<p><input id="active" name="active" type="checkbox" value="1"[[checked]]/></p>
+			<div class="field-wrapper"><input id="active" name="active" type="checkbox" value="1"[[checked]]/></div>
 		</div>
 		[[custom-fields]]
 
 		<div class="fieldarea">
 			<label for="itemcreated" >[[lang/item_created]]</label>
 			[[infotext]]
-			<p>[[created]]</p>
+			<div class="field-wrapper">[[created]]</div>
 		</div>
 
 		<div class="fieldarea">
 			<label for="itemcreated" >[[lang/item_updated]]</label>
 			[[infotext]]
-			<p>[[updated]]</p>
+			<div class="field-wrapper">[[updated]]</div>
 		</div>
 
 		<p><input name="submit" type="submit" class="submit" value="[[lang/savebutton]]" /></p>
