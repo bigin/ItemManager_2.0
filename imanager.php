@@ -56,7 +56,7 @@ function imanager($name='')
 }
 
 /**
- * Loads ItemManager's backend, executed in admin panel only
+ * Loads ItemManager's backend, executed inside admin panel only
  */
 function im_render_backend($arg=null)
 {
