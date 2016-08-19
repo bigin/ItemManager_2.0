@@ -1,4 +1,5 @@
 <?php
+
 class InputChunk implements InputInterface
 {
 	protected $values;

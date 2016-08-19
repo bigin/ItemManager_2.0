@@ -35,11 +35,10 @@ class FieldPassword implements FieldInterface
 				'labelclass' => !empty($label_classes[$i]) ? $label_classes[$i] : '',
 				'name' => $names[$i],
 				'class' => $this->class,
-				'value' => ''), true, array(), true
+				'value' => ''), true, array()
 			);
 		}
-
-		return $fields;
+		return $this->tpl->render($fields, array($fields), true, array(), true);
 	}
 	protected function sanitize($value){return imanager('sanitizer')->text($value);}
 
