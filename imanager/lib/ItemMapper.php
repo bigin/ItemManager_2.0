@@ -115,7 +115,7 @@ class ItemMapper
 	}
 
 	/**
-	 * A limited init method is very useful when you wish to select only one or a few items
+	 * A limited init method, very useful when you wish to select only one or a few items
 	 *
 	 * @param integer $catid  - Category ID to be searched through
 	 * @param integer $from   - Define start index for the loop
@@ -291,6 +291,9 @@ class ItemMapper
 
 	/**
 	 * Initializes all items and made them available in ImItem::$items array
+	 * NOTE: Could be slow and memory intensive with high data volumes
+	 *
+	 * @return bool|mixed
 	 */
 	public function initAll()
 	{
@@ -376,11 +379,25 @@ class ItemMapper
 	}
 
 
+	/**
+	 * Returns a total number of given items
+	 *
+	 * @param array $items
+	 *
+	 * @return int
+	 */
 	public function countItems(array $items=array())
 	{$locitems = !empty($items) ? $items : $this->items; return count($locitems);}
 
 
-
+	/**
+	 * Get single item
+	 *
+	 * @param $stat - Selector
+	 * @param array $items
+	 *
+	 * @return bool|mixed
+	 */
 	public function getItem($stat, array $items=array())
 	{
 		$locitems = !empty($items) ? $items : $this->items;
@@ -517,22 +534,27 @@ class ItemMapper
 	public function findAll($stat, array $limit_ids = array())
 	{
 		$allItems = array();
+		$count = 0;
 		$mapper = imanager()->getCategoryMapper();
 		if(!empty($limit_ids))
 		{
 			foreach($limit_ids as $catid) {
 				$this->init($mapper->categories[(int)$catid]->id);
 				$items = $this->getItems($stat);
+				$count += $this->total;
 				if(!empty($items)) $allItems[] = $items;
 			}
+			$this->total = $count;
 			return (!empty($allItems) ? $allItems : false);
 		}
 		foreach($mapper->categories as $category)
 		{
 			$this->init($category->id);
 			$items = $this->getItems($stat);
+			$count += $this->total;
 			if(!empty($items)) $allItems[] = $items;
 		}
+		$this->total = $count;
 		return (!empty($allItems) ? $allItems : false);
 	}
 
