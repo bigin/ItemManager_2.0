@@ -22,7 +22,6 @@
 				<label for="fielddefault">[[lang/fields_default]]</label>
 				<p class="field-info">[[lang/field_default_info]]</p>
 				[[default]]
-				[[editable]]
 			</div>
 			<div class="fieldarea">
 				<label for="fieldinfo">[[lang/field_info]]</label>

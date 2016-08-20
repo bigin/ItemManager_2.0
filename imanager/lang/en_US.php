@@ -38,6 +38,7 @@ $i18n = array(
 	, 'fields_label' => 'Label'
 	, 'fields_type' => 'Type'
 	, 'fields_default' => 'Default value'
+	, 'field_default_info' => 'The default value is the value specified in the HTML value attribute'
 	, 'fields_create' => 'Create new field'
 	, 'fields_add' => 'Save Custom Fields'
 	, 'fields_sender' => 'Confirm'

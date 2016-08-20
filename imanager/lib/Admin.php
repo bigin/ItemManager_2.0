@@ -699,11 +699,10 @@ class Admin
 				'field_class' => !empty($currfield->fieldclass) ? $currfield->fieldclass : '',
 
 				'fieldproperties' => !empty($fieldproperties) ? $fieldproperties : '',
-				/*
-								'area_css' => !empty($currfield->areacss) ? $currfield->areacss : '',
-								'label_css' => !empty($currfield->labelcss) ? $currfield->labelcss : '',
-								'field_css' => !empty($currfield->fieldcss) ? $currfield->fieldcss : '',*/
-			), true, array(), true
+				/*'area_css' => !empty($currfield->areacss) ? $currfield->areacss : '',
+				'label_css' => !empty($currfield->labelcss) ? $currfield->labelcss : '',
+				'field_css' => !empty($currfield->fieldcss) ? $currfield->fieldcss : '',*/
+			), true, array()
 		);
 	}
 
