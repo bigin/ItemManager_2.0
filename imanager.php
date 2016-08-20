@@ -10,7 +10,7 @@ include($thisfile.'/lib/inc/_def.php');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3.4',
+	'2.3.5',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',

@@ -122,6 +122,10 @@ More infos about ItemManager's categories: [Working with Categories](http://ehre
 For more information how to use ItemManager see also: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
 
 
+##Tutorials, tips & experiments
+- [How to give GetSimple sites page-based look](https://bigin.github.io/ghpages/pagelayout/)
+- [How to add additional text under the GetSimple's page edit menu](http://get-simple.info/forums/showthread.php?tid=8664)
+
 ##ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
@@ -133,10 +137,14 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 ##Changelog:
 
-**2.3.4** 
+**2.3.5**
+
+BUGFIX: Chunk field bug fixed
+NEW: findItem function -Allows to search for items without knowing the category
+
+**2.3.4**
 
 Offers new features, that simplify the usage the plugin in combination with GetSimple native pages
-
 See IM Extra Fields plugin: [https://github.com/bigin/ImExtraFields](https://github.com/bigin/ImExtraFields)
 
 **2.3.3**
