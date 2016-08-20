@@ -139,7 +139,7 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 **2.3.5**
 
-BUGFIX: Chunk field bug fixed
+BUGFIX: Chunk field bug fixed   
 NEW: findItem function -Allows to search for items without knowing the category
 
 **2.3.4**
