@@ -11,7 +11,7 @@ You can create a random set of categories and fields, each category is assigned 
 assigned to one category, that represent the underlying data structure of ItemManager, which allows a countless design
 combinations.
 
-Hey Developer, if you are going to create a new GetSimple plugin, no matter whether kind of processing logic and complexity:
+If you are going to create a new GetSimple plugin, no matter whether kind of processing logic and complexity:
 a blog, shopping cart, user management or just a simple script, be sure that ItemManager helps you with the realization
 of your projects. Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
