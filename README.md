@@ -64,7 +64,7 @@ ItemManager upgrades are easy because everything important to your site is conta
 `/data/uploads/imanager/` directory. You should delete everything else in `/plugins/` directory that belongs to the
 ItemManager and leave the both directories above as it is.
 
-**Upgrading ItemManager 2.* to 2.3.4:**  
+**Upgrading ItemManager 2.* to 2.3.5:**
 Download the latest version of ItemManager GitHub  
 Extract the ZIP file somewhere temporary.  
 Delete the following file from your `/plugins/` directory:  
@@ -125,6 +125,8 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 ##Tutorials, tips & experiments
 - [How to make content of the GS components a little more page-based](https://bigin.github.io/ghpages/pagelayout/)
 - [How to add additional text under the GetSimple's page edit menu](http://get-simple.info/forums/showthread.php?tid=8664)
+- [MarkupSectionCache for ItemManager](http://get-simple.info/forums/showthread.php?tid=8016)
+- [CategoryJoins for ItemManager](http://get-simple.info/forums/showthread.php?tid=8017)
 
 ##ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
