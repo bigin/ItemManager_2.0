@@ -20,7 +20,7 @@ include(GSPLUGINPATH.'imanager/lib/inc/_def.php');
 include(GSPLUGINPATH.'imanager/lib/Model.php');
 // manager
 include(GSPLUGINPATH.'imanager/lib/ItemManager.php');
-
+login_cookie_check();
 if(!get_cookie('GS_ADMIN_USERNAME')) {die();}
 require('UploadHandler.php');
 $upload_handler = new UploadHandler();
