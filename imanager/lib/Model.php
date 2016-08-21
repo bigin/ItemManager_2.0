@@ -663,7 +663,7 @@ class Model
 		foreach($curitem->fields as $fieldname => $fieldvalue)
 		{
 
-			$fieldinput = !empty($input[$fieldname]) ? str_replace('"', "'", $input[$fieldname]) : '';
+			$fieldinput = !empty($input[$fieldname]) ? str_replace('"', "&#34;", $input[$fieldname]) : '';
 
 			$inputClassName = 'Input'.ucfirst($fieldvalue->type);
 			$InputType = new $inputClassName($curitem->fields->$fieldname);
