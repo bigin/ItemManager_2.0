@@ -124,6 +124,7 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 ##Tutorials, tips & experiments
 - [How to make content of the GS components a little more page-based](https://bigin.github.io/ghpages/pagelayout/)
+- [ItemManager Simplify Field Value Access](https://bigin.github.io/ghpages/simplification/)
 - [How to add additional text under the GetSimple's page edit menu](http://get-simple.info/forums/showthread.php?tid=8664)
 - [MarkupSectionCache for ItemManager](http://get-simple.info/forums/showthread.php?tid=8016)
 - [CategoryJoins for ItemManager](http://get-simple.info/forums/showthread.php?tid=8017)
