@@ -58,4 +58,6 @@ class Util
 	{
 		echo '<pre>'.print_r($data, true).'</pre>';
 	}
+
+	public static function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
 }

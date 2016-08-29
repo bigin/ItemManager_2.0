@@ -591,7 +591,7 @@ class Model
 		// check the timestamp first
 		if(!empty($input['timestamp']))
 		{
-			if(!$this->isTimestamp($input['timestamp']))
+			if(!Util::isTimestamp($input['timestamp']))
 			{
 				MsgReporter::setClause('err_timestamp', array(), true);
 				return false;
@@ -618,6 +618,9 @@ class Model
 
 		// new item
 		if(!$curitem) $curitem = new Item($categoryid);
+
+		// Clean up cached images
+		$this->cleanUpCachedFiles($curitem);
 
 		// check required item name
 		if(empty($input['name']))
@@ -880,9 +883,6 @@ class Model
 	}
 
 
-	public function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
-
-
 	public function getSiteUrl()
 	{
 		$https = !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') === 0 ||
@@ -926,6 +926,33 @@ class Model
 		if($item->save() && !$err) return true;
 
 		return false;
+	}
+
+
+	/**
+	 * Delete chached image files that starting with *_filename.* for example
+	 *
+	 * @param Item $item
+	 */
+	public function cleanUpCachedFiles(Item $item)
+	{
+		$fieldinput = IM_IMAGE_UPLOAD_DIR.(int)$item->id.'.'.$item->categoryid.'/';
+		if(!file_exists($fieldinput.'config.xml')) {return;}
+		$xml = simplexml_load_file($fieldinput.'config.xml');
+
+		foreach(glob($fieldinput.'thumbnail/*_*.*') as $image) {
+			$parts = explode('_', basename($image), 2);
+			if(empty($parts[1])) continue;
+			$chached = false;
+			foreach($xml->image as $xmlimage)
+			{
+				if((string)$xmlimage->name == $parts[1]) {
+					$chached = true;
+					break;
+				}
+			}
+			if($chached === true) { @unlink($image);}
+		}
 	}
 
 
