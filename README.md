@@ -102,10 +102,8 @@ If the category is unknown, you can search for an item or multiple items using v
 $item = $imanager->getItemMapper()->findItem("name=$slug");
 ```
 
-or
-
 ```php
-$item = $imanager->getItemMapper()->findItems('created < '.time());
+$items = $imanager->getItemMapper()->findItems('created > '.strtotime('-2 day', time()));
 ```
 
 More infos about ItemManager's items: [Working with Items](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-items/)
