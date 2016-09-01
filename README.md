@@ -97,6 +97,17 @@ To get a specific item via the field name you could do:
 $item = $imanager->getItem('slug=category-slug', 'fieldname=item_field_name');
 ```
 
+If the category is unknown, you can search for an item or multiple items using various find methods:
+```php
+$item = $imanager->getItemMapper()->findItem("name=$slug");
+```
+
+or
+
+```php
+$item = $imanager->getItemMapper()->findItems('created < '.time());
+```
+
 More infos about ItemManager's items: [Working with Items](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-items/)
 
 
@@ -123,6 +134,7 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 
 ##Tutorials, tips & experiments
+- [Resizing images on the fly](https://bigin.github.io/ghpages/resizeimage/)
 - [How to make content of the GS components a little more page-based](https://bigin.github.io/ghpages/pagelayout/)
 - [ItemManager Simplify Field Value Access](https://bigin.github.io/ghpages/simplification/)
 - [How to add additional text under the GetSimple's page edit menu](http://get-simple.info/forums/showthread.php?tid=8664)
