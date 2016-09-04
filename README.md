@@ -85,7 +85,7 @@ current ItemManager class instance:
 $imanager = imanager();
 ```
 
-The most quickest way to get a specific item is by using the item ID and category ID, there is an example: 
+The most quickest way to get a specific item is by using the item ID and category ID, here's an example: 
 
 ```php
 $item = $imanager->getItem(1, 2)
