@@ -755,7 +755,7 @@ class ItemMapper
 		{
 			$this->filterby = $filterby;
 			usort($itemcontainer, array($this, 'sortObjects'));
-			// sorte DESCENDING
+			// sort DESCENDING
 			if(strtolower($option) != 'asc') $itemcontainer = $this->reverseItems($itemcontainer);
 			$itemcontainer = $this->reviseItemIds($itemcontainer);
 

@@ -277,6 +277,16 @@ class Item
 		return false;
 	}
 
+
+	public function forcedSave()
+	{
+		if(empty($this->id)) return false;
+		$this->file = IM_ITEM_DIR.$this->id.'.'.$this->categoryid.IM_ITEM_FILE_SUFFIX;
+		$this->filename = $this->id.'.'.$this->categoryid.IM_ITEM_FILE_SUFFIX;
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+		if($xml->asXml($this->file)) return $this->save();
+	}
+
 	public function join($catids)
 	{
 
