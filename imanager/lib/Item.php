@@ -18,7 +18,7 @@ class Item
 		$this->created = time();
 		$this->updated = null;
 
-		$this->fields = new \stdClass();
+		$this->fields = new stdClass();
 		// field arts object array
 		$fc = new FieldMapper();
 		$fc->init($catid);
@@ -188,7 +188,7 @@ class Item
 
 			return $xml->asXml($this->file);
 
-			// overwrite file
+		// overwrite file
 		} elseif(!is_null($this->id))
 		{
 			$xml = simplexml_load_file($this->file);
@@ -202,10 +202,10 @@ class Item
 
 			$xml->created = $this->created;
 			// simple check if item has been updated by another process
-			if((int) $this->updated != (int) $xml->updated)
+			if((int)$this->updated != (int)$xml->updated)
 			{
 				MsgReporter::setClause('err_updated_by_process', array(), true);
-				MsgReporter::setCode(MsgReporter::ERR_UPDATED_BY_PROCESS);
+				MsgReporter::setCode(12);
 				return false;
 			}
 			$xml->updated = time();
@@ -282,9 +282,54 @@ class Item
 	{
 		if(empty($this->id)) return false;
 		$this->file = IM_ITEM_DIR.$this->id.'.'.$this->categoryid.IM_ITEM_FILE_SUFFIX;
+		if(file_exists($this->file)) return $this->save();
 		$this->filename = $this->id.'.'.$this->categoryid.IM_ITEM_FILE_SUFFIX;
 		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><item></item>');
-		if($xml->asXml($this->file)) return $this->save();
+		$xml->categoryid = $this->categoryid;
+		$xml->id = $this->id;
+		$xml->name = $this->name;
+		$xml->label = $this->label;
+		$xml->position = !is_null($this->position) ? $this->position : $this->id;
+		$xml->active = $this->active;
+		$xml->created = $this->created;
+		$xml->updated = $this->updated;
+		$data = $this->getFieldsDataToSave();
+
+		if(!empty($data['ids']))
+		{
+			foreach($data['ids'] as $key => $val)
+			{
+				$xml->field[$key]->id = $val;
+
+				if(!empty($this->fields->{$data['names'][$key]}->value))
+				{
+					$inputClassName = 'Input'.ucfirst($data['types'][$key]);
+					$InputType = new $inputClassName($this->fields->{$data['names'][$key]});
+
+					//$input = $InputType->prepareInput($this->fields->$data['names'][$key]->value);
+					$output = $InputType->prepareOutput();
+					$input = new stdClass();
+
+					foreach ($output as $inputkey => $inputval)
+						$input->$inputkey = $this->fields->{$data['names'][$key]}->$inputkey;
+
+					foreach($input as $inputkey => $inputvalue)
+					{
+						if(!is_array($inputvalue))
+						{
+							$xml->field[$key]->$inputkey = $inputvalue;
+						} else
+						{
+							foreach($inputvalue as $inputvalue_key => $inputvalue_value)
+							{
+								$xml->field[$key]->{$inputkey}[] = $inputvalue_value;
+							}
+						}
+					}
+				}
+			}
+		} else $xml->field = '';
+		return $xml->asXml($this->file);
 	}
 
 	public function join($catids)

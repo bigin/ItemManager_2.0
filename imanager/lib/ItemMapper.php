@@ -291,7 +291,7 @@ class ItemMapper
 
 	/**
 	 * Initializes all items and made them available in ImItem::$items array
-	 * NOTE: Could be slow and memory intensive with high data volumes
+	 * NOTE: Could be extrem slow and memory intensive with high data volumes
 	 *
 	 * @return bool|mixed
 	 */
@@ -712,7 +712,7 @@ class ItemMapper
 	 * @param array $items
 	 * @return boolean|array of objects of type Item
 	 */
-	public function filterItems($filterby, $option,  $offset=0, $length=0, array $items=array())
+	public function filterItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array())
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -1046,8 +1046,8 @@ class ItemMapper
 	{
 
 		$tpl = imanager()->getTemplateEngine();
+		if(is_null($tpl->templates)) $tpl->init();
 		$config = imanager('config');
-
 		$pagination = $tpl->getTemplates('pagination');
 		$tpls['wrapper'] = !empty($argtpls['wrapper']) ? $argtpls['wrapper'] : $tpl->getTemplate('wrapper', $pagination);
 		$tpls['prev'] = !empty($argtpls['prev']) ? $argtpls['prev'] : $tpl->getTemplate('prev', $pagination);
