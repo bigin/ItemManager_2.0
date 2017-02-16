@@ -28,6 +28,19 @@ class Item
 	}
 
 
+	public static function __set_state($an_array)
+	{
+		$obj = new Item($an_array['categoryid']);
+		foreach($an_array as $key => $val)
+		{
+			if($key != 'fields') $obj->var1 = $an_array[$key];
+		}
+
+
+		return $obj;
+	}
+
+
 
 	public function getNextId()
 	{

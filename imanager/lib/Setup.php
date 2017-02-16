@@ -221,7 +221,7 @@ class Setup
 		$i18nsearch_content = (!empty($input['i18nsearchcontent'])) ? $input['i18nsearchcontent'] : '';
 
 
-		$time_format = (!empty($input['timeformat'])) ? $input['timeformat'] : 'Y-m-d h:m:s';
+		$time_format = (!empty($input['timeformat'])) ? $input['timeformat'] : 'Y-m-d h:i:s';
 
 		$cat_backup = !isset($input['catbackup']) ? 0 : intval($input['catbackup']);
 

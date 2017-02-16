@@ -93,7 +93,10 @@ class Model
 	}
 
 
-	public function ProcessCategory() {$this->cp = new CategoryProcessor(self::$categoryMapper);}
+	public function ProcessCategory() {
+		self::$categoryMapper = (!self::$categoryMapper) ? $this->getCategoryMapper() : self::$categoryMapper;
+		$this->cp = new CategoryProcessor(self::$categoryMapper);
+	}
 
 	/**
 	 * Deletes the category and ther fields and items
@@ -365,8 +368,18 @@ class Model
 						continue;
 					}
 				}
+
+				// Check/Rename reserved field names
+				$buffname = strtolower($input['cf_'.$i.'_key']);
+				if(in_array($buffname, array('id', 'categoryid', 'file', 'filename', 'name', 'label', 'position', 'active', 'created', 'updated'))) {
+					$newname = $buffname.($i + 1);
+					MsgReporter::setClause('err_reserved_field_name', array('fieldname' => $buffname, 'newname' => $newname), true);
+					$buffname = $newname;
+				}
+
+
 				$ids[] = !empty($input['cf_'.$i.'_id']) ? intval($input['cf_'.$i.'_id']) : null;
-				$names[] = strtolower($input['cf_'.$i.'_key']);
+				$names[] = $buffname;
 				$labels[] = !empty($input['cf_'.$i.'_label']) ? $input['cf_'.$i.'_label'] : '';
 				$types[] = !empty($input['cf_'.$i.'_type']) ? $input['cf_'.$i.'_type'] : '';
 				$options[] = !empty($input['cf_'.$i.'_options']) ? $input['cf_'.$i.'_options'] : '';
@@ -469,6 +482,11 @@ class Model
 			}
 
 			$field->save();
+		}
+
+		// useAllocater is activated
+		if($this->config->useAllocater == true) {
+			$this->getItemMapper()->disalloc($input['cat']);
 		}
 
 		// remove deleted fieds
@@ -578,8 +596,8 @@ class Model
 
 	public function saveItem(&$input)
 	{
-		/* check there the user errors: If the user tried to compromise the script, we'll
-		reset field values to empty and display an error message */
+		/* check there user errors: If user tried to compromise script, just
+		reset field values and display an error message */
 
 		// timestamp or item id required
 		if(empty($input['timestamp']) && empty($input['iid']))
@@ -655,7 +673,7 @@ class Model
 		}
 
 
-		/* Ok, the standard procedure is completed and now we want to make the next step
+		/* Ok, the standard procedure is completed, now we want to make the next step
 		and loop through the fields of the item to save these values */
 
 		$curitem->name = str_replace('"', '\'', $input['name']);
@@ -786,6 +804,22 @@ class Model
 			return false;
 		}
 
+		// useAllocater is activated
+		if($this->config->useAllocater == true)
+		{
+			if($ic->alloc($curitem->categoryid) !== true)
+			{
+				$ic->init($categoryid);
+				if(!empty($ic->items))
+				{
+					$ic->simplifyBunch($ic->items);
+					$ic->save();
+				}
+			}
+			$ic->simplify($curitem);
+			$ic->save();
+		}
+
 		$this->getSectionCache()->expire();
 		$this->admin->input['iid'] = $curitem->id;
 
@@ -869,6 +903,11 @@ class Model
 		{
 			MsgReporter::setClause('err_item_delete', array(), true);
 			return false;
+		}
+
+		// useAllocater is activated
+		if($this->config->useAllocater == true) {
+			$ic->deleteSimpleItem($item);
 		}
 
 		/* Item has been successfully deleted, now we have to clean up the image uploads */

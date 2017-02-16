@@ -10,7 +10,7 @@ include($thisfile.'/lib/inc/_def.php');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3.5',
+	'2.3.8',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',
@@ -33,7 +33,7 @@ register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-galler
 register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
 queue_style('jqui', GSBACK);
 queue_style('imstyle', GSBACK);
-queue_style('imstylefonts', GSBOTH);
+queue_style('imstylefonts', GSBACK);
 queue_style('blueimp', GSBACK);
 
 // model

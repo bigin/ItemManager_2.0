@@ -59,11 +59,14 @@
 	transition: all 0.218s ease 0s;
 }
 
+.manager-wrapper input[type="text"] {
+	width: 100%;
+}
+
 .manager-wrapper input[type="submit"] {
 	margin-top: 20px;
 	border-color: #c0c0c0 #b8b8b8 #b8b8b8 #c0c0c0 !important;
 }
-
 
 .manager-wrapper select {
 	appearance: none !important;
@@ -105,11 +108,11 @@
 
 
 .manager-wrapper input.im-title, .manager-wrapper input.text-field {
-	width: 45%;
+	width: 100%;
 }
 
 .manager-wrapper .longtext-field {
-	height: 200px;
+	height: 100%;
 }
 
 .manager-wrapper .fieldarea .container {
@@ -310,7 +313,13 @@ span.redoff:hover {
     color: #555 !important;
     text-decoration:none !important;
 	font-weight: normal !important;
+	border: solid 1px #eee;
 }
+
+.paginator-wrapper a:hover {
+	background-color: #f7f7f7;
+}
+
 .paginator-wrapper span {
     margin: 0 !important;
 }
@@ -323,6 +332,11 @@ span.redoff:hover {
 .paginator-disabled, .paginator-current {
 	padding: 10px;
 	color:#acacac !important;
+	border: solid 1px #eee;
+}
+
+.paginator-current {
+	background-color: #f7f7f7;
 }
 
 .im-arow, .im-brow {

@@ -17,9 +17,9 @@
             <option value="longtext"[[selected-longtext]]>[[lang/longtext_field_value]]</option>
             <option value="dropdown"[[selected-dropdown]]>[[lang/dropdown_field_value]]</option>
             <option value="checkbox"[[selected-checkbox]]>[[lang/checkbox_field_value]]</option>
+			[[filepicker]]
             <option value="editor"[[selected-editor]] >[[lang/editor_field_value]]</option>
             <option value="hidden"[[selected-hidden]]>[[lang/hidden_field_value]]</option>
-            <option value="imageupload"[[selected-imageupload]]>[[lang/file_field_value]]</option>
 			<option value="fileupload"[[selected-fileupload]]>[[lang/datafile_field_value]]</option>
             <option value="password"[[selected-password]]>[[lang/password_field_value]]</option>
             <option value="slug"[[selected-slug]]>[[lang/slug_field_value]]</option>

@@ -55,6 +55,7 @@ $i18n = array(
 	, 'datafile_field_value' => 'File upload field'
 	, 'save_failure' => '<div >The custom fields could not be saved.</div>'
 	, 'customfields_add' => 'Confirm'
+	, 'browse_label' => 'Browse'
 
   //, 'edit_item' => 'Edit [[itemmanager-title]]'
   //, 'create_item' => 'Create new [[itemmanager-title]]'
@@ -130,6 +131,7 @@ $i18n = array(
 	, 'err_save_fields_unique' => '<div >The field names must be unique. The duplicates have been removed.</div>'
 	, 'err_save_fields_maxlength' => '<div >Error saving fields: The field names are limited to a maximum of [[count]] characters.</div>'
 	, 'err_upload_fields_usage' => '<div >The image upload field can only be used once per item.</div>'
+	, 'err_reserved_field_name' => '"[[fieldname]]" is a reserved name - field renamed to "[[newname]]"'
 	, 'create_cat_backups' => 'Automatic category backup'
 	, 'create_field_backups' => 'Automatic fields backup before changing'
 	, 'cat_backups_dir' => 'Backup directory for categories'

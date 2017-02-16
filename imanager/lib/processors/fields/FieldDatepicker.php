@@ -25,7 +25,7 @@ class FieldDatepicker implements FieldInterface
 		$textfield = $this->tpl->getTemplate('text', $itemeditor);
 
 		// let's check selected notation
-		$format = isset($this->configs->format) ? $this->configs->format : '';
+		$format = isset($this->configs->format) ? $this->configs->format : 'yy-mm-dd';
 
 		$value = '';
 		if(!empty($this->value))
@@ -48,7 +48,7 @@ class FieldDatepicker implements FieldInterface
 					$value = date('d.m.Y', $this->value);
 					break;
 				default:
-					$value = date('Y-m-d', $this->value);
+					$value = @date('Y-m-d', $this->value);
 					break;
 			}
 		}
@@ -57,14 +57,14 @@ class FieldDatepicker implements FieldInterface
 				'name' => $this->name,
 				'class' => $this->class,
 				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
-				'id' => 'datepicker',
+				'id' => 'dp'.$this->id,
 				'value' => $value), true, array()
 		);
 
 		$output .= '
 		<script>
 			$(function() {
-				$( "#datepicker" ).datepicker({
+				$( "#dp'.$this->id.'" ).datepicker({
 					dateFormat: "'. $format .'"
 				});
 			});

@@ -2,13 +2,14 @@
 
 class MsgReporter
 {
+	public static $plugin = 'imanager';
 	private static $_msgs=array();
 	private static $error_code;
 	private static $error=false;
 
 	public static function setClause($name, array $var=array(), $error=false, $dir=false)
 	{
-		i18n_merge('imanager') || i18n_merge('imanager','en_US');
+		i18n_merge(self::$plugin) || i18n_merge(self::$plugin,'en_US');
 		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
 		$o = i18n_r($dir . $name);
 		if(empty($var))
@@ -21,21 +22,27 @@ class MsgReporter
 			}
 			return;
 		}
-		foreach($var as $key => $value)
-		{
-			if($error) {
-				self::setError();
-				$o = '<li class="error">'.preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o).'</li>';
-			} else {
-				$o = '<li class="notify">'.preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o).'</li>';
+
+
+		if($error) {
+			foreach($var as $key => $value) {
+				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
 			}
+			self::setError();
+			$o = '<li class="error">'.$o.'</li>';
+		} else {
+			foreach($var as $key => $value) {
+				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
+			}
+			$o = '<li class="notify">'.$o.'</li>';
 		}
+
 		self::$_msgs[] = $o;
 	}
 
 	public static function getClause($name, array $var=array(), $dir=false)
 	{
-		i18n_merge('imanager') || i18n_merge('imanager','en_US');
+		i18n_merge(self::$plugin) || i18n_merge(self::$plugin,'en_US');
 		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
 		$o = i18n_r($dir . $name);
 		if(empty($var))

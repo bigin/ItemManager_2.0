@@ -33,7 +33,7 @@ class Admin
 		$o = array('head' => '', 'msg' => '', 'content' => '' );
 		// display category selector flag
 
-		// first check if the category and select one to be current
+		// Check if the category selected and make one to current
 		if(isset($this->input['reloader']) && isset($this->input['post-category']))
 			$this->manager->cp->setCategory($this->input['post-category']);
 		elseif(!empty($this->input['catsender']) && !empty($this->input['cat']))
@@ -543,6 +543,7 @@ class Admin
 		$fields = $this->tpl->getTemplates('fields');
 		$form = $this->tpl->getTemplate('form', $fields);
 		$row = $this->tpl->getTemplate('row', $fields);
+		$filepicker = $this->tpl->getTemplate('filepicker', $fields);
 		$js = $this->tpl->getTemplate('js', $fields);
 		$link = $this->tpl->getTemplate('link', $fields);
 		$details = $this->tpl->getTemplate('details', $fields);
@@ -575,12 +576,16 @@ class Admin
 		// Ok, there are no fields available for this category, so just do show the hidden stuff
 		if(!$cf->fields)
 		{
+			// render file picker field
+			$filepicker = $this->tpl->render($filepicker, array());
 			// render row template
 			$tplrow .=  $this->tpl->render($row, array('tr-class' => 'hidden',
 					'i' => 0,
 					'id' => '',
 					'key' => '',
 					'label' => '',
+					'filepicker' => (file_exists(GSPLUGINPATH.'i18n_customfields/browser/filebrowser.php') ?
+							$filepicker : ''),
 					'area-display' => 'display: none',
 					'text-options' => ''), true
 			);
@@ -608,17 +613,22 @@ class Admin
 			// render details link
 			$tpldetails = $this->tpl->render($details, array('field-id' => $f->get('id')), true, array());
 
+			// render file picker field
+			$filepicker = $this->tpl->render($filepicker, array());
+
 			//$rowbuffer = $this->tpl->render($row, array());
 			$tplrow .= $this->tpl->render($row, array(
-					'selected-'.$f->type => ' selected="selected" ',
 					'tr-class' => 'sortable',
 					'i' => $i,
 					'field-details' => $tpldetails,
 					'id' => $f->get('id'),
 					'key' => isset($f->name) ? $f->name : '',
 					'label' => isset($f->label) ? $f->label : '',
+					'filepicker' => (file_exists(GSPLUGINPATH.'i18n_customfields/browser/filebrowser.php') ?
+							$filepicker : ''),
 					'area-display' => !$isdropdown ? 'display:none' : '',
 					'text-options' => isset($f->default) ? htmlentities($f->default) : '',
+					'selected-'.$f->type => ' selected="selected" ',
 					'area-options' => $options), true
 			);
 		}
@@ -865,7 +875,22 @@ class Admin
 			if($item)
 			{
 				$item->active = ($item->active == 1) ? '' : 1;
-				$item->save();
+
+				// useAllocater is activated
+				if($item->save() && $configs->useAllocater == true)
+				{
+					if($ic->alloc($item->categoryid) !== true)
+					{
+						$ic->init($item->categoryid);
+						if(!empty($ic->items))
+						{
+							$ic->simplifyBunch($ic->items);
+							$ic->save();
+						}
+					}
+					$ic->simplify($item);
+					$ic->save();
+				}
 			}
 		}
 

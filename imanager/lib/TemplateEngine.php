@@ -11,15 +11,23 @@ class TemplateEngine
 	 */
 	private $tplpath;
 
+	/**
+	 * @param string $plugin
+	 */
+	private $plugin;
 
-	public function __construct($path=''){$this->tplpath = !empty($path) ? $path : IM_TEMPLATE_DIR;}
+	public function __construct($path='') {
+		$this->tplpath = !empty($path) ? $path : IM_TEMPLATE_DIR;
+		$this->plugin = 'imanager';
+	}
 
 	/**
 	 * Initializes all the templates and made them available in ImTplEngine::$templates
 	 */
-	public function init($path='')
+	public function init($path='', $plugin = '')
 	{
 		$this->tplpath = !empty($path) ? $path : $this->tplpath;
+		$this->plugin = !empty($plugin) ? $plugin : 'imanager';
 		$templates = array();
 		foreach (glob($this->tplpath . '*' . IM_TEMPLATE_FILE_SUFFIX) as $file)
 		{
@@ -202,6 +210,7 @@ class TemplateEngine
 			foreach($tvs as $key => $val)
 				$tpl->content = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $val, $tpl->content);
 
+
 		if($clean) return preg_replace('%\[\[(.*)\]\]%', '', $tpl->content);
 
 		return $tpl->content;
@@ -219,8 +228,8 @@ class TemplateEngine
 
 		if(empty($lvs))
 		{
-			$lvs = $this->imI18n('imanager');
-			if(!$lvs) $lvs = $this->imI18n('imanager','en_US');
+			$lvs = $this->imI18n($this->plugin);
+			if(!$lvs) $lvs = $this->imI18n($this->plugin,'en_US');
 		}
 		if(empty($lvs)) return false;
 

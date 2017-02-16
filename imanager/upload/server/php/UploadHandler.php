@@ -1093,8 +1093,8 @@ class UploadHandler
     }
 
     protected function get_image_size($file_path) {
-        if ($this->options['image_library']) {
-            if (extension_loaded('imagick')) {
+        if($this->options['image_library']) {
+            if(extension_loaded('imagick')) {
                 $image = new \Imagick();
                 try {
                     if (@$image->pingImage($file_path)) {

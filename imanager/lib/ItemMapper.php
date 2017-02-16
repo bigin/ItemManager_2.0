@@ -1,5 +1,5 @@
 <?php
-class ItemMapper
+class ItemMapper extends Allocator
 {
 	/**
 	 * @var array of the objects of type Item
@@ -8,7 +8,7 @@ class ItemMapper
 	/**
 	 * @var string filter by node
 	 */
-	private $filterby;
+	protected $filterby;
 	/**
 	 * @var boolean indicates to searchig field values
 	 */
@@ -338,7 +338,7 @@ class ItemMapper
 
 					foreach($xml->field as $fieldkey => $field)
 					{
-						if( $new_field->get('id') == $field->id)
+						if( $new_field->id == $field->id)
 						{
 							$inputClassName = 'Input'.ucfirst($new_field->type);
 							$InputType = new $inputClassName($fc->fields[$name]);
@@ -372,7 +372,7 @@ class ItemMapper
 					$item->fields->$name = $new_field;
 				}
 
-				$this->items[$catid][$item->get('id')] = $item;
+				$this->items[$catid][$item->id] = $item;
 			}
 		}
 		$this->total = count($this->items);
@@ -387,7 +387,7 @@ class ItemMapper
 	 * @return int
 	 */
 	public function countItems(array $items=array())
-	{$locitems = !empty($items) ? $items : $this->items; return count($locitems);}
+	{return !empty($items) ? count($items) : count($this->items);}
 
 
 	/**
@@ -786,11 +786,11 @@ class ItemMapper
 	 */
 	public function destroyItem(Item $item, $re = false)
 	{
-		if(file_exists(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX))
+		if(file_exists(IM_ITEM_DIR.$item->id.'.'.$item->categoryid.IM_ITEM_FILE_SUFFIX))
 		{
-			unlink(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX);
+			unlink(IM_ITEM_DIR.$item->id.'.'.$item->categoryid.IM_ITEM_FILE_SUFFIX);
 			// reinitialize items
-			if($re) $this->init($item->get('categoryid'));
+			if($re) $this->init($item->categoryid);
 			return true;
 		}
 		return false;
@@ -916,7 +916,7 @@ class ItemMapper
 						}
 
 
-						$res[$item->get('id')] = $item;
+						$res[$item->id] = $item;
 					}
 
 				// Searching for fields in complex value types
@@ -951,7 +951,7 @@ class ItemMapper
 									continue;
 							}
 
-							$res[$item->get('id')] = $item;
+							$res[$item->id] = $item;
 
 						}
 					}
@@ -972,7 +972,7 @@ class ItemMapper
 	 * @param $a $b objects to be sorted
 	 * @return boolean
 	 */
-	private function sortObjects($a, $b)
+	protected function sortObjects($a, $b)
 	{
 		if(!$this->fieldflag)
 		{
@@ -1029,7 +1029,7 @@ class ItemMapper
 		if(!is_array($itemcontainer)) return false;
 		$result = array();
 		foreach($itemcontainer as $val)
-			$result[$val->get('id')] = $val;
+			$result[$val->id] = $val;
 		return $result;
 	}
 
@@ -1064,11 +1064,10 @@ class ItemMapper
 
 		$page = (!empty($params['page']) ? $params['page'] : (isset($_GET['page']) ? (int) $_GET['page'] : 1));
 		$params['items'] = !empty($params['count']) ? $params['count'] : $this->total;
-		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : 'page=';
+		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : '?page=';
 		$start = !empty($params['start']) ? $params['start'] : 1; // todo: remove it
 
-		$maxitemperpage = ((int) $config->backend->maxitemperpage > 0) ?
-			$config->backend->maxitemperpage : 20;
+		$maxitemperpage = ((int) $config->backend->maxitemperpage > 0) ? $config->backend->maxitemperpage : 20;
 		$limit = !empty($params['limit']) ? $params['limit'] : $config->backend->maxitemperpage;
 		$adjacents = !empty($params['adjacents']) ? $params['adjacents'] : 3;
 		$lastpage = !empty($params['lastpage']) ? $params['lastpage'] : ceil($params['items'] / $limit);
