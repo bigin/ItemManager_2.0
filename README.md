@@ -106,7 +106,7 @@ $item = $imanager->getItemMapper()->findItem("name=$slug");
 $items = $imanager->getItemMapper()->findItems('created > '.strtotime('-2 day', time()));
 ```
 
-More infos about ItemManager's items: [Working with Items](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-items/)
+More infos about ItemManager's items: [Working with Items](https://ehret-studio.com/lab/itemmanager/itemmanager-2-api-reference-working-with-items/)
 
 
 Access a category:
@@ -125,10 +125,10 @@ $category = $imanager->getCategory('position=2');
 // ...
 ```
 
-More infos about ItemManager's categories: [Working with Categories](http://ehret-studio.com/lab/2015/mai/itemmanager-2.0-api-reference-categories/)
+More infos about ItemManager's categories: [Working with Categories](https://ehret-studio.com/lab/itemmanager/itemmanager-2-api-reference-working-with-categories/)
 
 
-For more information how to use ItemManager see also: http://ehret-studio.com/lab/2015/mai/itemmanager-2.0
+For more information how to use ItemManager see also: https://ehret-studio.com/lab/itemmanager/
 
 
 ##Tutorials, tips & experiments
@@ -138,6 +138,7 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 - [How to add additional text under the GetSimple's page edit menu](http://get-simple.info/forums/showthread.php?tid=8664)
 - [MarkupSectionCache for ItemManager](http://get-simple.info/forums/showthread.php?tid=8016)
 - [CategoryJoins for ItemManager](http://get-simple.info/forums/showthread.php?tid=8017)
+- [The use of SimpleItem objects](https://ehret-studio.com/lab/itemmanager/the-use-of-simpleitem-objects/)
 
 ##ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
@@ -152,7 +153,7 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 **2.3.8** 
 
-NEW: Item Allocator class - makes easy and quickly work with a huge number of items (1000 >). Also, it simplifies the use of item object, as only the  "light-weigth" objects will be loaded into the memory, therefore overhead will be significant reduced. Usage example
+NEW: Item Allocator class - makes easy and quickly work with a huge number of items (1000 >). Also, it simplifies the use of item object, as only the  "light-weigth" objects will be loaded into the memory, therefore overhead will be significant reduced. Usage [example](https://ehret-studio.com/lab/itemmanager/the-use-of-simpleitem-objects/)
 > NOTE: You can deactivate this function at any time via the `$this->useAllocater = false` in `/plugins/imanager/lib/inc/config.php` file. 
 
 
