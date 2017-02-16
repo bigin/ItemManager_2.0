@@ -150,6 +150,43 @@ For more information how to use ItemManager see also: http://ehret-studio.com/la
 
 ##Changelog:
 
+**2.3.8** 
+
+NEW: Item Allocator class - makes easy and quickly work with a huge number of items (1000 >). Also, it simplifies the use of item object, as only the  "light-weigth" objects will be loaded into the memory, therefore overhead will be significant reduced. Usage example
+> NOTE: You can deactivate this function at any time via the `$this->useAllocater = false` in `/plugins/imanager/lib/inc/config.php` file. 
+
+
+NEW: FieldFilepicker - File picker field has been implemented, which makes it possible, using the functions of `i18n_customfields` plugin, the use of GetSimple native images and files from `uploads` directory - at this point many thanks to tomot for his help!
+> NOTE: This field is enabled only if "i18n_customfields" plugin is in the GS `/plugins/` directory (no installation is necessary). 
+
+
+MODIFICATION: CSS changes - Minimal style changes of pagination and field width.
+
+
+MODIFICATION: FieldImageupload - Is deprecated and was replaced with newer FieldFileupload field. For compatibility reasons, the FieldImageupload's are still supported, though no longer available when selecting the fields in back-end.
+
+
+BUGFIX: FieldDatepicker - When selecting the date, when the date format was not specified. 
+
+
+BUGFIX: FieldDatepicker - When you are use several date picker fields (thanks to tomot). 
+
+
+BUGFIX: Check reserved field names when you save category fields. 
+
+
+BUGFIX: Message Reporter - Multiple messages rendering. 
+
+
+BUGFIX:	Setup - The date format issue (thanks to morvy for reporting this bug).
+
+
+BUGFIX: Template Engine - fixed some minor bugs. 
+
+
+BUGFIX: FontAwesome - Restrict include to back-end (thanks to morvy). 
+
+
 **2.3.5**
 
 BUGFIX: Chunk field bug is fixed
