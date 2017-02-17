@@ -10,7 +10,7 @@ include($thisfile.'/lib/inc/_def.php');
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3.8',
+	'2.3.9',
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',
@@ -57,6 +57,7 @@ function imanager($name='')
 
 /**
  * Loads ItemManager's backend, executed inside admin panel only
+ *
  */
 function im_render_backend($arg=null)
 {
@@ -83,6 +84,7 @@ function im_render_backend($arg=null)
 	}
 }
 
+
 function ajaxGetLists()
 {
 	global $im;
@@ -97,7 +99,6 @@ function ajaxGetLists()
 			echo $im->admin->display();
 			exit();
 		}
-
 	}
 }
 
