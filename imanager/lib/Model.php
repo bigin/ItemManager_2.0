@@ -88,7 +88,6 @@ class Model
 		//if($this->actionsProcessor === null)
 			//$this->actionsProcessor = new ActionsProcessor();
 		//return $this->actionsProcessor->{$method}($args);
-
 		//return $this->{$method}($args);
 	}
 

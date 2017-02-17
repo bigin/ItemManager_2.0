@@ -41,11 +41,12 @@ class Allocator
 	}
 
 
-	protected function unsetItem(int $id) { unset($this->simpleItems[$id]); }
+	protected function unsetItem($id) { unset($this->simpleItems[(int)$id]); }
 
 
-	public function disalloc(int $catid) {
-		if(file_exists(IM_BUFFER_CACHE_DIR.'/'.$catid.'.php')) { unlink(IM_BUFFER_CACHE_DIR.'/'.$catid.'.php'); }
+	public function disalloc($catid) {
+		$id = (int)$catid;
+		if(file_exists(IM_BUFFER_CACHE_DIR.'/'.$id.'.php')) { unlink(IM_BUFFER_CACHE_DIR.'/'.$id.'.php'); }
 	}
 
 
