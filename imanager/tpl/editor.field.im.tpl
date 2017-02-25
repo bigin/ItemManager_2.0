@@ -6,19 +6,19 @@
 		forcePasteAsPlainText : true,
 		language : '[[edlanguage]]',
 		defaultLanguage : 'en',
-			[[content-css]]
-	entities : false,
-			uiColor : '#FFFFFF',
-			height: '[[edheight]]',
-			baseHref : '[[siteurl]]',
-			toolbar :
-	[[toolbar]]
-			[[edoptions]]
-	tabSpaces:10,
-			filebrowserBrowseUrl : 'filebrowser.php?type=all',
-			filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
-			filebrowserWindowWidth : '730',
-			filebrowserWindowHeight : '500'
+		[[content-css]]
+		entities : false,
+		uiColor : '#FFFFFF',
+		height: '[[edheight]]',
+		baseHref : '[[siteurl]]',
+		toolbar :
+		[[toolbar]]
+		[[edoptions]]
+		tabSpaces:10,
+		filebrowserBrowseUrl : 'filebrowser.php?type=all',
+		filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
+		filebrowserWindowWidth : '730',
+		filebrowserWindowHeight : '500'
 	});
 	[[setup-editor]]
 </script>
