@@ -162,20 +162,19 @@ class FieldEditor implements FieldInterface
 		$edtool = 'basic';
 		if (defined('GSEDITORTOOL'))
 			$edtool = GSEDITORTOOL;
-		$edoptions = '';
-		if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="")
-			$edoptions = ", ".GSEDITOROPTIONS;
+		$edoptions = (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS) != '') ? GSEDITOROPTIONS.',' : '';
 
 		if ($edtool == 'advanced') {
 			$toolbar = "
-            ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+            [ ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
             '/',
-            ['Styles','Format','Font','FontSize']
+            ['Styles','Format','Font','FontSize'] ],
             ";
 		} elseif ($edtool == 'basic') {
-			$toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']";
+			$toolbar = "[ ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'] ],";
 		} else {
-			$toolbar = GSEDITORTOOL;
+			$toolbar = '[ '.GSEDITORTOOL. ' ],
+			';
 		}
 
 		$csspath = '';
