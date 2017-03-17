@@ -1,7 +1,7 @@
 <div class="manager-wrapper">
 <form class="largeform" action="load.php?id=imanager&settings&settings_edit" method="post" accept-charset="utf-8">
 	<div class="im-tabs">
-		<ul class="tab-links">
+		<ul class="im-tab-links">
 			<li class="active"><a href="#tab1">[[lang/general_settings]]</a></li>
 			<li><a href="#tab2">[[lang/admin_settings]]</a></li>
 		</ul>
@@ -253,7 +253,7 @@
 	</div>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		$('.im-tabs .tab-links a').on('click', function(e)  {
+		$('.im-tabs .im-tab-links a').on('click', function(e)  {
 			var currentAttrValue = jQuery(this).attr('href');
 
 			// Show/Hide Tabs

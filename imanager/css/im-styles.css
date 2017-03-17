@@ -563,7 +563,7 @@ form a.deletefield:hover {
 
 /*----- Tab Links -----*/
 
-.wrapper #maincontent ul.tab-links {
+.wrapper #maincontent ul.im-tab-links {
 	margin-bottom: 0;
 	padding-bottom: 0;
 }
@@ -651,19 +651,19 @@ form a.deletefield:hover {
 
 
 /* Clearfix */
-.tab-links:after {
+.im-tab-links:after {
 	display: block;
 	clear: both;
 	content: '';
 }
 
-.tab-links li {
+.im-tab-links li {
 	margin:0px 5px;
 	float:left;
 	list-style:none;
 }
 
-.wrapper .tab-links a {
+.wrapper .im-tab-links a {
 	font-size: 12px;
 	font-weight: bold;
 	color: #333;
@@ -672,7 +672,7 @@ form a.deletefield:hover {
 	text-decoration: none;
 }
 
-.tab-links a {
+.im-tab-links a {
 	padding: 7px 14px;
 	display:inline-block;
 	border-radius:3px 3px 0px 0px;
@@ -685,7 +685,7 @@ form a.deletefield:hover {
 	border-color-right: #c8c8c8;
 }
 
-.tab-links a:hover {
+.im-tab-links a:hover {
 	background: #f6f5f8;
 	text-decoration: none;
 }

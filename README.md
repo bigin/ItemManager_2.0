@@ -1,4 +1,4 @@
-#ItemManager 2
+# ItemManager 2
 
 ItemManager (IM) is a simple flat-file framework for GetSimple-CMS that allows you to develop completely customisable
 PHP applications bundled with GetSimple-CMS.
@@ -52,7 +52,7 @@ plugins:
 - Substitutions for small databases
 - etc
 
-##Installation Instructions:
+## Installation Instructions:
 
 **Installing ItemManager 2.* from the ZIP file:**
 You can download the current version of the ItemManager on GitHub. Unzip the downloaded file and copy its
@@ -76,7 +76,7 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 > NOTE: Backup any files you replace or delete!
 
-##Usage:
+## Usage:
 
 Here’s a simple ItemManager call, that you can use anywhere in your template files or in your own plugins to get a
 current ItemManager class instance:
@@ -131,7 +131,7 @@ More infos about ItemManager's categories: [Working with Categories](https://ehr
 For more information how to use ItemManager see also: https://ehret-studio.com/lab/itemmanager/
 
 
-##Tutorials, tips & experiments
+## Tutorials, tips & experiments
 - [Resizing images on the fly](https://bigin.github.io/ghpages/resizeimage/)
 - [How to make content of the GS components a little more page-based](https://bigin.github.io/ghpages/pagelayout/)
 - [ItemManager Simplify Field Value Access](https://bigin.github.io/ghpages/simplification/)
@@ -140,7 +140,7 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 - [CategoryJoins for ItemManager](http://get-simple.info/forums/showthread.php?tid=8017)
 - [The use of SimpleItem objects](https://ehret-studio.com/lab/itemmanager/the-use-of-simpleitem-objects/)
 
-##ItemManager extensions and plugins:
+## ItemManager extensions and plugins:
 - [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
 ([Gallery example](http://ehret-studio.com/gallery/))
@@ -149,7 +149,7 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 - [Frontainer User Management plugin](http://get-simple.info/extend/plugin/frontainer/1015/)
 ([Sign up / Login / Logout / Password recovery](http://im.ehret-studio.com/login/))
 
-##Changelog:
+## Changelog:
 
 **2.3.8** 
 
