@@ -708,11 +708,11 @@ li.active a {
 	background: #fff;
 }
 
-.tab {
+.im-tab {
 	display:none;
 }
 
-.tab.active {
+.im-tab.active {
 	display:block;
 }
 

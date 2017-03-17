@@ -7,7 +7,7 @@
 		</ul>
 
 		<div class="tab-content">
-			<div id="tab1" class="tab active">
+			<div id="tab1" class="im-tab active">
 				<h3 class="menuglava">[[lang/general_settings]]</h3>
 				[[lang/general_settings_tab_text]]
 				<div class="fieldarea">
@@ -61,7 +61,7 @@
 
 			</div>
 
-			<div id="tab2" class="tab">
+			<div id="tab2" class="im-tab">
 				<h3 class="menuglava">[[lang/admin_settings]]</h3>
 				[[lang/backend_settings_tab_text]]
 				<div class="fieldarea">
@@ -239,12 +239,12 @@
 
 			</div>
 
-			<div id="tab3" class="tab">
+			<div id="tab3" class="im-tab">
 				<p>Tab #3 content goes here!</p>
 				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
 			</div>
 
-			<div id="tab4" class="tab">
+			<div id="tab4" class="im-tab">
 				<p>Tab #4 content goes here!</p>
 				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
 			</div>
