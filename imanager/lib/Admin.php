@@ -141,7 +141,7 @@ class Admin
 		}
 
 		// show item list menu
-		elseif(Model::$installed && !$msg)
+		elseif(Manager::$installed && !$msg)
 		{
 			// ajax
 			if(isset($this->input['getitemlist']))
@@ -298,16 +298,15 @@ class Admin
 
 		//category rows
 		$tplrow = '';
+		$ic = $this->manager->getItemMapper();
 		foreach($categoryMapper->categories as $cat)
 		{
-			$ic = $this->manager->getItemMapper();
-			$ic->init($cat->get('id'));
-			$count = $ic->countItems();
+			$count = $ic->quickCount($cat->id);
 
 			$tplrow .= $this->tpl->render($row, array(
 					'cat-position' => $cat->position,
 					'categoryname' => $cat->name,
-					'category' => $cat->get('id'), 'count' => $count), true, array()
+					'category' => $cat->id, 'count' => $count), true, array()
 			);
 		}
 
@@ -394,20 +393,16 @@ class Admin
 			$category->categories = $category->filterCategories($filterby, $option, $start, $perpage, $category->categories);
 		}
 
-
 		//category rows
 		$tplrow = '';
+		$ic = $this->manager->getItemMapper();
 		foreach($category->categories as $cat)
 		{
-			$ic = $this->manager->getItemMapper();
-			//$ic->init($cat->get('id'));
-			$ic->quickInit($cat->id, array());
-			$count = $ic->countItems();
-
+			$count = $ic->quickCount($cat->id);
 			$tplrow .= $this->tpl->render($row, array(
 				'cat-position' => $cat->position,
 				'categoryname' => $cat->name,
-				'category' => $cat->get('id'), 'count' => $count), true, array());
+				'category' => $cat->id, 'count' => $count), true, array());
 		}
 
 		return $tplrow;
@@ -517,7 +512,8 @@ class Admin
 		$id = $cat->get('id');
 		$name = !empty($this->input['name']) ? $this->input['name'] : $cat->get('name');
 		$slug = !empty($this->input['slug']) ? $this->input['slug'] : $cat->get('slug');
-		$positon = !empty($this->input['position']) ? $this->input['position'] : $cat->get('position');
+		$position = !empty($this->input['position']) ? $this->input['position'] : $cat->get('position');
+
 		$position = !empty($position) ? $position : $cat->get('id');
 
 		// get settings
@@ -853,7 +849,7 @@ class Admin
 		$ic->init($curcatid);
 		//$ic->quickInit($curcatid, array('id', 'name', 'position', 'created', 'updated'), ($start-1), (($start-1) * $maxitemperpage));
 
-		$count = $ic->countItems();
+		$count = $ic->quickCount($curcatid);
 		//$count = $ic->total;
 
 		// order items
@@ -874,7 +870,7 @@ class Admin
 			$item = $ic->getItem($id);
 			if($item)
 			{
-				$item->active = ($item->active == 1) ? '' : 1;
+				$item->active = ($item->active == 1) ? 0 : 1;
 
 				// useAllocater is activated
 				if($item->save() && $configs->useAllocater == true)
@@ -1003,7 +999,8 @@ class Admin
 		$ic = $this->manager->getItemMapper();//new ImItem();
 		$ic->init($curcategoryid);
 
-		$count = $ic->countItems();
+		$count = $ic->quickCount($curcategoryid);
+		//$count = $ic->countItems();
 
 		$sanitizer = $this->manager->sanitizer;
 
@@ -1052,19 +1049,30 @@ class Admin
 			}
 		}
 
-		// change position of items
+		// change position of the items
 		$ic->filterItems($filterby, $filteroption, $start, $maxitemperpage);
 
 		if(!empty($this->input['positions']) && !empty($ic->items))
 		{
 			foreach($this->input['positions'] as $element)
 			{
-				if(!isset($ic->items[$element['id']]->position) || !isset($element['position']))
-					continue;
+				if(!isset($ic->items[$element['id']]->position) || !isset($element['position'])) continue;
 				if($ic->items[$element['id']]->position != $element['position'])
 				{
 					$ic->items[$element['id']]->position = $element['position'];
-					$ic->items[$element['id']]->save();
+					if($ic->items[$element['id']]->save() && $configs->useAllocater == true) {
+						if($ic->alloc($ic->items[$element['id']]->categoryid) !== true)
+						{
+							$ic->init($ic->items[$element['id']]->categoryid);
+							if(!empty($ic->items))
+							{
+								$ic->simplifyBunch($ic->items);
+								$ic->save();
+							}
+						}
+						$ic->simplify($ic->items[$element['id']]);
+						$ic->save();
+					}
 				}
 			}
 			// refilter output

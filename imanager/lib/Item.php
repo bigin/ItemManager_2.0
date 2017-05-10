@@ -156,8 +156,8 @@ class Item
 			$xml->name = $this->name;
 			$xml->label = $this->label;
 			$xml->position = !is_null($this->position) ? $this->position : $this->id;
+			$this->position = (int)$xml->position;
 			$xml->active = $this->active;
-
 			$xml->created = $this->created;
 			$xml->updated = $this->updated;
 
@@ -211,6 +211,7 @@ class Item
 			$xml->name = $this->name;
 			$xml->label = $this->label;
 			$xml->position = !is_null($this->position) ? $this->position : $this->id;
+			$this->position = (int)$xml->position;
 			$xml->active = $this->active;
 
 			$xml->created = $this->created;
@@ -303,6 +304,7 @@ class Item
 		$xml->name = $this->name;
 		$xml->label = $this->label;
 		$xml->position = !is_null($this->position) ? $this->position : $this->id;
+		$this->position = (int)$xml->position;
 		$xml->active = $this->active;
 		$xml->created = $this->created;
 		$xml->updated = $this->updated;
@@ -366,11 +368,9 @@ class Item
 		}
 	}
 
-	// todo: Wird die hier noch verwendet?
-	public function getFieldValue($fieldid)
+	public function getFieldValue($fielname)
 	{
-		foreach($this->fields as $key => $val)
-			var_dump($val);
+		return ($this->fields->{$fielname}->value) ? $this->fields->{$fielname}->value : '';
 	}
 
 	protected function getFieldsDataToSave()

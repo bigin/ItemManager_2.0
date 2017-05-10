@@ -54,10 +54,38 @@ class Util
 		fclose($handle);
 	}
 
-	public static function preformat($data)
-	{
-		echo '<pre>'.print_r($data, true).'</pre>';
-	}
+	public static function preformat($data){echo '<pre>'.print_r($data, true).'</pre>';}
 
 	public static function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
+
+	/**
+	 * Check the PHP_INT_SIZE constant. It'll vary based on the size of the register (i.e. 32-bit vs 64-bit)
+	 * In 32-bit systems PHP_INT_SIZE should be 4, for 64-bit it should be 8
+	 *
+	 * @return int
+	 */
+	public static function getIntSize() {return PHP_INT_SIZE;}
+
+	/**
+	 * Function to compute the unsigned crc32 value.
+	 * PHP crc32 function returns int which is signed, so in order to get the correct crc32 value
+	 * we need to convert it to unsigned value.
+	 *
+	 * NOTE: it produces different results on 64-bit compared to 32-bit PHP system
+	 *
+	 * @param $str - String to compute the unsigned crc32 value.
+	 * @return $var - Unsinged inter value.
+	 */
+	public static function computeUnsignedCRC32($str)
+	{
+		sscanf(crc32($str), "%u", $var);
+		return $var;
+	}
+
+
+	public static function redirect($url, $flag = true, $statusCode = 303)
+	{
+		header('Location: ' . htmlspecialchars($url), $flag, $statusCode);
+		die();
+	}
 }

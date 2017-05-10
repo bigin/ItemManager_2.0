@@ -209,6 +209,10 @@ class UploadHandler
         if ($initialize) {
             $this->initialize();
         }
+
+//		$so = ob_get_contents();
+//		Util::dataLog($so);
+//		ob_end_clean();
     }
 
     protected function initialize() {
@@ -394,10 +398,6 @@ class UploadHandler
 
     protected function is_valid_file_object($file_name) {
         $file_path = $this->get_upload_path($file_name);
-		// 1. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/.
-		// 2. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/..
-		// 3. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/stock-vector-woman-face-102496163.jpg
-		// 4. /Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/11.18/thumbnail
         if (is_file($file_path) && $file_name[0] !== '.') {
             return true;
         }
@@ -446,8 +446,8 @@ class UploadHandler
 
 	private function sortObjects($a, $b)
 	{
-		$a = $a->position;
-		$b = $b->position;
+		$a = !empty($a->position) ? $a->position : '';
+		$b = !empty($b->position) ? $b->position : '';
 		if($a == $b) {
 			return 0;
 		}
@@ -475,16 +475,17 @@ class UploadHandler
 
     function get_config_bytes($val) {
         $val = trim($val);
+		$int = filter_var($val, FILTER_VALIDATE_INT, FILTER_FLAG_ALLOW_HEX);
         $last = strtolower($val[strlen($val)-1]);
         switch($last) {
             case 'g':
-                $val *= 1024;
+				$int *= 1024;
             case 'm':
-                $val *= 1024;
+				$int *= 1024;
             case 'k':
-                $val *= 1024;
+				$int *= 1024;
         }
-        return $this->fix_integer_overflow($val);
+        return $this->fix_integer_overflow($int);
     }
 
     protected function validate($uploaded_file, $file, $error, $index) {

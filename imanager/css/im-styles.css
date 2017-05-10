@@ -5,6 +5,11 @@
     border-bottom: solid 1px #c8c8c8;
 }
 
+/* colors only */
+.redtext {
+	color: #CF3805;
+}
+
 /* Veschiedene Elemente */
 
 .im-toggle {
@@ -27,6 +32,10 @@
 
 .manager-wrapper {
 	box-sizing: border-box;
+}
+
+.readonly:read-only {
+	background-color: #efefef;
 }
 
 /* Alle Inputs */
@@ -305,6 +314,11 @@ span.redoff:hover {
 
 #im-info-row span {
     margin-left:10px;
+}
+
+.paginator-wrapper {
+	line-height: 30px;
+	margin: 0 0 15px 0 !important;
 }
 
 .paginator-wrapper a {

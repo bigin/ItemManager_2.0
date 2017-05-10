@@ -118,23 +118,22 @@ class ItemMapper extends Allocator
 	 * A limited init method, very useful when you wish to select only one or a few items
 	 *
 	 * @param integer $catid  - Category ID to be searched through
-	 * @param integer $from   - Define start index for the loop
-	 * @param integer $too    - Define max number of items in selected array
+	 * @param integer $from   - Define start id index for the loop
+	 * @param integer $limit    - Define max id of items in selected array
 	 */
-	public function limitedInit($catid, $from, $too=null)
+	public function limitedInit($catid, $index, $limit=0)
 	{
 		// nitialize the fields class
 		$fc = new FieldMapper();
 		$fc->init($catid);
 		$this->items = array();
 
-		if(is_null($too)){$too = ($from+1);}
-
-
-		for($i = $from; $i < $too; $i++)
+		if($limit == 0) $limit = ($index+1);
+		else $limit++;
+		for($i = $index; $i < $limit; $i++)
 		{
 			$res = glob(IM_ITEM_DIR.$i.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT);
-			if(empty($res)) return false;
+			if(empty($res)) continue;
 			$file = $res[0];
 
 			$base = basename($file, IM_ITEM_FILE_SUFFIX);
@@ -388,6 +387,15 @@ class ItemMapper extends Allocator
 	 */
 	public function countItems(array $items=array())
 	{return !empty($items) ? count($items) : count($this->items);}
+
+
+	/**
+	 * Count all items in a category, it is best to use this method, not init() then countItems()
+	 */
+	public function quickCount($catid)
+	{
+		return count(glob(IM_ITEM_DIR.'*.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT));
+	}
 
 
 	/**
@@ -1064,6 +1072,7 @@ class ItemMapper extends Allocator
 
 		$page = (!empty($params['page']) ? $params['page'] : (isset($_GET['page']) ? (int) $_GET['page'] : 1));
 		$params['items'] = !empty($params['count']) ? $params['count'] : $this->total;
+
 		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : '?page=';
 		$start = !empty($params['start']) ? $params['start'] : 1; // todo: remove it
 
@@ -1081,9 +1090,9 @@ class ItemMapper extends Allocator
 			return $tpl->render($tpls['wrapper'], array('value' => ''), true);
 
 		$output = '';
-
+		// $pageurl . '1'
 		if($page > 1)
-			$output .= $tpl->render($tpls['prev'], array('href' => $pageurl . $prev), true);
+			$output .= $tpl->render($tpls['prev'], array('href' => $pageurl . '1'), true);
 		else
 			$output .= $tpl->render($tpls['prev_inactive'], array(), true);
 
@@ -1097,12 +1106,13 @@ class ItemMapper extends Allocator
 					$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 				} else
 				{
+					// $pageurl . '1'
 					$output .= $tpl->render($tpls['central'], array(
-							'href' => $pageurl . $counter, 'counter' => $counter), true
+							'href' => ($counter > 1) ? $pageurl . $counter : $pageurl . '1', 'counter' => $counter), true
 					);
 				}
 			}
-			// enough pages to hide some
+		// enough pages to hide some
 		} elseif($lastpage > 5 + ($adjacents * 2))
 		{
 			// vclose to beginning; only hide later pages
@@ -1161,7 +1171,7 @@ class ItemMapper extends Allocator
 			//close to end; only hide early pages
 			else
 			{
-				// first
+				// first ($pageurl . '1')
 				$output .= $tpl->render($tpls['first'], array('href' => $pageurl . '1'), true);
 				// second
 				$output .= $tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true);

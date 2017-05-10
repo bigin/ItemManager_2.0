@@ -1,6 +1,6 @@
 <?php
 
-class Model
+class Manager
 {
 	protected static $categoryMapper = null;
 	protected static $itemMapper = null;
@@ -188,6 +188,9 @@ class Model
 			);
 			return false;
 		}
+		// disalloc SimpleItems
+		if($this->config->useAllocater == true) { $ic->disalloc($cat->id); }
+
 		// destroy fields file
 		if(isset($fc) && !$fc->destroyFieldsFile($cat))
 		{
@@ -217,18 +220,15 @@ class Model
 			$data = explode('=', $cat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
-			if(false !== strpos($key, ' '))
-				return false;
-
-			if($key != 'name')
-				return false;
-
+			if(false !== strpos($key, ' ')) return false;
+			if($key != 'name') return false;
 			$cat = $val;
 		}
 
 		if(strlen($cat) > $this->config->common->maxcatname)
 		{
-			MsgReporter::setClause('err_category_name_length', array('count' => $this->config->common->maxcatname), true);
+			MsgReporter::setClause('err_category_name_length',
+				array('count' => $this->config->common->maxcatname),true);
 			return false;
 		}
 		// CHECK here category name
@@ -320,10 +320,7 @@ class Model
 			);
 			return true;
 		}
-
 	}
-
-
 
 
 	public function createFields(array $input)
@@ -404,10 +401,8 @@ class Model
 					unset($defaults[$val]);
 				}
 			}
-
 			MsgReporter::setClause('err_save_fields_unique', array(), true);
 		}
-
 
 		$fc = new FieldMapper();
 		$fc->init($input['cat']);
@@ -421,7 +416,6 @@ class Model
 					MsgReporter::setClause('save_failure', array(), true);
 					return false;
 				}
-
 			if(!$this->config->createBackup(IM_FIELDS_DIR, $input['cat'], IM_FIELDS_FILE_SUFFIX))
 			{
 				MsgReporter::setClause('err_backup', array('backup' => $this->config->backend->fieldbackupdir), true);
@@ -455,8 +449,7 @@ class Model
 					foreach($split as $option)
 						$field->options[] = $option;
 				}
-
-			// field does not exist, create new field
+			// field does not exist, create a new field
 			} else
 			{
 				$field = new Field($input['cat']);
@@ -479,13 +472,23 @@ class Model
 						$field->options[] = $option;
 				}
 			}
-
 			$field->save();
 		}
 
 		// useAllocater is activated
 		if($this->config->useAllocater == true) {
-			$this->getItemMapper()->disalloc($input['cat']);
+			$mapper = $this->getItemMapper();
+			$mapper->disalloc($input['cat']);
+
+			if($mapper->alloc($input['cat']) !== true)
+			{
+				$mapper->init($input['cat']);
+				if(!empty($mapper->items))
+				{
+					$mapper->simplifyBunch($mapper->items);
+					$mapper->save();
+				}
+			}
 		}
 
 		// remove deleted fieds
@@ -673,10 +676,11 @@ class Model
 
 
 		/* Ok, the standard procedure is completed, now we want to make the next step
-		and loop through the fields of the item to save these values */
+		and loop through the fields of the item and save values */
 
 		$curitem->name = str_replace('"', '\'', $input['name']);
 		$curitem->active = isset($input['active']) ? 1 : 0;
+		$curitem->position = !empty($input['itempos']) ? (int) $input['itempos'] : null;
 
 		$tmp_image_dir = '';
 
@@ -803,22 +807,6 @@ class Model
 			return false;
 		}
 
-		// useAllocater is activated
-		if($this->config->useAllocater == true)
-		{
-			if($ic->alloc($curitem->categoryid) !== true)
-			{
-				$ic->init($categoryid);
-				if(!empty($ic->items))
-				{
-					$ic->simplifyBunch($ic->items);
-					$ic->save();
-				}
-			}
-			$ic->simplify($curitem);
-			$ic->save();
-		}
-
 		$this->getSectionCache()->expire();
 		$this->admin->input['iid'] = $curitem->id;
 
@@ -838,6 +826,22 @@ class Model
 			// clean up the older data
 			$this->cleanUpTempContainers('imageupload');
 			$this->cleanUpTempContainers('fileupload');
+		}
+
+		// useAllocater is activated
+		if($this->config->useAllocater == true)
+		{
+			if($ic->alloc($curitem->categoryid) !== true)
+			{
+				$ic->init($categoryid);
+				if(!empty($ic->items))
+				{
+					$ic->simplifyBunch($ic->items);
+					$ic->save();
+				}
+			}
+			$ic->simplify($curitem);
+			$ic->save();
 		}
 
 		// delete search index (i18n search)

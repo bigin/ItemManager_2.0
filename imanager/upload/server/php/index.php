@@ -9,8 +9,6 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-
-
 $root = dirname(dirname(dirname(dirname(dirname(__DIR__)))));
 error_reporting(E_ALL | E_STRICT);
 require_once($root.'/gsconfig.php');
@@ -19,8 +17,6 @@ require_once($root.'/'.$gsadmindir.'/inc/common.php');
 
 // plugin bootstrap
 include(GSPLUGINPATH.'imanager/lib/inc/_def.php');
-// model
-include(GSPLUGINPATH.'imanager/lib/Model.php');
 // manager
 include(GSPLUGINPATH.'imanager/lib/ItemManager.php');
 login_cookie_check();

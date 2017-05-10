@@ -18,6 +18,9 @@ class Allocator
 			$this->total = count($this->simpleItems);
 			return true;
 		}
+		unset($this->simpleItems);
+		$this->simpleItems = null;
+		$this->total = 0;
 		return false;
 	}
 
@@ -31,9 +34,7 @@ class Allocator
 
 	public function deleteSimpleItem(Item $item)
 	{
-		if(empty($this->simpleItems)) {
-			if($this->alloc($item->categoryid) !== true) return;
-		}
+		if($this->alloc($item->categoryid) !== true) return;
 		if(!empty($this->simpleItems[$item->id])) {
 			$this->unsetItem($item->id);
 			$this->save();
@@ -50,7 +51,7 @@ class Allocator
 	}
 
 
-	public function getSimpleItems($stat='active=1', $offset=0, $length=0, array $items = array())
+	public function getSimpleItems($stat='', $offset=0, $length=0, array $items = array())
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -133,10 +134,11 @@ class Allocator
 					return $sepitems[1];
 				}
 			}
-			// If $stat contains only one selector
+			// If $stat contains only one or empty selector
 		} else
 		{
-			$arr = $this->separateSimpleItems($this->simpleItems, $stat);
+			if(!empty($stat)) $arr = $this->separateSimpleItems($this->simpleItems, $stat);
+			else $arr = $this->simpleItems;
 			// limited output
 			if(!empty($arr) && ((int) $offset > 0 || (int) $length > 0))
 			{
@@ -177,7 +179,7 @@ class Allocator
 		$itemcontainer = array();
 
 		foreach($locitems as $item_id => $i) {
-			if(!isset($i->$filterby)) continue;
+			//if(!isset($i->$filterby)) continue;
 			$itemcontainer[$item_id] = $locitems[$item_id];
 		}
 
@@ -294,7 +296,13 @@ class Allocator
 					$obj->{$ikey} = $ival;
 				} else {
 					foreach($ival as $fkey => $fval) {
-						$obj->{$fkey} = $fval->value;
+						if(isset($fval->fullurl)) {
+							foreach($fval->fullurl as $fv) $obj->{$fkey}[] = $fv;
+							foreach($fval->title as $fv) $obj->{$fkey.'_title'}[] = $fv;
+						} else
+						{
+							$obj->{$fkey} = @$fval->value;
+						}
 					}
 				}
 			}
@@ -317,7 +325,13 @@ class Allocator
 				$obj->{$ikey} = $ival;
 			} else {
 				foreach($ival as $fkey => $fval) {
-					$obj->{$fkey} = $fval->value;
+					if(isset($fval->fullurl)) {
+						foreach($fval->fullurl as $fv) $obj->{$fkey}[] = $fv;
+						foreach($fval->title as $fv) $obj->{$fkey.'_title'}[] = $fv;
+					} else
+					{
+						$obj->{$fkey} = @$fval->value;
+					}
 				}
 			}
 		}
@@ -327,13 +341,15 @@ class Allocator
 }
 
 
+
 class SimpleItem
 {
 	public static function __set_state($an_array)
 	{
 		$_instance = new SimpleItem();
 		foreach($an_array as $key => $val) {
-			$_instance->{$key} = $val;
+			if(is_array($val)) $_instance->{$key} = $val;
+			else $_instance->{$key} = $val;
 		}
 		return $_instance;
 	}

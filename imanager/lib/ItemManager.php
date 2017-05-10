@@ -1,6 +1,8 @@
 <?php
+// Manager
+include(GSPLUGINPATH.'imanager/lib/Manager.php');
 
-class ItemManager extends Model
+class ItemManager extends Manager
 {
 	/**
 	 * Just for counting ItemManager instances
