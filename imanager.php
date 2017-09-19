@@ -63,7 +63,7 @@ function im_render_backend($arg=null)
 	{
 		// check whether the user inside admin panel
 		if(defined('IN_GS') && !empty($_GET['id']) && $_GET['id'] == IM_NAME) {
-			define('IS_ADMIN_PANEL', true);
+			defined('IS_ADMIN_PANEL') or define('IS_ADMIN_PANEL', true);
 		}
 		if($im === null) $im = imanager();
 		if(defined('IS_ADMIN_PANEL'))

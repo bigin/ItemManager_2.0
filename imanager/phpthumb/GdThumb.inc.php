@@ -110,6 +110,9 @@ class GdThumb extends ThumbBase
 			case 'JPG':
 				$this->oldImage = imagecreatefromjpeg($this->fileName);
 				break;
+			case 'JPEG':
+				$this->oldImage = imagecreatefromjpeg($this->fileName);
+				break;
 			case 'PNG':
 				$this->oldImage = imagecreatefrompng($this->fileName);
 				break;
@@ -634,7 +637,7 @@ class GdThumb extends ThumbBase
 	 */
 	public function save ($fileName, $format = null)
 	{
-		$validFormats = array('GIF', 'JPG', 'PNG');
+		$validFormats = array('GIF', 'JPG', 'JPEG', 'PNG');
 		$format = ($format !== null) ? strtoupper($format) : $this->format;
 		
 		if (!in_array($format, $validFormats))
@@ -669,6 +672,9 @@ class GdThumb extends ThumbBase
 				imagegif($this->oldImage, $fileName);
 				break;
 			case 'JPG':
+				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+				break;
+			case 'JPEG':
 				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
 				break;
 			case 'PNG':

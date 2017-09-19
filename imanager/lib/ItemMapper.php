@@ -101,7 +101,7 @@ class ItemMapper extends Allocator
 							}
 							if(empty($new_field->value) && !empty($new_field->default))
 							{
-								$new_field->value = (string) $new_field->default;
+								$new_field->value = (string)$new_field->default;
 							}
 						}
 					}
@@ -411,15 +411,10 @@ class ItemMapper extends Allocator
 		$locitems = !empty($items) ? $items : $this->items;
 
 		// nothing to select
-		if(empty($items))
-		{
-			if(!$this->countItems() || $this->countItems() <= 0)
-				return false;
-		}
+		if(empty($items)) { if(!$this->countItems() || $this->countItems() <= 0) return false;}
 
 		// just id was entered
-		if(is_numeric($stat))
-			return !empty($locitems[(int) $stat]) ? $locitems[(int) $stat] : false;
+		if(is_numeric($stat)) return !empty($locitems[$stat]) ? $locitems[$stat] : false;
 
 		// all parameter have to match the data
 		$treads = array();
@@ -836,12 +831,9 @@ class ItemMapper extends Allocator
 			{
 				foreach($items as $itemkey => $item)
 				{
-					if(strtolower($item->$key) == strtolower($val) && !$pat)
-						return $item;
-					elseif($pat && preg_match($pat, strtolower($item->$key)))
-						return $item;
+					if(!$pat && strtolower($item->{$key}) == strtolower($val)) return $item;
+					elseif($pat && preg_match($pat, strtolower($item->{$key}))) return $item;
 				}
-
 				return false;
 			}
 			// searching for field in complex value types
@@ -849,10 +841,8 @@ class ItemMapper extends Allocator
 			{
 				foreach($item->fields as $fieldkey => $fieldval)
 				{
-					if(!empty($fieldval->value) && $fieldkey == $key && $fieldval->value == $val)
-						return $item;
-					elseif(!empty($fieldval->value) && $pat && preg_match($pat, strtolower($fieldval->value)))
-						return $item;
+					if(!empty($fieldval->value) && $fieldkey == $key && $fieldval->value == $val) return $item;
+					elseif(!empty($fieldval->value) && $pat && preg_match($pat, strtolower($fieldval->value))) return $item;
 				}
 			}
 		}
@@ -889,74 +879,71 @@ class ItemMapper extends Allocator
 
 				}
 
-				// searching for the name and other simple attributs
+				// Searching for value in item attributes
 				if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
 					|| $key == 'created' || $key == 'updated')
 				{
 					foreach($items as $itemkey => $item)
 					{
-						if(!isset($item->$key)) continue;
+						if(!isset($item->{$key})) continue;
 
 						if($pkey == 0)
 						{
-							if($item->$key < $val) continue;
+							if($item->{$key} < $val) continue;
 						} elseif($pkey == 1)
 						{
-							if($item->$key > $val) continue;
+							if($item->{$key} > $val) continue;
 						} elseif($pkey == 2)
 						{
-							if($item->$key == $val) continue;
+							if($item->{$key} == $val) continue;
 						} elseif($pkey == 3)
 						{
-							if($item->$key <= $val) continue;
+							if($item->{$key} <= $val) continue;
 						} elseif($pkey == 4)
 						{
-							if($item->$key >= $val) continue;
+							if($item->{$key} >= $val) continue;
 						} elseif($pkey == 5)
 						{
-							if($item->$key != $val && !$pat) {
+							if($item->{$key} != $val && !$pat) {
 
 								continue;
 							}
-							elseif($pat && !preg_match($pat, strtolower($item->$key))){
+							elseif($pat && !preg_match($pat, strtolower($item->{$key}))){
 								continue;
 							}
 						}
 
-
 						$res[$item->id] = $item;
 					}
 
-				// Searching for fields in complex value types
+				// Searching for the value in complex field types
 				} else
 				{
 					foreach($items as $itemkey => $item)
 					{
 						foreach($item->fields as $fieldkey => $fieldval)
 						{
-							if(!isset($item->fields->$key->value)) continue;
+							if(!isset($item->fields->{$key}->value)) continue;
 
 							if($pkey == 0)
 							{
-								if($item->fields->$key->value < $val) continue;
+								if($item->fields->{$key}->value < $val) continue;
 							} elseif($pkey == 1)
 							{
-								if($item->fields->$key->value > $val) continue;
+								if($item->fields->{$key}->value > $val) continue;
 							} elseif($pkey == 2)
 							{
-								if($item->fields->$key->value == $val) continue;
+								if($item->fields->{$key}->value == $val) continue;
 							} elseif($pkey == 3)
 							{
-								if($item->fields->$key->value <= $val) continue;
+								if($item->fields->{$key}->value <= $val) continue;
 							} elseif($pkey == 4)
 							{
-								if($item->fields->$key->value >= $val) continue;
+								if($item->fields->{$key}->value >= $val) continue;
 							}elseif($pkey == 5)
 							{
-								if($item->fields->$key->value != $val && !$pat)
-									continue;
-								elseif($pat && !preg_match($pat, strtolower($item->fields->$key->value)))
-									continue;
+								if(!$pat && $item->fields->{$key}->value != $val) continue;
+								elseif($pat && !preg_match($pat, strtolower($item->fields->{$key}->value))) continue;
 							}
 
 							$res[$item->id] = $item;

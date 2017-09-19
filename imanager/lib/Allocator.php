@@ -46,8 +46,38 @@ class Allocator
 
 
 	public function disalloc($catid) {
-		$id = (int)$catid;
+		$id = (int) $catid;
 		if(file_exists(IM_BUFFER_CACHE_DIR.'/'.$id.'.php')) { unlink(IM_BUFFER_CACHE_DIR.'/'.$id.'.php'); }
+	}
+
+
+	public function getSimpleItem($stat, array $items = array())
+	{
+		if($items) $this->simpleItems = $items;
+		// No items selected
+		if(empty($this->simpleItems)) return false;
+		// A nummeric value, id was entered?
+		if(is_numeric($stat)) return !empty($this->simpleItems[$stat]) ? $this->simpleItems[$stat] : false;
+		// Separate selector
+		$data = explode('=', $stat, 2);
+		$key = strtolower(trim($data[0]));
+		$val = trim($data[1]);
+		$num = substr_count($val, '%');
+		$pat = false;
+		if($num == 1) {
+			$pos = strpos($val, '%');
+			if($pos == 0) { $pat = '/'.strtolower(trim(str_replace('%', '', $val))).'$/';}
+			elseif($pos == strlen($val)) {$pat = '/^'.strtolower(trim(str_replace('%', '', $val))).'/';}
+		} elseif($num == 2) {
+			$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
+		}
+		if(false !== strpos($key, ' ')) return false;
+		// Searching for entered value
+		foreach($this->simpleItems as $itemkey => $item) {
+			if(!$pat && strtolower($item->{$key}) == strtolower($val)) return $item;
+			elseif($pat && preg_match($pat, strtolower($item->{$key}))) return $item;
+		}
+		return false;
 	}
 
 
@@ -57,6 +87,8 @@ class Allocator
 		$offset = ($offset > 0) ? $offset-1 : $offset;
 
 		if($offset > 0 && $length > 0 && $offset >= $length) return false;
+
+		if($items) $this->simpleItems = $items;
 
 		// nothing to select
 		if(empty($this->simpleItems)) return false;
