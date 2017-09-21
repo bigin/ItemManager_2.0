@@ -114,7 +114,7 @@ Access a category:
 $category = $imanager->getCategory(1);
 ```
 
-If you want to find one category on a specific attributes like id, name, slug, position, created, updated, do following
+Get the category matching the given attribute selector (like id, name, slug, position, created, updated) string. Returns a Category object, or null if not found.
 ```php
 // via the category slug
 $category = $imanager->getCategory('slug=my-category-slug');
