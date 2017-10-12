@@ -7,11 +7,11 @@ ItemManager offers you a XML data management in just as straightforward a manner
 database. ItemManager’s powerful API is very easy and enjoyable.
 
 Design any type of product lists (items), search and filter through the items lists by using flexible API functions.
-You can create a random set of categories and fields, each category is assigned any number of fields and each item is
+You can create an arbitrary set of categories and fields, each category is assigned any number of fields and each item is
 assigned to one category, that represent the underlying data structure of ItemManager, which allows a countless design
 combinations.
 
-If you are going to create a new GetSimple plugin, no matter whether kind of processing logic and complexity:
+If you want to create a new GetSimple plugin, no matter whether kind of processing logic and complexity:
 a blog, shopping cart, user management or just a simple script, be sure that ItemManager will help you realise your goals.
 Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
@@ -109,12 +109,11 @@ $items = $imanager->getItemMapper()->findItems('created > '.strtotime('-2 day', 
 More infos about ItemManager's items: [Working with Items](https://ehret-studio.com/lab/itemmanager/itemmanager-2-api-reference-working-with-items/)
 
 
-Access a category:
+Get a category:
 ```php
 $category = $imanager->getCategory(1);
 ```
-
-If you want to find one category on a specific attributes like id, name, slug, position, created, updated, do following
+Get the category matching the given attribute selector string. Returns a Category object, or null if not found. Searchable attributes are: id, name, slug, position, created, updated 
 ```php
 // via the category slug
 $category = $imanager->getCategory('slug=my-category-slug');
