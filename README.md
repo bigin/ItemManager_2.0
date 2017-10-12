@@ -7,7 +7,7 @@ ItemManager offers you a XML data management in just as straightforward a manner
 database. ItemManager’s powerful API is very easy and enjoyable.
 
 Design any type of product lists (items), search and filter through the items lists by using flexible API functions.
-You can create an arbitrary set of categories and fields, each category is assigned any number of fields and each item is
+You can create a random set of categories and fields, each category is assigned any number of fields and each item is
 assigned to one category, that represent the underlying data structure of ItemManager, which allows a countless design
 combinations.
 
@@ -113,7 +113,8 @@ Get a category:
 ```php
 $category = $imanager->getCategory(1);
 ```
-Get the category matching the given attribute selector string. Returns a Category object, or null if not found. Searchable attributes are: id, name, slug, position, created, updated 
+
+Get the category matching the given attribute selector (like id, name, slug, position, created, updated) string. Returns a Category object, or null if not found.
 ```php
 // via the category slug
 $category = $imanager->getCategory('slug=my-category-slug');
