@@ -115,7 +115,8 @@ class ItemManager extends Manager
 	}
 
 	/**
-	 * Some deprecated accessor calls, just for backward compatibility reasons
+	 * Some deprecated accessor calls, just for backward compatibility reasons.
+	 * Please do not use these any more.
 	 */
 	public function newTemplate($name=''){return new Template($name='');}
 	public function getCategoryClass(){return $this->getCategoryMapper();}
