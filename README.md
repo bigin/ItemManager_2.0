@@ -15,7 +15,14 @@ If you want to create a new GetSimple plugin, no matter whether kind of processi
 a blog, shopping cart, user management or just a simple script, be sure that ItemManager will help you realise your goals.
 Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
-may continue to focus on more important things. Here's an example, should you want to save your data in order to be able
+may continue to focus on more important things. 
+
+Note: First of all, don't forget to create an instance of the ItemManager core (This should be called at least once in your code): 
+```php
+imanager();
+```
+
+Here's an example, should you want to save your data in order to be able
 to use it again later on, just do this:
 
 ```php
@@ -141,7 +148,7 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 - [The use of SimpleItem objects](https://ehret-studio.com/lab/itemmanager/the-use-of-simpleitem-objects/)
 
 ## ItemManager extensions and plugins:
-- [IM Extra Fields Plugin](https://github.com/bigin/ImExtraFields)
+- [IM Extra Fields Plugin](http://get-simple.info/extend/plugin/im-extra-fields/1057/) or [IM Extra Fields Plugin (GitHub repository)](https://github.com/bigin/ImExtraFields)
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
 ([Gallery example](http://ehret-studio.com/gallery/))
 - [IM Simple Forun theme](http://get-simple.info/extend/theme/simpleforum/1016/)
@@ -150,6 +157,11 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 ([Sign up / Login / Logout / Password recovery](http://im.ehret-studio.com/login/))
 
 ## Changelog:
+
+**2.4.1**
+
+BUGFIX: Issue when rekursive selectig SimpleItem objects.
+NEW: An `ItemMapper` method for selecting single SimpleItem objects: `ItemMapper::getSimpleItem((string|int) selector, (array) items (optional))`
 
 **2.3.8** 
 
