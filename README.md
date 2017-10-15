@@ -17,31 +17,6 @@ Stop wasting your effort re-inventing the wheel, ItemManager takes care of the
 basic data management, getter, setter methods and any XML data storage processes for your plugin properties, while you
 may continue to focus on more important things. 
 
-> Note: First of all, don't forget to create an instance of the ItemManager core (This should be called at least once in your code): 
-
-```php
-imanager();
-```
-
-Here's an example, should you want to save your data in order to be able
-to use it again later on, just do this:
-
-```php
-$item = new Item(1);
-$item->name = 'My item name';
-$item->fields->data->value = 'Hello world';
-$item->save();
-```
-
-In order to bring the data into display again do this:
-
-```php
-$item = imanager()->getItem(1, 'name=My item name');
-echo $item->fields->data->value; // Outputs: Hello world
-```
-Is it really so complicated?
-
-
 **What can be achieved with ItemManager?**
 
 The use of ItemManager allows a very variable field of application, ItemManager can be used to create tools and
@@ -86,12 +61,29 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 ## Usage:
 
-Here’s a simple ItemManager call, that you can use anywhere in your template files or in your own plugins to get a
-current ItemManager class instance:
+> Note: First of all, don't forget to create an instance of the ItemManager core (This should be called at least once in your code): 
 
 ```php
 $imanager = imanager();
 ```
+
+Here's an example, should you want to save your data in order to be able
+to use it again later on, just do this:
+
+```php
+$item = new Item(1);
+$item->name = 'My item name';
+$item->fields->data->value = 'Hello world';
+$item->save();
+```
+
+In order to bring the data into display again do this:
+
+```php
+$item = imanager()->getItem(1, 'name=My item name');
+echo $item->fields->data->value; // Outputs: Hello world
+```
+Is it really so complicated?
 
 The most quickest way to get a specific item is by using the item ID and category ID, here's an example: 
 
@@ -163,6 +155,7 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 **2.4.1**
 
 BUGFIX: Issue when rekursive selectig SimpleItem objects.
+
 NEW: An `ItemMapper` method for selecting single SimpleItem objects: `ItemMapper::getSimpleItem((string|int) selector, (array) items (optional))`
 
 **2.3.8** 
