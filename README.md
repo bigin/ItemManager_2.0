@@ -148,9 +148,10 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 - [CategoryJoins for ItemManager](http://get-simple.info/forums/showthread.php?tid=8017)
 - [The use of SimpleItem objects](https://ehret-studio.com/lab/itemmanager/the-use-of-simpleitem-objects/)
 
-## ItemManager extensions and plugins:
-– [SimpleCatalog](http://get-simple.info/extend/plugin/simplecatalog/1091/)
-- [IM Extra Fields Plugin](http://get-simple.info/extend/plugin/im-extra-fields/1057/) or [IM Extra Fields Plugin (GitHub repository)](https://github.com/bigin/ImExtraFields)
+## ItemManager extensions and plugins: 
+
+– [SimpleCatalog](http://get-simple.info/extend/plugin/simplecatalog/1091/) 
+- [IM Extra Fields Plugin](http://get-simple.info/extend/plugin/im-extra-fields/1057/) or [IM Extra Fields Plugin (GitHub repository)](https://github.com/bigin/ImExtraFields) 
 - [IM Photogallery](http://get-simple.info/extend/theme/itemmanagers-photogallery/1043/)
 ([Gallery example](http://ehret-studio.com/gallery/))
 - [IM Simple Forun theme](http://get-simple.info/extend/theme/simpleforum/1016/)
