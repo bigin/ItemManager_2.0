@@ -20,14 +20,18 @@
 	display: none;
 }
 
-.msgs {
+.im-msgs .msgs {
 	padding: 0;
-	margin: 0 !important;
+	margin: 0;
+	list-style-type: none;
 	list-style: none;
 }
 
-.msgs li {
+.im-msgs .msgs li {
 	margin-bottom: 3px;
+	background: rgba(153,153,153,0.1);
+	line-height: 22px;
+	padding: 8px 15px;
 }
 
 /* Cannot classify */

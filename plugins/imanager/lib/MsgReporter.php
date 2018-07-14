@@ -79,7 +79,7 @@ class MsgReporter
 		$msg = self::msgs();
 		if(!empty($msg))
 			foreach($msg as $val) $o .= $val;
-		return '<ul class="msgs">'.$o.'</ul>';
+		return '<ul class="im-msgs msgs">'.$o.'</ul>';
 	}
 }
 ?>
