@@ -1,0 +1,12 @@
+admin
+backups
+data
+theme
+.htaccess
+_config.yml
+CHANGES.md
+gsconfig.php
+index.php
+LICENSE.txt
+readme.txt
+sitemap.xml
