@@ -1,1 +1,0 @@
-<label for="[[name]]" class="label [[labelclass]]">[[label]]<br /><input id="[[name]]" name="[[name]]" type="password" class="[[class]]" value="[[value]]" /></label>
