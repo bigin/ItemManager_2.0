@@ -95,7 +95,6 @@
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.06);
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	width: auto;
 }
 .manager-wrapper form input.text:focus,.manager-wrapper select:focus,.manager-wrapper input:focus,.manager-wrapper textarea:focus,.manager-wrapper form select:focus {
 	outline:none;
@@ -120,7 +119,7 @@
 .manager-wrapper input[type="button"]:hover,.manager-wrapper input.submit:hover,.manager-wrapper button:hover,.manager-wrapper .button:hover {
 	background-color: #eeeeee;
 }
-.manager-wrapper input[type="text"],.manager-wrapper input[type="email"],.manager-wrapper input[type="number"],.manager-wrapper select,.manager-wrapper textarea {
+.manager-wrapper input[type="text"],.manager-wrapper input[type="email"],.manager-wrapper input[type="number"],.manager-wrapper select,.manager-wrapper textarea,.manager-wrapper form select.text {
 	width: 100%;
 }
 .manager-wrapper input[type="submit"] {
@@ -468,14 +467,13 @@ p.im-float a:hover {
 }
 
 form#customfieldsForm textarea {
-	width: 89% !important;
 	height: auto !important;
 	line-height: normal;
-	max-height: 50px;
+	max-height: 100%;
+	max-width: 100%;
+	resize: vertical;
 	border-radius: 2px 2px 2px 2px !important;
-	box-shadow: 0 0 3px rgba(0, 0, 0, 0.06) !important;
-	color: #333333 !important;
-	padding: 5% 5% !important;
+	padding: 3px !important;
 }
 
 form a.deletefield {
