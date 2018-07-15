@@ -11,7 +11,7 @@
 				<th>&nbsp;</th>
 				<th>[[lang/fields_name]]</th>
 				<th>[[lang/fields_label]]</th>
-				<th style="width:100px;">[[lang/fields_type]]</th>
+				<th>[[lang/fields_type]]</th>
 				<th>[[lang/fields_default]]</th>
 				<th>&nbsp;</th>
 			</tr>

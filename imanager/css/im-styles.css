@@ -1,3 +1,10 @@
+/* Resets GS ugly styling */
+
+.wrapper #maincontent .manager-wrapper ul,.wrapper #maincontent .manager-wrapper ol {
+	line-height: normal;
+	margin: 0 0 10px;
+}
+
 #manager-header {
     margin-bottom: 30px;
     padding-top: 20px;
@@ -12,10 +19,10 @@
 	display: none;
 }
 .im-msgs.msgs {
-	padding: 0;
-	margin: 0 0 20px 0;
-	list-style-type: none;
-	list-style: none;
+	padding: 0!important;
+	margin: 0 0 20px 0!important;
+	list-style-type: none!important;
+	list-style: none!important;
 }
 .im-msgs.msgs li {
 	margin-bottom: 3px;
@@ -88,6 +95,7 @@
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.06);
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	width: auto;
 }
 .manager-wrapper form input.text:focus,.manager-wrapper select:focus,.manager-wrapper input:focus,.manager-wrapper textarea:focus,.manager-wrapper form select:focus {
 	outline:none;
@@ -419,7 +427,7 @@ p.im-float a:hover {
 
 #filterarea #im-nswitch ul {
 	list-style-type: none;
-	margin: 5px 0 20px 10px;
+	margin: 5px 0 10px 10px;
 	padding: 0;
 }
 
@@ -459,10 +467,6 @@ p.im-float a:hover {
 	font-weight: normal;
 }
 
-
-
-
-
 form#customfieldsForm textarea {
 	width: 89% !important;
 	height: auto !important;
@@ -485,7 +489,6 @@ form a.deletefield {
 form a.deletefield:hover {
 	color: #d94136;
 }
-
 
 .secondarylink a.add {
 	background: none;
@@ -684,7 +687,7 @@ form a.deletefield:hover {
 
 /* Item list view & category list */
 
-#im-catlist tr td, #im-itemlist-table tr td {
+#im-catlist tr td, #im-itemlist-table tr td, .wrapper .manager-wrapper table td span {
 	padding: 13px 4px;
 	font-size: 11px;
 }
