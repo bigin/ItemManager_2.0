@@ -1,1 +1,0 @@
-<tr><td colspan="7" style="text-align: center;">[[lang/no_items_yet]]</td></tr>
