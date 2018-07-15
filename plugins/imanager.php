@@ -22,18 +22,20 @@ register_plugin(
 add_action('admin-pre-header', 'ajaxGetLists');
 add_action('nav-tab', 'createNavTab', array($thisfile, $thisfile, 'Manager'));
 //add_action($thisfile.'-sidebar', 'im_render_backend', array('sidebar'));
-register_style('jqui', IM_SITE_URL.'plugins/'.$thisfile.'/upload/js/jquery-ui/jquery-ui.css',
-	GSVERSION, 'screen');
+//register_style('jqui', IM_SITE_URL.'plugins/'.$thisfile.'/upload/js/jquery-ui/jquery-ui.css',
+//	GSVERSION, 'screen');
 register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css',
 	GSVERSION, 'screen');
 register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css',
 	GSVERSION, 'screen');
 register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile
 	.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
-queue_style('jqui', GSBACK);
+register_script('immain', IM_SITE_URL."plugins/$thisfile/js/main.js", IM_VERSION, true);
+//queue_style('jqui', GSBACK);
 queue_style('imstyle', GSBACK);
 queue_style('imstylefonts', GSBACK);
 queue_style('blueimp', GSBACK);
+queue_script('immain', GSBACK);
 
 // ItemManager
 include(GSPLUGINPATH.'imanager/lib/ItemManager.php');

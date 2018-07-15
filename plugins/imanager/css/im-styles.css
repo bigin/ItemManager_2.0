@@ -6,32 +6,38 @@
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-/* colors only */
-.redtext {
-	color: #CF3805;
-}
-.notify {
-	color: #009900;
-}
-
-/* Veschiedene Elemente */
+/* Messages & elements */
 
 .im-toggle {
 	display: none;
 }
-
-.im-msgs .msgs {
+.im-msgs.msgs {
 	padding: 0;
-	margin: 0;
+	margin: 0 0 20px 0;
 	list-style-type: none;
 	list-style: none;
 }
-
-.im-msgs .msgs li {
+.im-msgs.msgs li {
 	margin-bottom: 3px;
-	background: rgba(153,153,153,0.1);
 	line-height: 22px;
 	padding: 8px 15px;
+	position: relative;
+}
+.im-msgs.msgs li.im-notify {
+	color: #009900;
+	background: rgba(16, 149, 58, 0.11);
+}
+.im-msgs.msgs li.im-error {
+	color: #CC0000;
+	background: rgba(204,0,0,0.1);
+}
+.im-msgs.msgs li .close {
+	position: absolute;
+	right: 10px;
+	top: 8px;
+	color: black;
+	opacity: 0.2;
+	z-index: 10;
 }
 
 /* Cannot classify */
@@ -48,7 +54,6 @@
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-
 /* Headings */
 
 .manager-wrapper h1,.manager-wrapper h2,.manager-wrapper h3, .manager-wrapper h4, .manager-wrapper h5 {
@@ -61,15 +66,20 @@
 	font-size: 20px;
 	margin: 0;
 }
+.manager-wrapper h4,.element-wrapper h4, #maincontent h4 {
+	font-weight: normal;
+	color: #CF3805;
+	font-size: 17px;
+	/*margin: 90px 0 20px;*/
+}
+.element-wrapper h4, #maincontent h4 {
+	margin-bottom: 30px;
+}
 
 
 /* Form elements */
 
-.manager-wrapper select,
-.manager-wrapper input,
-.manager-wrapper textarea,
-.manager-wrapper form input.text,
-.manager-wrapper form select.text {
+.manager-wrapper select,.manager-wrapper input,.manager-wrapper textarea,.manager-wrapper form input.text,.manager-wrapper form select.text {
 	color: #333333;
 	background-color: #fff;
 	border: 1px solid;
@@ -79,21 +89,15 @@
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
-.manager-wrapper form input.text:focus,
-.manager-wrapper select:focus,
-.manager-wrapper input:focus,
-.manager-wrapper textarea:focus,
-.manager-wrapper form select:focus {
+.manager-wrapper form input.text:focus,.manager-wrapper select:focus,.manager-wrapper input:focus,.manager-wrapper textarea:focus,.manager-wrapper form select:focus {
 	outline:none;
 	border:1px solid #6ca4fe;
 	-webkit-box-shadow: 0px 0px 5px #6ca4fe;
 	box-shadow: 0px 0px 5px #6ca4fe;
 }
-
 .manager-wrapper input,.manager-wrapper form input.text {
 	padding: 8px 8px !important;
 }
-
 .manager-wrapper input[type="button"],.manager-wrapper input.submit,.manager-wrapper button,.manager-wrapper .button {
 	background: none repeat scroll 0 0 #dddddd;
 	border: 1px solid #acacac;
@@ -105,30 +109,24 @@
 	transition: all 0.218s ease 0s;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
-
 .manager-wrapper input[type="button"]:hover,.manager-wrapper input.submit:hover,.manager-wrapper button:hover,.manager-wrapper .button:hover {
 	background-color: #eeeeee;
 }
-
 .manager-wrapper input[type="text"],.manager-wrapper input[type="email"],.manager-wrapper input[type="number"],.manager-wrapper select,.manager-wrapper textarea {
 	width: 100%;
 }
-
 .manager-wrapper input[type="submit"] {
 	margin-top: 20px;
 	border-color: #c0c0c0 #b8b8b8 #b8b8b8 #c0c0c0;
 }
-
 .manager-wrapper .cke_skin_getsimple {
 	border-color: #dcdcdc !important;
 	border-radius: 2px !important;
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.06);
 }
-
 .manager-wrapper textarea {
 	height: 200px;
 }
-
 .manager-wrapper select {
 	-webkit-appearance: none;
 	-moz-appearance: none;
@@ -136,44 +134,25 @@
 	background: url('../img/drdarr.png') no-repeat right #fff !important;
 	padding: 8px 22px 8px 8px !important;
 }
-
 .manager-wrapper label {
 	padding-bottom: 10px;
 	color: #999999;
 }
-
 .manager-wrapper .fieldarea .container .fileupload-buttonbar {
 	margin: 10px;
 }
-
 .manager-wrapper .fieldarea .container .table {
 	width: 100%;
 	box-sizing: border-box;
 }
-
 .manager-wrapper .fieldarea .container .table tr:nth-child(even){
 	background: #fff;
 }
-
 .manager-wrapper .fieldarea .container .table tr td {
 	vertical-align: middle;
 	padding: 10px;
 }
 
-
-.manager-wrapper h4 {
-    font-weight: normal;
-    color: #CF3805;
-    font-size: 17px;
-    margin: 90px 0 20px;
-}
-
-.element-wrapper h4, #maincontent h4 {
-    font-weight: normal;
-    color: #CF3805;
-    font-size: 17px;
-    margin-bottom: 30px;
-}
 
 
 /* Custom Fields Formular */
@@ -291,20 +270,23 @@ p.im-float a:hover {
     text-align: right;
 }
 
-span.redoff {
+.manager-wrapper span.redoff {
     color: #acacac !important;
 }
-span.redon {
+.manager-wrapper span.redon {
     color: #333;
 }
-span.redon:hover {
+.manager-wrapper span.redon:hover {
     color:#CF3805 !important;
 }
 
-span.redoff:hover {
+.manager-wrapper span.redoff:hover {
     color:#CF3805 !important;
 }
 
+.manager-wrapper a {
+	color: #3083ab;
+}
 
 #im-info-row {
     clear:left;
@@ -386,8 +368,6 @@ span.redoff:hover {
 .largeform .medium {
 	width: 200px;
 }
-
-
 
 /* Filter areas*/
 
@@ -513,24 +493,8 @@ form a.deletefield:hover {
 	padding: 10px !important;
 }
 
-
-
-
-.im-catcont {
-    clear: both;
-    width: 98%;
-    height: 40px;
-    padding: 0 10px 0 10px;
-    border-bottom: solid 1px #efefef;
-}
-.im-catcont:hover {
-    background: #FFFFD5 !important;
-}
-
-
 .im-buttonwrapper {
-    padding-top: 50px !important;
-    clear: left;
+	clear: left;
 }
 
 .largeform input.im-cat-reload {
@@ -558,11 +522,6 @@ form a.deletefield:hover {
 
 .number-fields-left {
 	width: 100px !important;
-}
-
-/* category details */
-.im-cat-info {
-	/*font-weight: bold;*/
 }
 
 #catid {
@@ -670,6 +629,7 @@ form a.deletefield:hover {
 
 
 /* Clearfix */
+
 .im-tab-links:after {
 	display: block;
 	clear: both;
@@ -677,41 +637,31 @@ form a.deletefield:hover {
 }
 
 .im-tab-links li {
-	margin:0px 5px;
-	float:left;
-	list-style:none;
+	margin: 0px 5px;
+	float: left;
+	list-style: none;
 }
 
-.wrapper .im-tab-links a {
-	font-size: 12px;
-	font-weight: bold;
-	color: #333;
-	color: #848484;
-	font-style: normal;
-	text-decoration: none;
-}
-
-.im-tab-links a {
+.im-tab-links li a {
 	padding: 7px 14px;
 	display:inline-block;
 	border-radius:3px 3px 0px 0px;
-	background: #e4e9ec;
-	font-size:16px;
-	font-weight:600;
+	background: #f7f7f7;
+	font-size: 12px;
+	font-weight: bold;
 	transition:all linear 0.15s;
 	border: solid 1px #dcdcdc;
 	border-bottom: none;
 	border-color-right: #c8c8c8;
 }
 
-.im-tab-links a:hover {
+.im-tab-links li a:hover {
 	background: #f6f5f8;
 	text-decoration: none;
 }
 
-.manager-wrapper .wrapper li.active a, li.active a:hover {
+.manager-wrapper li.active a, li.active a:hover {
 	background: #fff;
-	color: #555;
 }
 
 /*----- Content of Tabs -----*/
@@ -738,33 +688,31 @@ form a.deletefield:hover {
 	padding: 13px 4px;
 	font-size: 11px;
 }
-
 .manager-wrapper .dyn-pos {
 	width: 40px;
 }
-
 #im-catlist th, #im-itemlist-table th {
 	font-size: 10px;
 	color: #c0c0c0;
 	font-weight: normal;
 	text-transform: none;
 }
-
 .manager-wrapper #editfields tr td {
 	padding: 10px 4px;
 	font-size: 11px;
 }
-
 .im-add, .im-del {
 	text-align: right;
 }
-
 .im-add a, .im-del a, .im-itemlist-table .im-del a{
 	padding: 10px;
 }
-
 .im-del a:hover, .im-itemlist-table .im-del a:hover {
 	color: #d94136 !important;
+}
+
+#im-itemlist-table td a:link,#im-itemlist-table td a:visited,#im-catlist td a:link,#im-catlist td a:visited {
+	font-weight: bold !important;
 }
 
 /* image upload */
@@ -812,11 +760,11 @@ field-wrapper .btn.start:hover {
 	color: #d94136;
 }
 
-.btn {
+field-wrapper .btn {
 	padding: 10px;
 }
 
-.btn:hover {
+field-wrapper .btn:hover {
 	cursor: pointer;
 }
 
@@ -853,4 +801,13 @@ field-wrapper .btn.start:hover {
 	cursor: pointer;
 	opacity: 0;
 	filter: alpha(opacity=0);
+}
+
+
+/* Bugfix im_extra_pages jquery-ui-css image field */
+.ui-tabs {
+	position: inherit;
+}
+.ui-sortable-helper {
+	display: table;
 }

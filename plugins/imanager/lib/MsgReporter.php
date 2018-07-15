@@ -21,9 +21,9 @@ class MsgReporter
 		{
 			if($error) {
 				self::setError();
-				self::$_msgs[] = '<li class="error">'.$o.'</li>';
+				self::$_msgs[] = '<li class="im-error">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 			} else {
-				self::$_msgs[] = '<li class="notify">'.$o.'</li>';
+				self::$_msgs[] = '<li class="im-notify">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 			}
 			return;
 		}
@@ -34,12 +34,12 @@ class MsgReporter
 				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
 			}
 			self::setError();
-			$o = '<li class="error">'.$o.'</li>';
+			$o = '<li class="im-error">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 		} else {
 			foreach($var as $key => $value) {
 				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
 			}
-			$o = '<li class="notify">'.$o.'</li>';
+			$o = '<li class="im-notify">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 		}
 
 		self::$_msgs[] = $o;

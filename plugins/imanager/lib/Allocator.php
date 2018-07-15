@@ -28,7 +28,7 @@ class Allocator
 	public function save()
 	{
 		$export = var_export($this->simpleItems, true);
-		file_put_contents($this->path, '<?php return ' . $export . '; ?>');
+		return file_put_contents($this->path, '<?php return ' . $export . '; ?>');
 	}
 
 
