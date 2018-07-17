@@ -1,7 +1,7 @@
 <?php
 define('IM_NAME', !empty($thisfile) ? $thisfile : '');
-define('IM_VERSION', 242);
-define('IM_VERSION_GS', '2.4.2');
+define('IM_VERSION', 243);
+define('IM_VERSION_GS', '2.4.3');
 define('IM_SOURCE_DIR', GSPLUGINPATH.'imanager/lib/');
 define('ITEMDATA', GSDATAPATH.'imanager/');
 define('IM_CATEGORY_DIR', ITEMDATA.'categories/');

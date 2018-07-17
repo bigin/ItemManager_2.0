@@ -61,7 +61,7 @@ Upload the new version `imanager.php` to `/plugins/` directory
 
 ## Usage:
 
-> Note: First of all, don't forget to create an instance of the ItemManager core (This should be called at least once in your code): 
+> First of, create an instance of the ItemManager core (It should be called at least once in your code): 
 
 ```php
 $imanager = imanager();
@@ -73,7 +73,7 @@ to use it again later on, just do this:
 ```php
 $item = new Item(1);
 $item->name = 'My item name';
-$item->fields->data->value = 'Hello world';
+$item->setFieldValue('data', 'Hello world');
 $item->save();
 ```
 
@@ -83,7 +83,6 @@ In order to bring the data into display again do this:
 $item = imanager()->getItem(1, 'name=My item name');
 echo $item->fields->data->value; // Outputs: Hello world
 ```
-Is it really so complicated?
 
 The most quickest way to get a specific item is by using the item ID and category ID, here's an example: 
 
@@ -152,6 +151,15 @@ For more information how to use ItemManager see also: https://ehret-studio.com/l
 
 ## Changelog:
 
+**2.4.3**    
+
+BUGFIX: Datepicker CSS included
+
+**2.4.2**    
+
+MODIFICATION: Minimal style adjustments and GS 3.4-Alpha adaptations    
+BUGFIX: in combination with IM Extra Fields usage    
+    
 **2.4.1**
 
 BUGFIX: Issue when rekursive selectig SimpleItem objects.

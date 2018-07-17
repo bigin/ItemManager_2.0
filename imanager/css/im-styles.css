@@ -501,7 +501,6 @@ form a.deletefield:hover {
 .largeform input.im-cat-reload {
     border: none !important;
     background-color: transparent !important;
-    background: url('../img/reload.png');
     width: 32px;
     height: 32px;
     margin-left: 20px;
@@ -562,11 +561,18 @@ form a.deletefield:hover {
 	padding-left: 0;
 	border: none;
 	background-color: transparent;
-	width: 45%;
+	width: 100%;
+	text-align: left;
+}
+
+.manager-wrapper .fieldarea .label:not(:first-child) {
+	padding: 0;
+
 }
 
 .manager-wrapper .fieldarea .label input[type=password] {
 	width: 100%;
+	margin-top: 10px;
 }
 
 .manager-wrapper .intern {
@@ -803,7 +809,6 @@ field-wrapper .btn:hover {
 	opacity: 0;
 	filter: alpha(opacity=0);
 }
-
 
 /* Bugfix im_extra_pages jquery-ui-css image field */
 .ui-tabs {
