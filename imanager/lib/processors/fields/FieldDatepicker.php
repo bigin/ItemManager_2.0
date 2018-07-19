@@ -1,51 +1,55 @@
 <?php
 
-class FieldDatepicker implements FieldInterface
+class FieldDatepicker extends FieldText implements FieldInterface
 {
-	public $properties;
-	protected $tpl;
+	/**
+	 * @var int
+	 */
+	protected $maxLen = 255;
 
-	public function __construct(TemplateEngine $tpl)
-	{
-		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->style = null;
-		$this->configs = new stdClass();
+	/**
+	 * FieldDatepicker constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 	}
 
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|string|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$textfield = $this->tpl->getTemplate('text', $itemeditor);
 
-		// let's check selected notation
-		$format = isset($this->configs->format) ? $this->configs->format : 'yy-mm-dd';
+		// Set date format
+		$format = isset($this->configs->format) ? imanager('sanitizer')->text($this->configs->format) : 'yy-mm-dd';
 
 		$value = '';
-		if(!empty($this->value))
-		{
-			switch($format)
-			{
+		if(!empty($this->value)) {
+			switch($format) {
 				case 'dd-mm-yy':
-					$value = date('d-m-Y', $this->value);
+					$value = @date('d-m-Y', $this->value);
 					break;
 				case 'yy/mm/dd':
-					$value = date('Y/m/d', $this->value);
+					$value = @date('Y/m/d', $this->value);
 					break;
 				case 'dd/mm/yy':
-					$value = date('d/m/Y', $this->value);
+					$value = @date('d/m/Y', $this->value);
 					break;
 				case 'yy.mm.dd':
-					$value = date('Y.m.d', $this->value);
+					$value = @date('Y.m.d', $this->value);
 					break;
 				case 'dd.mm.yy':
-					$value = date('d.m.Y', $this->value);
+					$value = @date('d.m.Y', $this->value);
 					break;
 				default:
 					$value = @date('Y-m-d', $this->value);
@@ -70,27 +74,25 @@ class FieldDatepicker implements FieldInterface
 			});
 		</script>';
 
-
-
 		return $output;
 	}
 
+	/**
+	 * Make that field configurable
+	 *
+	 * @return Template
+	 */
 	public function getConfigFieldtype()
 	{
-		/* ok, get our dropdown field, infotext and area templates */
 		$tplselect = $this->tpl->getTemplate('select', $this->tpl->getTemplates('field'));
 		$tploption = $this->tpl->getTemplate('option', $this->tpl->getTemplates('field'));
 		$tplinfotext = $this->tpl->getTemplate('infotext', $this->tpl->getTemplates('itemeditor'));
 		$tplarea = $this->tpl->getTemplate('fieldarea', $this->tpl->getTemplates('itemeditor'));
 
-
 		$option = '';
 		$select = '';
-
 		$check = isset($this->configs->format) ? (string) $this->configs->format : '';
-
-		// next, build options template: <option value=[[option]][[selected]]>[[option]]</option>
-
+		// Build selectable format options
 		$option .= $this->tpl->render($tploption, array(
 				'option' => 'yy-mm-dd',
 				'selected' => (!empty($check) && $this->configs->format
@@ -129,7 +131,7 @@ class FieldDatepicker implements FieldInterface
 			)
 		);
 
-		// render select template <select name="[[name]]">[[options]]</select>
+		// Render select template <select name="[[name]]">[[options]]</select>
 		$select = $this->tpl->render($tplselect, array(
 				// NOTE: The PREFIX must always be used as a part of the field name
 				'name' => self::PREFIX . 'format',
@@ -142,7 +144,7 @@ class FieldDatepicker implements FieldInterface
 				'infotext' => '<i class="fa fa-info-circle"></i> Enter here your Infotext')
 		);
 
-		// let's merge the pieces and return the output
+		// Return merget template
 		return $this->tpl->render($tplarea, array(
 				'fieldid' =>  '',
 				'label' => 'Date format',

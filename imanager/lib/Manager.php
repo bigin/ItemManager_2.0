@@ -508,10 +508,6 @@ class Manager
 		return true;
 	}
 
-
-
-
-
 	public function saveFieldDetails($input)
 	{
 		$cf = new FieldMapper();
@@ -755,10 +751,10 @@ class Manager
 					? $curitem->fields->$fieldname->value : '';
 				$InputType->salt = !empty($curitem->fields->$fieldname->salt)
 					? $curitem->fields->$fieldname->salt : '';
-				$fieldinput = !empty($input['password']) ? $input['password'] : '';
+				$fieldinput = !empty($input[$fieldname]) ? $input[$fieldname] : '';
 			}
 
-			$resultinput = $InputType->prepareInput($fieldinput);
+			$resultinput = $InputType->prepareInput($fieldinput, true);
 
 			if(!isset($resultinput) || empty($resultinput) || is_int($resultinput))
 			{

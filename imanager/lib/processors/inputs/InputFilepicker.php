@@ -1,46 +1,28 @@
 <?php
-class InputFilepicker implements InputInterface
+
+class InputFilepicker extends InputText implements InputInterface
 {
-	protected $values;
-	protected $field;
-	protected $error = array();
+	/**
+	 * @var int
+	 */
+	protected $maxLen = 255;
 
-	public function __construct(Field $field)
-	{
-		$this->field = $field;
-		$this->values = new stdClass();
-		$this->values->value = null;
+	public function __construct(Field $field) {
+		parent::__construct($field);
 	}
 
-	/* */
-	public function prepareInput($value, $sanitize=false)
-	{
-		$this->values->value = empty($sanitize) ? $value : $this->sanitize($value);
-
-		// check input required
-		if(!empty($this->field->required) && $this->field->required == 1)
-		{
-
-			if(empty($this->values->value))
-				return self::ERR_REQUIRED;
-		}
-		// check min value
-		if(!empty($this->field->minimum) && $this->field->minimum > 0)
-		{
-			if(strlen($this->values->value) < intval($this->field->minimum))
-				return self::ERR_MIN_VALUE;
-		}
-		// check input max value
-		if(!empty($this->field->maximum) && $this->field->maximum > 0)
-		{
-			if(strlen($this->values->value) > intval($this->field->maximum))
-				return self::ERR_MAX_VALUE;
-		}
-
-		return $this->values;
+	/**
+	 * This method checks the field inputs and sets the field contents.
+	 * If an error occurs, the method returns an error code.
+	 *
+	 * @param $value
+	 * @param bool $sanitize
+	 *
+	 * @return int|stdClass
+	 */
+	public function prepareInput($value, $sanitize = false) {
+		return parent::prepareInput($value, $sanitize);
 	}
 
-	public function prepareOutput(){return $this->values;}
-
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
+	public function prepareOutput(){ return $this->values; }
 }

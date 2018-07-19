@@ -1,30 +1,31 @@
 <?php
-class FieldFilepicker implements FieldInterface
-{
-	public $properties;
-	protected $tpl;
 
-	public function __construct(TemplateEngine $tpl)
-	{
-		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->style = null;
-		$this->configs = new stdClass();
+class FieldFilepicker extends FieldText implements FieldInterface
+{
+	/**
+	 * FieldFilepicker constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 	}
 
-
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$textfield = $this->tpl->getTemplate('filepicker', $itemeditor);
 
-		$type = isset($this->configs->type) ? $this->configs->type : 'images';
+		$type = isset($this->configs->type) ? imanager('sanitizer')->text($this->configs->type) : 'images';
 
 		$output = $this->tpl->render($textfield, array(
 				'name' => $this->name,
@@ -32,7 +33,7 @@ class FieldFilepicker implements FieldInterface
 				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
 				'visible_class' => (($type != 'images') ? ' class="hidden" ' : ''),
 				'id' => $this->id,
-				'value' => !empty($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
+				'value' => ($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 
 		$output .= '
@@ -76,15 +77,27 @@ class FieldFilepicker implements FieldInterface
 
 		return $output;
 	}
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
 
-	public function getConfigFieldtype(){
-		/* ok, get our dropdown field, infotext and area templates */
+
+	/**
+	 * Sanitizing path
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	protected function sanitize($value){ return imanager('sanitizer')->path($value); }
+
+	/**
+	 * @return Template
+	 */
+	public function getConfigFieldtype()
+	{
 		$tpltext = $this->tpl->getTemplate('text', $this->tpl->getTemplates('field'));
 		$tplinfotext = $this->tpl->getTemplate('infotext', $this->tpl->getTemplates('itemeditor'));
 		$tplarea = $this->tpl->getTemplate('fieldarea', $this->tpl->getTemplates('itemeditor'));
 
-		// let's load accepted value
+		// load file types
 		$type = isset($this->configs->type) ? $this->configs->type : 'images';
 
 		// render textfied <input name="[[name]]" type="text" class="[[class]]" id="[[id]]" value="[[value]]"[[style]]/>
@@ -103,7 +116,7 @@ class FieldFilepicker implements FieldInterface
 					File types, example: files or images')
 		);
 
-		// let's merge the pieces and return the output
+		// Return merged settings template
 		return $this->tpl->render($tplarea, array(
 				'fieldid' =>  '',
 				'label' => 'Enter file type here',

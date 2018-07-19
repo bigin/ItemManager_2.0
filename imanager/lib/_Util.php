@@ -1,6 +1,11 @@
 <?php
-//namespace Imanager;
 
+/**
+ * Class Util
+ *
+ * Please do not use IM-API functions directly here
+ *
+ */
 class Util
 {
 	/**
@@ -22,33 +27,19 @@ class Util
 		return false;
 	}
 
-	public static function reparse_url($parsed_url, $imcat)
-	{
-		$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'].'://' : '';
-		$host     = isset($parsed_url['host'])   ? $parsed_url['host'] : '';
-		$path     = isset($parsed_url['path'])   ? $parsed_url['path'] : '';
-		$query    = isset($parsed_url['query'])  ? '?'.$parsed_url['query'] : '';
-		$pairs = explode('&', $query);
-		foreach($pairs as $pair)
-		{
-			$part = explode('=', $pair);
-			if($part[0] == 'page')
-			{
-				return ($scheme.$host.$path.'?id=imanager&cat='. $imcat->current_category().'&page=');
-			}
-		}
-		return ;
-	}
-
+	/**
+	 * Puts $data into the log file
+	 *
+	 * @param $data
+	 *
+	 * @param string $file
+	 */
 	public static function dataLog($data, $file = '')
 	{
 		$filename = empty($file) ? GSDATAOTHERPATH.'logs/imlog_'.date('Ym').'.txt' : GSDATAOTHERPATH.'logs/'.$file.'.txt';
-		if (!$handle = fopen($filename, 'a+'))
-		{
-			return;
-		}
+		if (!$handle = fopen($filename, 'a+')) { return; }
 		$datum = date('d.m.Y - H:i:s', time());
-		if (!fwrite($handle, '[ '.$datum.' ]'. ' ' . print_r($data, true) . "\r\n")) {
+		if (!fwrite($handle, '[ '.$datum.' ]'. ' ' . strip_tags(print_r($data, true)) . "\r\n")) {
 			return;
 		}
 		fclose($handle);
@@ -56,6 +47,13 @@ class Util
 
 	public static function preformat($data){echo '<pre>'.print_r($data, true).'</pre>';}
 
+	/**
+	 * Checks if the passed variable is a timestamp
+	 *
+	 * @param $string
+	 *
+	 * @return bool
+	 */
 	public static function isTimestamp($string){return (1 === preg_match( '~^[1-9][0-9]*$~', $string ));}
 
 	/**
@@ -82,7 +80,13 @@ class Util
 		return $var;
 	}
 
-
+	/**
+	 * A default IM redirect
+	 *
+	 * @param $url
+	 * @param bool $flag
+	 * @param int $statusCode
+	 */
 	public static function redirect($url, $flag = true, $statusCode = 303)
 	{
 		header('Location: ' . htmlspecialchars($url), $flag, $statusCode);

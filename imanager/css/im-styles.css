@@ -160,6 +160,9 @@
 	padding: 10px;
 }
 
+.manager-wrapper .longtext-field {
+	resize: vertical;
+}
 
 
 /* Custom Fields Formular */
@@ -579,7 +582,7 @@ form a.deletefield:hover {
 	margin: 10px;
 }
 
-.manager-wrapper .fieldarea label {
+.manager-wrapper .fieldarea>label {
 	padding: 10px;
 	background-color: #e4e9ec;
 	border-bottom: solid 1px #dcdcdc;
@@ -785,6 +788,14 @@ field-wrapper .btn:hover {
 	display: block;
 	float: right;
 	margin: 10px 30px;
+}
+
+#fileupload p.name {
+	padding: 0;
+}
+
+#fileupload .template-download .name input.tit {
+	margin-top: 10px;
 }
 
 .file-upload {

@@ -1,37 +1,39 @@
 <?php
-class FieldMoney implements FieldInterface
-{
-	public $properties;
-	protected $tpl;
 
-	public function __construct(TemplateEngine $tpl)
-	{
-		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->style = null;
-		$this->configs = new stdClass();
+class FieldMoney extends FieldText implements FieldInterface
+{
+	/**
+	 * FieldMoney constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 	}
 
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$textfield = $this->tpl->getTemplate('text', $itemeditor);
 
-		// let's check selected notation
+		// Check selected notation
 		$notation = isset($this->configs->notation) ? $this->configs->notation : '';
-		if($notation == 'French notation')
+		if($notation == 'French notation') {
 			$value = number_format(floatval($this->value), 2, ',', ' ');
-		elseif($notation == 'German notation')
+		} elseif($notation == 'German notation') {
 			$value = number_format(floatval($this->value), 2, ',', '.');
-		else
+		} else {
 			$value = number_format(floatval($this->value), 2, '.', '');
-
+		}
 
 		$output = $this->tpl->render($textfield, array(
 				'name' => $this->name,
@@ -43,9 +45,14 @@ class FieldMoney implements FieldInterface
 		return $output;
 	}
 
+	/**
+	 * Render config menu section
+	 *
+	 * @return Template
+	 */
 	public function getConfigFieldtype()
 	{
-		/* ok, get our dropdown field, infotext and area templates */
+		// OK, get the dropdown field, infotext and area templates
 		$tplselect = $this->tpl->getTemplate('select', $this->tpl->getTemplates('field'));
 		$tploption = $this->tpl->getTemplate('option', $this->tpl->getTemplates('field'));
 		$tplinfotext = $this->tpl->getTemplate('infotext', $this->tpl->getTemplates('itemeditor'));
@@ -54,8 +61,7 @@ class FieldMoney implements FieldInterface
 
 		$option = '';
 		$select = '';
-
-		// next, build options template: <option value=[[option]][[selected]]>[[option]]</option>
+		// Build options template: <option value=[[option]][[selected]]>[[option]]</option>
 		$option .= $this->tpl->render($tploption, array(
 				'option' => 'English notation',
 				'selected' => (empty($this->configs->notation) || $this->configs->notation == 'English notation'
@@ -85,10 +91,10 @@ class FieldMoney implements FieldInterface
 
 		// render infotext template <p class="field-info">[[infotext]]</p>
 		$infotext = $this->tpl->render($tplinfotext, array(
-				'infotext' => '<i class="fa fa-info-circle"></i> Enter here your Infotext')
+				'infotext' => '<i class="fa fa-info-circle"></i> Choose one of the available notations')
 		);
 
-		// let's merge the pieces and return the output
+		// Return merged output parts
 		return $this->tpl->render($tplarea, array(
 				'fieldid' =>  '',
 				'label' => 'Choose notation',
