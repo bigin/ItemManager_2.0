@@ -130,9 +130,11 @@ class InputPassword implements InputInterface
 		}
 
 		// Build salt string
+		// Note, since 2.4.4 salt is no longer used, but is still retained for compatibility reasons.
 		$this->values->salt = $this->randomString();
-		// Create chashed pass
-		$this->values->value = sha1($value . $this->values->salt);
+		// Create hashed pass
+		//$this->values->value = sha1($value . $this->values->salt);
+		$this->values->value = password_hash($value, PASSWORD_DEFAULT);
 		// Set confirmed flag
 		$this->field->setProtected('confirmed', true);
 

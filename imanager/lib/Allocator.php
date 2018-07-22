@@ -334,8 +334,10 @@ class Allocator
 						if(isset($fval->fullurl)) {
 							foreach($fval->fullurl as $fv) $obj->{$fkey}[] = $fv;
 							foreach($fval->title as $fv) $obj->{$fkey.'_title'}[] = $fv;
-						} else
-						{
+						} elseif(isset($fval->salt)) {
+							$obj->{$fkey} = @$fval->value;
+							$obj->salt = @$fval->salt;
+						} else {
 							$obj->{$fkey} = @$fval->value;
 						}
 					}
@@ -363,8 +365,10 @@ class Allocator
 					if(isset($fval->fullurl)) {
 						foreach($fval->fullurl as $fv) $obj->{$fkey}[] = $fv;
 						foreach($fval->title as $fv) $obj->{$fkey.'_title'}[] = $fv;
-					} else
-					{
+					} elseif(isset($fval->salt)) {
+						$obj->{$fkey} = @$fval->value;
+						$obj->salt = @$fval->salt;
+					} else {
 						$obj->{$fkey} = @$fval->value;
 					}
 				}

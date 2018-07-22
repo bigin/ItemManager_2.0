@@ -21,7 +21,7 @@ class InputDropdown extends InputText implements InputInterface
 	 * @return int|stdClass
 	 */
 	public function prepareInput($value, $sanitize = false) {
-		parent::prepareInput($value, $sanitize);
+		return parent::prepareInput($value, $sanitize);
 	}
 
 	/**
