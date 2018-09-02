@@ -27,22 +27,53 @@ class FieldMoney extends FieldText implements FieldInterface
 
 		// Check selected notation
 		$notation = isset($this->configs->notation) ? $this->configs->notation : '';
-		if($notation == 'French notation') {
-			$value = number_format(floatval($this->value), 2, ',', ' ');
-		} elseif($notation == 'German notation') {
-			$value = number_format(floatval($this->value), 2, ',', '.');
-		} else {
-			$value = number_format(floatval($this->value), 2, '.', '');
-		}
+		$value = self::toMoneyFormatRaw($this->value, $notation);
 
 		$output = $this->tpl->render($textfield, array(
-				'name' => $this->name,
-				'class' => $this->class,
-				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
-				'id' => $this->id,
-				'value' => $value), true, array()
+			'name' => $this->name,
+			'class' => $this->class,
+			'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
+			'id' => $this->id,
+			'value' => $value), true, array()
 		);
 		return $output;
+	}
+
+	/**
+	 * A static method for converting float to current raw money format
+	 *
+	 * @param $number
+	 *
+	 * @return string
+	 */
+	public static function toMoneyFormatRaw($number, $notation = null) {
+		if($notation == 'French notation') {
+			$value = number_format(floatval($number), 2, ',', ' ');
+		} elseif($notation == 'German notation') {
+			$value = number_format(floatval($number), 2, ',', '.');
+		} else {
+			$value = number_format(floatval($number), 2, '.', '');
+		}
+		return $value;
+	}
+
+	/**
+	 * A static method for converting float to current money format with currency
+	 *
+	 * @param $number
+	 * @param string $currency
+	 *
+	 * @return string
+	 */
+	public static function toMoneyFormat($number, $currency = '€', $notation = null) {
+		if($notation == 'French notation') {
+			$value = number_format(floatval($number), 2, ',', ' ')." $currency";
+		} elseif($notation == 'German notation') {
+			$value = number_format(floatval($number), 2, ',', '.')." $currency";
+		} else {
+			$value = number_format(floatval($number), 2, '.', '')." $currency";
+		}
+		return $value;
 	}
 
 	/**
@@ -65,19 +96,19 @@ class FieldMoney extends FieldText implements FieldInterface
 		$option .= $this->tpl->render($tploption, array(
 				'option' => 'English notation',
 				'selected' => (empty($this->configs->notation) || $this->configs->notation == 'English notation'
-					) ? ' selected ' : ''
+				) ? ' selected ' : ''
 			)
 		);
 		$option .= $this->tpl->render($tploption, array(
 				'option' => 'French notation',
 				'selected' => (!empty($this->configs->notation) &&
-						$this->configs->notation == 'French notation') ? ' selected ' : ''
+					$this->configs->notation == 'French notation') ? ' selected ' : ''
 			)
 		);
 		$option .= $this->tpl->render($tploption, array(
 				'option' => 'German notation',
 				'selected' => (!empty($this->configs->notation) &&
-						$this->configs->notation == 'German notation') ? ' selected ' : ''
+					$this->configs->notation == 'German notation') ? ' selected ' : ''
 			)
 		);
 
@@ -96,13 +127,13 @@ class FieldMoney extends FieldText implements FieldInterface
 
 		// Return merged output parts
 		return $this->tpl->render($tplarea, array(
-				'fieldid' =>  '',
-				'label' => 'Choose notation',
-				'infotext' => $infotext,
-				'area-class' => 'fieldarea',
-				'label-class' => '',
-				'required' => '',
-				'field' => $select), true
+			'fieldid' =>  '',
+			'label' => 'Choose notation',
+			'infotext' => $infotext,
+			'area-class' => 'fieldarea',
+			'label-class' => '',
+			'required' => '',
+			'field' => $select), true
 		);
 	}
 }

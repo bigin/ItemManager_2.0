@@ -44,10 +44,10 @@ class InputMoney extends InputText implements InputInterface
 		}
 
 		// Change value into float format
-		$this->values->value = $this->toFloat($value);
+		$this->values->value = self::toDecimal($value);
 
 		// String format has wiped the value?
-		if(!$this->values->value) { return self::ERR_FORMAT; }
+		if($this->values->value !== (float) '0.00' && !$this->values->value) { return self::ERR_FORMAT; }
 
 		// Check min value length
 		if($this->minLen > 0) {
@@ -79,21 +79,13 @@ class InputMoney extends InputText implements InputInterface
 	 *
 	 * @return mixed
 	 */
-	protected function toFloat($str)
+	public static function toDecimal($money)
 	{
-		if(strstr($str, ",")) {
-			// replace dots and spaces (thousand seps) with blancs
-			$str = str_replace('.', '', $str);
-			$str = str_replace(' ', '', $str);
-			// replace ',' with '.'
-			$str = str_replace(',', '.', $str);
-		}
-
-		// Search for a number that may contain '.'
-		if(preg_match('#([0-9\.]+)#', $str, $match)) {
-			return floatval($match[0]);
-		} else {
-			return floatval($str);
-		}
+		$cleanString = preg_replace('/([^0-9\.,])/i', '', $money);
+		$onlyNumbersString = preg_replace('/([^0-9])/i', '', $money);
+		$separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
+		$stringWithCommaOrDot = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
+		$removedThousendSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
+		return (float) str_replace(',', '.', $removedThousendSeparator);
 	}
 }
