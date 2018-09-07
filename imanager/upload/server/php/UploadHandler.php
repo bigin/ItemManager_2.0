@@ -41,9 +41,6 @@ class UploadHandler
 	protected $titles = array();
 
     function __construct($options = null, $initialize = true, $error_messages = null) {
-		/*$handle = fopen("log.txt", "a");
-		fwrite($handle, print_r($_REQUEST, true));
-		fclose($handle);*/
 
 		if(empty($_REQUEST['categoryid']) || !is_numeric($_REQUEST['categoryid']) ||
 			empty($_REQUEST['fieldid']) || !is_numeric($_REQUEST['fieldid']))
@@ -52,36 +49,27 @@ class UploadHandler
 		$categoryid = (int) $_REQUEST['categoryid'];
 		$fieldid = (int) $_REQUEST['fieldid'];
 		ob_start();
-		$imanager = new ItemManager(); //imanager();
+		$imanager = new ItemManager();
 		ob_end_clean();
-		$fieldsMapper = new FieldMapper();//$imanager->getFieldsClass();
+		$fieldsMapper = new FieldMapper();
 		$fieldsMapper->init($categoryid);
 		$field = $fieldsMapper->getField($fieldid);
 
-		if(empty($_REQUEST['id']) || !is_numeric($_REQUEST['id']))
-		{
+		if(empty($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
 			if(empty($_REQUEST['timestamp'])
 				|| !is_numeric($_REQUEST['timestamp'])
-				|| !$this->isTimestamp($_REQUEST['timestamp']))
-			{
+				|| !$this->isTimestamp($_REQUEST['timestamp'])) {
 				return false;
 			}
 
 			$timestamp = (int) $_REQUEST['timestamp'];
-
 			$upload_dir = dirname(dirname(dirname(dirname(dirname(dirname($this->get_server_var('SCRIPT_FILENAME')))))))
 				.'/data/uploads/imanager/tmp_'.$timestamp.'_'.$categoryid.'/';
-
 			$upload_url = $this->get_full_upload_url().'tmp_'.$timestamp.'_'.$categoryid.'/';
-
-		} else
-		{
-			// Applications/MAMP/htdocs/imanager.2.3.3/plugins/imanager/upload/server/php/../../../../../data/uploads/imanager/9.18/
+		} else {
 			$upload_dir = dirname(dirname(dirname(dirname(dirname(dirname($this->get_server_var('SCRIPT_FILENAME')))))))
 				.'/data/uploads/imanager/'.(int) $_REQUEST['id'].'.'.$categoryid.'/';
-
 			$upload_url = $this->get_full_upload_url().(int)$_REQUEST['id'].'.'.$categoryid.'/';
-
 		}
 
 		$this->positions = !empty($_REQUEST['position']) ? $_REQUEST['position'] : array();
@@ -193,9 +181,9 @@ class UploadHandler
                     // dimensions and e.g. create square thumbnails:
                     //'crop' => true,
                     'max_width' => (!empty($imanager->config->backend->thumbwidth) ?
-							$imanager->config->backend->thumbwidth : 100),
+						(int) $imanager->config->backend->thumbwidth : 100),
                     'max_height' => (!empty($imanager->config->backend->thumbheight) ?
-							$imanager->config->backend->thumbheight : 100)
+						(int) $imanager->config->backend->thumbheight : 100)
                 )
             ),
             'print_response' => true
@@ -209,10 +197,7 @@ class UploadHandler
         if ($initialize) {
             $this->initialize();
         }
-
-//		$so = ob_get_contents();
 //		Util::dataLog($so);
-//		ob_end_clean();
     }
 
     protected function initialize() {
@@ -1015,6 +1000,7 @@ class UploadHandler
                 $y = ($img_height / ($img_width / $max_width) - $max_height) / 2;
             }
         }
+
         $success = $image->resizeImage(
             $new_width,
             $new_height,
