@@ -207,18 +207,9 @@ class Allocator
 		$offset = ($offset > 0) ? (int) $offset-1 : (int) $offset;
 		$length = (int) $length;
 
-		$locitems = !empty($items) ? $items : $this->simpleItems;
-
-		if(empty($locitems) || count($locitems) <= 0) return false;
-
-		$itemcontainer = array();
-
-		foreach($locitems as $item_id => $i) {
-			//if(!isset($i->$filterby)) continue;
-			$itemcontainer[$item_id] = $locitems[$item_id];
-		}
-
+		$itemcontainer = !empty($items) ? $items : $this->simpleItems;
 		if(empty($itemcontainer)) return false;
+
 
 		$this->filterby = $filterby;
 		usort($itemcontainer, array($this, 'sortObjects'));
