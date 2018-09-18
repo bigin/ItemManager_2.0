@@ -14,6 +14,7 @@ class Setup
 	{
 		if(file_exists(IM_CONFIG_FILE)) $this->init();
 		include('inc/config.php');
+		if(file_exists(IM_SETTINGS_DIR.'config.php')) include('inc/config.php');
 	}
 
 
