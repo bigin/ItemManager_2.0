@@ -582,7 +582,7 @@ form a.deletefield:hover {
 	margin: 10px;
 }
 
-.manager-wrapper .fieldarea>label {
+.manager-wrapper .fieldarea>label:first-child {
 	padding: 10px;
 	background-color: #e4e9ec;
 	border-bottom: solid 1px #dcdcdc;
@@ -606,7 +606,7 @@ form a.deletefield:hover {
 	font-size: 11px;
 	color: #999;
 	margin: 0;
-	padding: 10px;
+	padding: 10px 10px 0;
 }
 
 .manager-wrapper .fieldarea .field-info .info {
