@@ -14,6 +14,7 @@ class Allocator
 			$this->install($this->path);
 		}
 		if(file_exists($this->path)) {
+            (!Util::isOpCacheEnabled()) or Util::clearOpCache($this->path);
 			$this->simpleItems = include $this->path;
 			$this->total = count($this->simpleItems);
 			return true;
